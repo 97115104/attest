@@ -226,6 +226,85 @@ const server = http.createServer(async (req, res) => {
     return json(res, 200, { success: true, attestation, urls: { verify: longUrl, short: shortUrl } });
   }
 
+  if (pathname === '/api/create-url' && req.method === 'POST') {
+    const body = await readBody(req);
+    if (!body || !body.url) return json(res, 400, { error: 'url is required' });
+
+    let pageUrl;
+    try {
+      pageUrl = new URL(body.url);
+      if (!['http:', 'https:'].includes(pageUrl.protocol)) {
+        return json(res, 400, { error: 'Only http and https URLs are supported' });
+      }
+    } catch {
+      return json(res, 400, { error: 'Invalid URL' });
+    }
+
+    let pageContent;
+    try {
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), 15000);
+      const fetchRes = await fetch(pageUrl.href, {
+        signal: controller.signal,
+        headers: { 'User-Agent': 'attest/2.0 (+https://attest.97115104.com)' },
+        redirect: 'follow',
+      });
+      clearTimeout(timeout);
+      if (!fetchRes.ok) return json(res, 502, { error: `Failed to fetch URL (HTTP ${fetchRes.status})` });
+      pageContent = Buffer.from(await fetchRes.arrayBuffer());
+    } catch (err) {
+      return json(res, 502, { error: 'Could not fetch URL: ' + (err.name === 'AbortError' ? 'request timed out' : err.message) });
+    }
+
+    const contentName = body.content_name || pageUrl.hostname + pageUrl.pathname;
+    const model = body.model || 'gpt-4';
+    const role = body.role || 'assisted';
+    const author = body.author || 'Anonymous';
+    const authorship_type = body.authorship_type ||
+      (role === 'authored' ? 'human' : role === 'generated' ? 'ai' : 'collab');
+
+    const id = new Date().toISOString().split('T')[0] + '-' + crypto.randomBytes(3).toString('hex');
+    const contentHash = 'sha256:' + crypto.createHash('sha256').update(pageContent).digest('hex');
+
+    const attestation = {
+      version: '2.0',
+      id,
+      content_name: contentName,
+      model: role === 'authored' ? 'Human' : model,
+      role,
+      authorship_type,
+      timestamp: new Date().toISOString(),
+      platform: 'attest.97115104.com',
+      author,
+      content_hash: contentHash,
+      source_url: pageUrl.href,
+      document_type: 'webpage',
+    };
+
+    const dataToSign = JSON.stringify({ content_hash: contentHash, model: attestation.model, timestamp: attestation.timestamp, authorship_type, role });
+    const signingKey = 'attest-97115104-' + id;
+    const sig = crypto.createHmac('sha256', signingKey).update(dataToSign).digest('hex');
+    attestation.signature = { type: 'hmac-sha256', algorithm: 'HMAC-SHA256', value: sig, data_to_sign: dataToSign };
+    attestation.signer = { name: author, id: author.toLowerCase().replace(/\s+/g, '') };
+
+    const encoded = Buffer.from(JSON.stringify(attestation)).toString('base64');
+    const longUrl = `https://attest.97115104.com/verify/?data=${encodeURIComponent(encoded)}`;
+
+    const db = getDb();
+    const { customAlphabet } = await import('nanoid');
+    const nanoid = customAlphabet('0123456789abcdefghijklmnopqrstuvwxyz', 8);
+    let shortId;
+    for (let i = 0; i < 10; i++) {
+      shortId = nanoid();
+      const existing = db.prepare('SELECT id FROM urls WHERE id = ?').get(shortId);
+      if (!existing) break;
+    }
+    db.prepare('INSERT INTO urls (id, data) VALUES (?, ?)').run(shortId, encoded);
+    const shortUrl = `https://attest.97115104.com/s/${shortId}`;
+
+    return json(res, 200, { success: true, attestation, urls: { verify: longUrl, short: shortUrl } });
+  }
+
   if (pathname === '/api/shorten' && req.method === 'POST') {
     const body = await readBody(req);
     const result = await handleShorten(body);
