@@ -15,17 +15,16 @@ function initClock() {
 function initBgPicker() {
   const picker = document.getElementById('bg-picker');
   if (!picker) return;
-  const saved = localStorage.getItem('attest-bg');
-  if (saved) document.body.style.background = saved;
+  // Always start from CSS default (#000000), never override from localStorage
+  localStorage.removeItem('attest-bg');
   try {
     const rgb = getComputedStyle(document.body).backgroundColor;
-    picker.value = saved || (rgb.includes('rgb')
+    picker.value = rgb.includes('rgb')
       ? '#' + rgb.match(/\d+/g).map(x => (+x).toString(16).padStart(2, '0')).join('')
-      : '#000000');
-  } catch { picker.value = saved || '#000000'; }
+      : '#000000';
+  } catch { picker.value = '#000000'; }
   picker.addEventListener('input', e => {
     document.body.style.background = e.target.value;
-    localStorage.setItem('attest-bg', e.target.value);
   });
 }
 
