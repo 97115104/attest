@@ -6,7 +6,7 @@
   <title>create attestation - attest</title>
   <meta name="description" content="Create an attestation by uploading any source file">
   <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="/style.css">
+  <link rel="stylesheet" href="/styles/style.css">
 </head>
 <body>
 
@@ -260,12 +260,6 @@ async function createAttestation() {
   showResults(results);
 }
 
-function esc(s) {
-  const d = document.createElement('div');
-  d.textContent = String(s);
-  return d.innerHTML;
-}
-
 function showResults(results) {
   const successes = results.filter(r => r.data);
   const failures = results.filter(r => r.error);
@@ -341,25 +335,7 @@ function resetForm() {
   document.getElementById('url-list').innerHTML = '<div class="url-row" style="display:flex; gap:4px; margin-bottom:4px;"><input type="text" class="url-input" placeholder="https://example.com/page" style="flex:1; font-family:var(--font-mono); font-size:12px; padding:3px 6px; border:2px inset var(--motif-surface);"></div>';
 }
 
-// Clock
-function tick() {
-  const d = new Date();
-  document.getElementById('clock').textContent =
-    d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false });
-}
-tick();
-setInterval(tick, 30000);
-
-const picker = document.getElementById('bg-picker');
-const saved = localStorage.getItem('attest-bg');
-if (saved) document.body.style.background = saved;
-picker.value = saved || getComputedStyle(document.body).backgroundColor.includes('rgb') ?
-  '#' + getComputedStyle(document.body).backgroundColor.match(/\d+/g).map(x=>(+x).toString(16).padStart(2,'0')).join('') :
-  '#2e5064';
-picker.addEventListener('input', e => {
-  document.body.style.background = e.target.value;
-  localStorage.setItem('attest-bg', e.target.value);
-});
 </script>
+<script src="/scripts/shared.js"></script>
 </body>
 </html>

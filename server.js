@@ -3,10 +3,13 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import crypto from 'node:crypto';
+import { customAlphabet } from 'nanoid';
 import { getDb } from './db.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const PORT = process.env.PORT || 3000;
+const HOST = process.env.HOST || 'attest.97115104.com';
+const nanoid = customAlphabet('0123456789abcdefghijklmnopqrstuvwxyz', 8);
 
 const MIME = {
   '.html': 'text/html',
@@ -102,58 +105,87 @@ function parseMultipart(buf, boundary) {
   return parts;
 }
 
-// ── API: Create attestation ──────────────────────────────────────────
-function handleCreate(query) {
-  const content_name = query.get('content_name');
-  if (!content_name) return { error: 'content_name is required' };
+// ── Shared attestation helpers ───────────────────────────────────────
+function generateId() {
+  return new Date().toISOString().split('T')[0] + '-' + crypto.randomBytes(3).toString('hex');
+}
 
-  const model = query.get('model') || 'gpt-4';
-  const role = query.get('role') || 'assisted';
-  const author = query.get('author') || 'Anonymous';
-  const content = query.get('content');
-  const authorship_type = query.get('authorship_type') || (role === 'authored' ? 'human' : role === 'generated' ? 'ai' : 'collab');
+function deriveType(role) {
+  if (role === 'authored') return 'human';
+  if (role === 'generated') return 'ai';
+  return 'collab';
+}
 
-  const id = new Date().toISOString().split('T')[0] + '-' + crypto.randomBytes(3).toString('hex');
-
+function buildAttestation({ contentName, model, role, author, contentHash, extras }) {
+  const authorship_type = extras?.authorship_type || deriveType(role);
+  const id = generateId();
   const attestation = {
     version: '2.0',
     id,
-    content_name,
+    content_name: contentName,
     model: role === 'authored' ? 'Human' : model,
     role,
     authorship_type,
     timestamp: new Date().toISOString(),
-    platform: 'attest.97115104.com',
+    platform: HOST,
     author,
+    ...extras,
   };
-
-  if (content) {
-    attestation.content_hash = 'sha256:' + crypto.createHash('sha256').update(content).digest('hex');
-  }
-
-  const encoded = Buffer.from(JSON.stringify(attestation)).toString('base64');
-  const dataUrl = `https://attest.97115104.com/verify/?data=${encodeURIComponent(encoded)}`;
-
-  return { success: true, attestation, urls: { verify: dataUrl } };
+  if (contentHash) attestation.content_hash = contentHash;
+  return attestation;
 }
 
-// ── API: Shorten URL ─────────────────────────────────────────────────
-async function handleShorten(body) {
-  if (!body || !body.data) return { error: 'Missing "data" in request body (base64 attestation)' };
+function signAttestation(attestation) {
+  const { content_hash, model, timestamp, authorship_type, role } = attestation;
+  const dataToSign = JSON.stringify({ content_hash, model, timestamp, authorship_type, role });
+  const signingKey = 'attest-97115104-' + attestation.id;
+  const sig = crypto.createHmac('sha256', signingKey).update(dataToSign).digest('hex');
+  attestation.signature = { type: 'hmac-sha256', algorithm: 'HMAC-SHA256', value: sig, data_to_sign: dataToSign };
+  attestation.signer = { name: attestation.author, id: attestation.author.toLowerCase().replace(/\s+/g, '') };
+  return attestation;
+}
 
+function createShortUrl(encoded) {
   const db = getDb();
-  const { customAlphabet } = await import('nanoid');
-  const nanoid = customAlphabet('0123456789abcdefghijklmnopqrstuvwxyz', 8);
-
   let shortId;
   for (let i = 0; i < 10; i++) {
     shortId = nanoid();
-    const existing = db.prepare('SELECT id FROM urls WHERE id = ?').get(shortId);
-    if (!existing) break;
+    if (!db.prepare('SELECT id FROM urls WHERE id = ?').get(shortId)) break;
   }
+  db.prepare('INSERT INTO urls (id, data) VALUES (?, ?)').run(shortId, encoded);
+  return { shortUrl: `https://${HOST}/s/${shortId}`, shortId };
+}
 
-  db.prepare('INSERT INTO urls (id, data) VALUES (?, ?)').run(shortId, body.data);
-  return { shortUrl: `https://attest.97115104.com/s/${shortId}`, shortId };
+function encodeAndUrl(attestation) {
+  const encoded = Buffer.from(JSON.stringify(attestation)).toString('base64');
+  const longUrl = `https://${HOST}/verify/?data=${encodeURIComponent(encoded)}`;
+  return { encoded, longUrl };
+}
+
+// ── API: Create attestation ──────────────────────────────────────────
+function handleCreate(query) {
+  const contentName = query.get('content_name');
+  if (!contentName) return { error: 'content_name is required' };
+
+  const model = query.get('model') || 'gpt-4';
+  const role = query.get('role') || 'collaborated';
+  const author = query.get('author') || 'Anonymous';
+  const content = query.get('content');
+  const contentHash = content ? 'sha256:' + crypto.createHash('sha256').update(content).digest('hex') : null;
+
+  const attestation = buildAttestation({
+    contentName, model, role, author, contentHash,
+    extras: query.get('authorship_type') ? { authorship_type: query.get('authorship_type') } : {},
+  });
+
+  const { longUrl } = encodeAndUrl(attestation);
+  return { success: true, attestation, urls: { verify: longUrl } };
+}
+
+// ── API: Shorten URL ─────────────────────────────────────────────────
+function handleShorten(body) {
+  if (!body || !body.data) return { error: 'Missing "data" in request body (base64 attestation)' };
+  return createShortUrl(body.data);
 }
 
 // ── Router ───────────────────────────────────────────────────────────
@@ -189,49 +221,21 @@ const server = http.createServer(async (req, res) => {
 
     const contentName = (typeof parts.content_name === 'string' && parts.content_name) || file.filename;
     const model = (typeof parts.model === 'string' && parts.model) || 'gpt-4';
-    const role = (typeof parts.role === 'string' && parts.role) || 'assisted';
+    const role = (typeof parts.role === 'string' && parts.role) || 'collaborated';
     const author = (typeof parts.author === 'string' && parts.author) || 'Anonymous';
-    const authorship_type = (typeof parts.authorship_type === 'string' && parts.authorship_type) ||
-      (role === 'authored' ? 'human' : role === 'generated' ? 'ai' : 'collab');
-
-    const id = new Date().toISOString().split('T')[0] + '-' + crypto.randomBytes(3).toString('hex');
     const contentHash = 'sha256:' + crypto.createHash('sha256').update(file.data).digest('hex');
 
-    const attestation = {
-      version: '2.0',
-      id,
-      content_name: contentName,
-      model: role === 'authored' ? 'Human' : model,
-      role,
-      authorship_type,
-      timestamp: new Date().toISOString(),
-      platform: 'attest.97115104.com',
-      author,
-      content_hash: contentHash,
-      document_type: path.extname(file.filename).replace('.', '') || 'unknown',
-    };
+    const attestation = buildAttestation({
+      contentName, model, role, author, contentHash,
+      extras: {
+        ...(typeof parts.authorship_type === 'string' && parts.authorship_type ? { authorship_type: parts.authorship_type } : {}),
+        document_type: path.extname(file.filename).replace('.', '') || 'unknown',
+      },
+    });
+    signAttestation(attestation);
 
-    const dataToSign = JSON.stringify({ content_hash: contentHash, model: attestation.model, timestamp: attestation.timestamp, authorship_type, role });
-    const signingKey = 'attest-97115104-' + id;
-    const sig = crypto.createHmac('sha256', signingKey).update(dataToSign).digest('hex');
-    attestation.signature = { type: 'hmac-sha256', algorithm: 'HMAC-SHA256', value: sig, data_to_sign: dataToSign };
-    attestation.signer = { name: author, id: author.toLowerCase().replace(/\s+/g, '') };
-
-    const encoded = Buffer.from(JSON.stringify(attestation)).toString('base64');
-    const longUrl = `https://attest.97115104.com/verify/?data=${encodeURIComponent(encoded)}`;
-
-    // Auto-create short URL
-    const db = getDb();
-    const { customAlphabet } = await import('nanoid');
-    const nanoid = customAlphabet('0123456789abcdefghijklmnopqrstuvwxyz', 8);
-    let shortId;
-    for (let i = 0; i < 10; i++) {
-      shortId = nanoid();
-      const existing = db.prepare('SELECT id FROM urls WHERE id = ?').get(shortId);
-      if (!existing) break;
-    }
-    db.prepare('INSERT INTO urls (id, data) VALUES (?, ?)').run(shortId, encoded);
-    const shortUrl = `https://attest.97115104.com/s/${shortId}`;
+    const { encoded, longUrl } = encodeAndUrl(attestation);
+    const { shortUrl } = createShortUrl(encoded);
 
     return json(res, 200, { success: true, attestation, urls: { verify: longUrl, short: shortUrl } });
   }
@@ -256,7 +260,7 @@ const server = http.createServer(async (req, res) => {
       const timeout = setTimeout(() => controller.abort(), 15000);
       const fetchRes = await fetch(pageUrl.href, {
         signal: controller.signal,
-        headers: { 'User-Agent': 'attest/2.0 (+https://attest.97115104.com)' },
+        headers: { 'User-Agent': `attest/2.0 (+https://${HOST})` },
         redirect: 'follow',
       });
       clearTimeout(timeout);
@@ -268,56 +272,29 @@ const server = http.createServer(async (req, res) => {
 
     const contentName = body.content_name || pageUrl.hostname + pageUrl.pathname;
     const model = body.model || 'gpt-4';
-    const role = body.role || 'assisted';
+    const role = body.role || 'collaborated';
     const author = body.author || 'Anonymous';
-    const authorship_type = body.authorship_type ||
-      (role === 'authored' ? 'human' : role === 'generated' ? 'ai' : 'collab');
-
-    const id = new Date().toISOString().split('T')[0] + '-' + crypto.randomBytes(3).toString('hex');
     const contentHash = 'sha256:' + crypto.createHash('sha256').update(pageContent).digest('hex');
 
-    const attestation = {
-      version: '2.0',
-      id,
-      content_name: contentName,
-      model: role === 'authored' ? 'Human' : model,
-      role,
-      authorship_type,
-      timestamp: new Date().toISOString(),
-      platform: 'attest.97115104.com',
-      author,
-      content_hash: contentHash,
-      source_url: pageUrl.href,
-      document_type: 'webpage',
-    };
+    const attestation = buildAttestation({
+      contentName, model, role, author, contentHash,
+      extras: {
+        ...(body.authorship_type ? { authorship_type: body.authorship_type } : {}),
+        source_url: pageUrl.href,
+        document_type: 'webpage',
+      },
+    });
+    signAttestation(attestation);
 
-    const dataToSign = JSON.stringify({ content_hash: contentHash, model: attestation.model, timestamp: attestation.timestamp, authorship_type, role });
-    const signingKey = 'attest-97115104-' + id;
-    const sig = crypto.createHmac('sha256', signingKey).update(dataToSign).digest('hex');
-    attestation.signature = { type: 'hmac-sha256', algorithm: 'HMAC-SHA256', value: sig, data_to_sign: dataToSign };
-    attestation.signer = { name: author, id: author.toLowerCase().replace(/\s+/g, '') };
-
-    const encoded = Buffer.from(JSON.stringify(attestation)).toString('base64');
-    const longUrl = `https://attest.97115104.com/verify/?data=${encodeURIComponent(encoded)}`;
-
-    const db = getDb();
-    const { customAlphabet } = await import('nanoid');
-    const nanoid = customAlphabet('0123456789abcdefghijklmnopqrstuvwxyz', 8);
-    let shortId;
-    for (let i = 0; i < 10; i++) {
-      shortId = nanoid();
-      const existing = db.prepare('SELECT id FROM urls WHERE id = ?').get(shortId);
-      if (!existing) break;
-    }
-    db.prepare('INSERT INTO urls (id, data) VALUES (?, ?)').run(shortId, encoded);
-    const shortUrl = `https://attest.97115104.com/s/${shortId}`;
+    const { encoded, longUrl } = encodeAndUrl(attestation);
+    const { shortUrl } = createShortUrl(encoded);
 
     return json(res, 200, { success: true, attestation, urls: { verify: longUrl, short: shortUrl } });
   }
 
   if (pathname === '/api/shorten' && req.method === 'POST') {
     const body = await readBody(req);
-    const result = await handleShorten(body);
+    const result = handleShorten(body);
     return json(res, result.error ? 400 : 200, result);
   }
 

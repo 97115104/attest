@@ -5,31 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>404 - attest</title>
   <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="/style.css">
-  <style>
-    #tetris-wrap { text-align: center; margin-top: 6px; }
-    #tetris-canvas { border: 2px solid var(--motif-dark); background: #111; image-rendering: pixelated; max-width: 100%; touch-action: none; }
-    #tetris-score { font-family: var(--font-mono); font-size: 13px; margin: 4px 0; }
-    #tetris-controls { margin-top: 6px; display: none; }
-    #tetris-dpad { display: inline-grid; grid-template-columns: 44px 44px 44px; grid-template-rows: 44px 44px; gap: 3px; }
-    #tetris-dpad .btn { width: 44px; height: 44px; font-size: 20px; padding: 0; display: flex; align-items: center; justify-content: center; -webkit-tap-highlight-color: transparent; user-select: none; }
-    .start-btn { font-size: 13px !important; padding: 6px 20px !important; margin-top: 6px !important; }
-    #game-over-msg { color: #cc0000; font-weight: bold; font-size: 14px; margin-top: 4px; display: none; }
-    @media (pointer: coarse), (max-width: 600px) {
-      #tetris-controls { display: block; }
-      #kb-hint { display: none; }
-      .ascii-filler { font-size: 8px !important; line-height: 1.2 !important; margin: 6px auto 2px !important; }
-      #tetris-wrap { margin-top: 2px; }
-      #tetris-score { font-size: 11px; margin: 2px 0; }
-      #go-home-wrap { margin-top: 6px !important; }
-      .window-body { padding: 4px !important; }
-    }
-    @media (min-width: 601px) and (pointer: fine) {
-      #tetris-controls { display: none !important; }
-    }
-  </style>
+  <link rel="stylesheet" href="/styles/style.css">
 </head>
-<body>
+<body class="page-404">
 
 <div class="window" style="height: auto;">
   <div class="title-bar">
@@ -370,25 +348,7 @@ document.addEventListener('touchmove', e => {
   if (started && !gameOver && e.target.closest('#tetris-wrap')) e.preventDefault();
 }, {passive: false});
 
-// ═══ Clock & BG picker ═══
-function tick2() {
-  const d = new Date();
-  document.getElementById('clock').textContent =
-    d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false });
-}
-tick2();
-setInterval(tick2, 30000);
-
-const picker = document.getElementById('bg-picker');
-const saved = localStorage.getItem('attest-bg');
-if (saved) document.body.style.background = saved;
-picker.value = saved || getComputedStyle(document.body).backgroundColor.includes('rgb') ?
-  '#' + getComputedStyle(document.body).backgroundColor.match(/\d+/g).map(x=>(+x).toString(16).padStart(2,'0')).join('') :
-  '#2e5064';
-picker.addEventListener('input', e => {
-  document.body.style.background = e.target.value;
-  localStorage.setItem('attest-bg', e.target.value);
-});
 </script>
+<script src="/scripts/shared.js"></script>
 </body>
 </html>

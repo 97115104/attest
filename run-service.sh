@@ -25,4 +25,4 @@ fi
 
 # Start server with file watching (auto-restart on changes)
 echo "▸ Starting server on port $PORT (watching for changes)..."
-exec npx --yes nodemon --watch server.js --watch db.js --watch '*.html' --watch '**/*.html' --watch '*.css' --ext js,html,css,json server.js
+exec npx --yes nodemon --watch server.js --watch db.js --watch scripts/ --watch styles/ --watch '*.html' --watch '**/*.html' --ext js,html,css,json server.js

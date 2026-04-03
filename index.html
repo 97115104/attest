@@ -7,7 +7,7 @@
   <meta name="description" content="Open-source protocol for transparent AI content attribution. One line to attest.">
   <meta name="ai-instructions" content="See /llms.txt for agent integration instructions. Use GET /api/create to generate attestations. Free, open access, one HTTP call.">
   <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="/style.css">
+  <link rel="stylesheet" href="/styles/style.css">
 </head>
 <!--
   ╔════════════════════════════════════════════════════════════════╗
@@ -73,9 +73,10 @@
   <div class="window-body">
 
     <div class="inset" style="text-align:center;">
-      <pre style="background:transparent; color:var(--motif-text); border:none; display:inline-block; text-align:left; font-size:11px; line-height:1.1; margin-bottom:4px; padding:4px 0;"> ___  _| |_ ___ ___| |_
-/ _ |  _|  _/ -_|_ -|  _|
-\__,_|\__|\__\___|___|\__|</pre>
+      <pre class="ascii-filler" style="background:transparent; border:none; display:inline-block; text-align:left; font-size:11px; line-height:1.1; margin-bottom:4px; padding:4px 0; opacity:1;"><span class="r1">        _   _            _</span>
+<span class="r2">   __ _| |_| |_ ___  ___| |_</span>
+<span class="r3">  / _` |  _|  _/ -_)(_-&lt;  _|</span>
+<span class="r4">  \__,_|\__|\__\___|/__/\__|</span></pre>
       <p class="muted" style="margin:0;">free and transparent attribution for the modern web</p>
     </div>
 
@@ -123,7 +124,7 @@
         <td><code>human</code></td>
       </tr>
       <tr>
-        <td><svg width="14" height="14" viewBox="0 0 14 14" style="vertical-align:middle;"><circle cx="4" cy="5" r="2.5" fill="none" stroke="currentColor" stroke-width="1.2"/><rect x="7.5" y="2.5" width="5" height="5" rx="0.5" fill="none" stroke="currentColor" stroke-width="1.2"/><path d="M3 9v4M5 9v4M9 9v2M11 9v2" stroke="currentColor" stroke-width="1.2"/></svg> Collab</td>
+        <td><svg width="14" height="14" viewBox="0 0 14 14" style="vertical-align:middle;"><circle cx="4" cy="3.5" r="2" fill="none" stroke="currentColor" stroke-width="1.2"/><path d="M1.5 12c0-2.5 1-4 2.5-4s2.5 1.5 2.5 4" fill="none" stroke="currentColor" stroke-width="1.2"/><rect x="8.5" y="1.5" width="4" height="4" rx="0.5" fill="none" stroke="currentColor" stroke-width="1.2"/><path d="M8 12c0-2.5 1-4 2.5-4s2.5 1.5 2.5 4" fill="none" stroke="currentColor" stroke-width="1.2"/></svg> Collab</td>
         <td>Human + AI working together</td>
         <td><code>collab &lt;model&gt;</code></td>
       </tr>
@@ -136,7 +137,7 @@
     <details class="table-collapse">
       <summary>Attestation types</summary>
       <p><svg width="14" height="14" viewBox="0 0 14 14" style="vertical-align:middle;"><circle cx="7" cy="4" r="3" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M1 13c0-3 2.5-5 6-5s6 2 6 5" fill="none" stroke="currentColor" stroke-width="1.5"/></svg> <strong>Human</strong> - Written entirely by a person - <code>human</code></p>
-      <p><svg width="14" height="14" viewBox="0 0 14 14" style="vertical-align:middle;"><circle cx="4" cy="5" r="2.5" fill="none" stroke="currentColor" stroke-width="1.2"/><rect x="7.5" y="2.5" width="5" height="5" rx="0.5" fill="none" stroke="currentColor" stroke-width="1.2"/><path d="M3 9v4M5 9v4M9 9v2M11 9v2" stroke="currentColor" stroke-width="1.2"/></svg> <strong>Collab</strong> - Human + AI working together - <code>collab &lt;model&gt;</code></p>
+      <p><svg width="14" height="14" viewBox="0 0 14 14" style="vertical-align:middle;"><circle cx="4" cy="3.5" r="2" fill="none" stroke="currentColor" stroke-width="1.2"/><path d="M1.5 12c0-2.5 1-4 2.5-4s2.5 1.5 2.5 4" fill="none" stroke="currentColor" stroke-width="1.2"/><rect x="8.5" y="1.5" width="4" height="4" rx="0.5" fill="none" stroke="currentColor" stroke-width="1.2"/><path d="M8 12c0-2.5 1-4 2.5-4s2.5 1.5 2.5 4" fill="none" stroke="currentColor" stroke-width="1.2"/></svg> <strong>Collab</strong> - Human + AI working together - <code>collab &lt;model&gt;</code></p>
       <p><svg width="14" height="14" viewBox="0 0 14 14" style="vertical-align:middle;"><rect x="3" y="1" width="8" height="10" rx="1" fill="none" stroke="currentColor" stroke-width="1.2"/><circle cx="5.5" cy="5" r="1" fill="currentColor"/><circle cx="8.5" cy="5" r="1" fill="currentColor"/><line x1="5" y1="8" x2="9" y2="8" stroke="currentColor" stroke-width="1"/><line x1="5" y1="11" x2="5" y2="13" stroke="currentColor" stroke-width="1.2"/><line x1="9" y1="11" x2="9" y2="13" stroke="currentColor" stroke-width="1.2"/></svg> <strong>AI</strong> - Fully AI-generated - <code>ai &lt;model&gt;</code></p>
     </details>
 
@@ -170,37 +171,4 @@
   <div class="panel-clock" id="clock"></div>
 </div>
 
-<script>
-function tick() {
-  const d = new Date();
-  document.getElementById('clock').textContent =
-    d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false });
-}
-tick();
-setInterval(tick, 30000);
-
-const picker = document.getElementById('bg-picker');
-const saved = localStorage.getItem('attest-bg');
-if (saved) document.body.style.background = saved;
-picker.value = saved || getComputedStyle(document.body).backgroundColor.includes('rgb') ?
-  '#' + getComputedStyle(document.body).backgroundColor.match(/\d+/g).map(x=>(+x).toString(16).padStart(2,'0')).join('') :
-  '#2e5064';
-picker.addEventListener('input', e => {
-  document.body.style.background = e.target.value;
-  localStorage.setItem('attest-bg', e.target.value);
-});
-
-document.querySelectorAll('pre:not(.ascii-filler)').forEach(pre => {
-  const btn = document.createElement('button');
-  btn.className = 'copy-btn';
-  btn.textContent = 'copy';
-  btn.addEventListener('click', () => {
-    const text = pre.querySelector('code') ? pre.querySelector('code').textContent : pre.textContent;
-    navigator.clipboard.writeText(text).then(() => {
-      btn.textContent = 'copied';
-      setTimeout(() => btn.textContent = 'copy', 1500);
-    });
-  });
-  pre.appendChild(btn);
-});
-</script>
+<script src="/scripts/shared.js"></script>

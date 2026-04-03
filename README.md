@@ -3,7 +3,12 @@ attribution: collab claude opus 4
 attestation: https://attest.97115104.com/s/zo4ycxyk
 --- -->
 
-# attest
+```
+        _   _            _
+   __ _| |_| |_ ___  ___| |_
+  / _` |  _|  _/ -_)(_-<  _|
+  \__,_|\__|\__\___|/__/\__|
+```
 
 [![attested: collab claude opus 4](https://img.shields.io/badge/attested-collab%20claude%20opus%204-blue)](https://attest.97115104.com/s/zo4ycxyk)
 
