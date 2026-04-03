@@ -21,8 +21,8 @@ function initBgPicker() {
     const rgb = getComputedStyle(document.body).backgroundColor;
     picker.value = saved || (rgb.includes('rgb')
       ? '#' + rgb.match(/\d+/g).map(x => (+x).toString(16).padStart(2, '0')).join('')
-      : '#2e5064');
-  } catch { picker.value = saved || '#2e5064'; }
+      : '#000000');
+  } catch { picker.value = saved || '#000000'; }
   picker.addEventListener('input', e => {
     document.body.style.background = e.target.value;
     localStorage.setItem('attest-bg', e.target.value);
