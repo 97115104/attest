@@ -39,7 +39,12 @@ function serveStatic(res, filePath) {
   const mime = MIME[ext] || 'application/octet-stream';
   try {
     const data = fs.readFileSync(filePath);
-    res.writeHead(200, { 'Content-Type': mime });
+    const etag = '"' + crypto.createHash('md5').update(data).digest('hex') + '"';
+    res.writeHead(200, {
+      'Content-Type': mime,
+      'Cache-Control': 'no-cache',
+      'ETag': etag,
+    });
     res.end(data);
   } catch {
     serve404(res);
