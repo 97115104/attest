@@ -26,7 +26,7 @@ export default async function handler(req, res) {
     }
     
     // Redirect to the verify page with the data parameter
-    const verifyUrl = `https://attest.ink/verify/?data=${base64Match[1]}`;
+    const verifyUrl = `https://attest.97115104.com/verify/?data=${base64Match[1]}`;
     res.redirect(302, verifyUrl);
   } catch (error) {
     console.error('Error retrieving URL:', error);

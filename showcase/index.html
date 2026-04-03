@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Badges - attest.ink</title>
+    SKIP_TITLE
     <meta name="description" content="Complete gallery of AI attestation badges and integration examples">
     <link rel="icon" type="image/svg+xml" href="/assets/logo/favicon.svg">
     <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
@@ -507,8 +507,8 @@
         <nav>
             <div class="nav-inner">
                 <a href="/" class="logo">
-                    <img src="/assets/logo/circular-2-ai.svg" alt="attest.ink logo">
-                    <span>attest.ink</span>
+                    <img src="/assets/logo/circular-2-ai.svg" alt="attest logo">
+                    <span>attest</span>
                 </a>
                 <ul>
                     <li><a href="/create/">Create</a></li>
@@ -521,7 +521,7 @@
                             <a href="/examples/">Examples</a>
                             <a href="/developers/">Developer Docs</a>
                             <a href="/faq.html">FAQ</a>
-                            <a href="https://github.com/statusdothealth/attest.ink" target="_blank">GitHub</a>
+                            <a href="https://github.com/97115104/attest" target="_blank">GitHub</a>
                         </div>
                     </li>
                 </ul>
@@ -677,8 +677,8 @@
                             </a>
                         </p>
                         <pre class="code-example" style="margin-top: 16px;"><code>&lt;!-- Add this to your HTML --&gt;
-&lt;a href="https://attest.ink/verify/?data=..." target="_blank"&gt;
-  &lt;img src="https://attest.ink/assets/badges/chatgpt-generated.svg" alt="AI Generated" width="120" height="30" /&gt;
+&lt;a href="https://attest.97115104.com/verify/?data=..." target="_blank"&gt;
+  &lt;img src="https://attest.97115104.com/assets/badges/chatgpt-generated.svg" alt="AI Generated" width="120" height="30" /&gt;
 &lt;/a&gt;</code></pre>
                     </div>
                 </div>
@@ -846,7 +846,7 @@
                 <div style="margin-top: 24px; padding: 16px; background: var(--bg-panel); border: 2px solid var(--border-color);">
                     <h4>How to Create Your README Badge</h4>
                     <ol>
-                        <li><strong>Create your attestation</strong> at <a href="/create/">attest.ink/create</a></li>
+                        <li><strong>Create your attestation</strong> at <a href="/create/">attest.97115104.com/create</a></li>
                         <li><strong>Copy the verification URL</strong> from the result page</li>
                         <li><strong>Choose a badge style</strong> from above</li>
                         <li><strong>Replace YOUR_VERIFY_URL</strong> with your actual verification URL</li>
@@ -889,8 +889,8 @@
                     <h3>Basic HTML Integration</h3>
                     <p>Add an attestation badge to any webpage with a simple link:</p>
                     <pre class="code-example"><code>&lt;!-- Direct badge link --&gt;
-&lt;a href="https://attest.ink/verify/?data=eyJ2ZXJzaW9uIjoiMS4wIi..." target="_blank"&gt;
-    &lt;img src="https://attest.ink/badge/gpt-4.svg" alt="AI Generated with GPT-4"&gt;
+&lt;a href="https://attest.97115104.com/verify/?data=eyJ2ZXJzaW9uIjoiMS4wIi..." target="_blank"&gt;
+    &lt;img src="https://attest.97115104.com/badge/gpt-4.svg" alt="AI Generated with GPT-4"&gt;
 &lt;/a&gt;</code></pre>
                     <div class="example-preview">
                         <p>This content was created with AI assistance.</p>
@@ -905,7 +905,7 @@
 
 This documentation was created with AI assistance.
 
-[![AI Generated](https://attest.ink/badge/claude-3-opus.svg)](https://attest.ink/verify/?data=...)</code></pre>
+[![AI Generated](https://attest.97115104.com/badge/claude-3-opus.svg)](https://attest.97115104.com/verify/?data=...)</code></pre>
                 </div>
 
                 <div class="integration-example">
@@ -913,11 +913,11 @@ This documentation was created with AI assistance.
                     <p>For academic papers and technical documents:</p>
                     <pre class="code-example"><code>\section{AI Attestation}
 \begin{center}
-\fbox{\small\texttt{AI-ASSISTED} $\cdot$ \texttt{attest.ink/verify/?data=eyJ2ZXJzaW9uIi...}}
+\fbox{\small\texttt{AI-ASSISTED} $\cdot$ \texttt{attest.97115104.com/verify/?data=eyJ2ZXJzaW9uIi...}}
 \end{center}
 
 % Or as a footnote
-\footnote{This document was created with AI assistance. Verification: \url{https://attest.ink/verify/?data=...}}</code></pre>
+\footnote{This document was created with AI assistance. Verification: \url{https://attest.97115104.com/verify/?data=...}}</code></pre>
                 </div>
 
                 <div class="integration-example">
@@ -925,7 +925,7 @@ This documentation was created with AI assistance.
                     <p>Load badges dynamically using our JavaScript API:</p>
                     <pre class="code-example"><code>&lt;div class="ai-attest-badge" data-attestation-url="https://example.com/attestation.json"&gt;&lt;/div&gt;
 
-&lt;script src="https://attest.ink/static/badge-renderer.js"&gt;&lt;/script&gt;</code></pre>
+&lt;script src="https://attest.97115104.com/static/badge-renderer.js"&gt;&lt;/script&gt;</code></pre>
                 </div>
 
                 <div class="integration-example">
@@ -937,7 +937,7 @@ document.getElementById('badge-container').innerHTML = badge;
 
 // Or use the badge URL helper
 const badgeUrl = AttestInk.getBadgeUrl('claude-3-opus');
-// Returns: https://attest.ink/assets/badges/claude-3-opus.svg</code></pre>
+// Returns: https://attest.97115104.com/assets/badges/claude-3-opus.svg</code></pre>
                 </div>
             </div>
 
@@ -993,10 +993,10 @@ const badgeUrl = AttestInk.getBadgeUrl('claude-3-opus');
                 <div class="section">
                     <h3>Direct SVG URLs</h3>
                     <p>Access any badge directly via URL:</p>
-                    <pre class="code-example"><code>https://attest.ink/badge/{model-id}.svg
-https://attest.ink/badge/gpt-4.svg
-https://attest.ink/badge/claude-3-opus.svg
-https://attest.ink/badge/custom.svg?text=Your+Model</code></pre>
+                    <pre class="code-example"><code>https://attest.97115104.com/badge/{model-id}.svg
+https://attest.97115104.com/badge/gpt-4.svg
+https://attest.97115104.com/badge/claude-3-opus.svg
+https://attest.97115104.com/badge/custom.svg?text=Your+Model</code></pre>
                 </div>
 
                 <div class="section">
@@ -1057,7 +1057,7 @@ https://attest.ink/badge/custom.svg?text=Your+Model</code></pre>
                     <p>
                         Always link badges to their verification page so users can verify the attestation:
                     </p>
-                    <pre class="code-example"><code>&lt;a href="https://attest.ink/verify/?data=..." target="_blank"&gt;
+                    <pre class="code-example"><code>&lt;a href="https://attest.97115104.com/verify/?data=..." target="_blank"&gt;
     &lt;img src="badge.svg" alt="AI Generated"&gt;
 &lt;/a&gt;</code></pre>
                 </div>
@@ -1065,7 +1065,7 @@ https://attest.ink/badge/custom.svg?text=Your+Model</code></pre>
 
             <div class="text-center" style="margin: 40px 0;">
                 <a href="/create/" class="btn">Create Your Own Attestation</a>
-                <a href="https://github.com/statusdothealth/attest.ink" class="btn btn-secondary" target="_blank">View Source</a>
+                <a href="https://github.com/97115104/attest" class="btn btn-secondary" target="_blank">View Source</a>
             </div>
         </main>
 

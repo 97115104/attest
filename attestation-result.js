@@ -26,11 +26,11 @@ async function generateAttestationDisplay(attestation) {
     const badgeStyle = attestation.badge_style || 'default';
     
     // Create short URL using just the ID
-    const shortVerifyUrl = `https://attest.ink/verify/?id=${attestation.id}`;
+    const shortVerifyUrl = `https://attest.97115104.com/verify/?id=${attestation.id}`;
     
     // Also create the full data URL for embedding (self-contained)
     const attestationB64 = btoa(JSON.stringify(attestation));
-    const fullDataUrl = `https://attest.ink/verify/?data=${attestationB64}`;
+    const fullDataUrl = `https://attest.97115104.com/verify/?data=${attestationB64}`;
     
     // Create a proper data URL for the API
     const dataUrlForApi = `data:application/json;base64,${attestationB64}`;
@@ -41,9 +41,9 @@ async function generateAttestationDisplay(attestation) {
     
     console.log('Current hostname:', window.location.hostname);
     
-    // Check if we're on Vercel, attest.ink, or localhost (for development)
+    // Check if we're on Vercel, attest.97115104.com, or localhost (for development)
     if (window.location.hostname.includes('vercel.app') || 
-        window.location.hostname.includes('attest.ink') || 
+        window.location.hostname.includes('attest.97115104.com') || 
         window.location.hostname === 'localhost') {
         try {
             // Check localStorage for email or API key
@@ -219,7 +219,7 @@ async function generateAttestationDisplay(attestation) {
         linkCodeEl.textContent = shortUrl;
     } else if (requiresPayment) {
         // User needs to pay - show grayed out preview
-        linkCodeEl.textContent = 'https://attest.ink/s/abc123';
+        linkCodeEl.textContent = 'https://attest.97115104.com/s/abc123';
         linkCodeEl.style.opacity = '0.5';
         linkCodeEl.style.filter = 'blur(1px)';
         linkCodeEl.style.pointerEvents = 'none';
@@ -251,7 +251,7 @@ async function generateAttestationDisplay(attestation) {
         
         // Use short URL if available, otherwise full data URL
         const verificationUrl = shortUrl || fullDataUrl;
-        const urlText = shortUrl ? shortUrl : 'the attest.ink verification URL';
+        const urlText = shortUrl ? shortUrl : 'the attest verification URL';
         
         // Add note about short URLs if user has paid
         if (shortUrl) {
@@ -325,7 +325,7 @@ This ${attestation.document_type === 'latex' ? 'paper' : 'work'} was ${attestati
         
         // Generate embed code - use short URL if available, otherwise full data URL
         const embedUrl = shortUrl || fullDataUrl;
-        const embedCode = `<!-- attest.ink AI Badge -->
+        const embedCode = `<!-- attest AI Badge -->
 <a href="${embedUrl}" target="_blank" style="text-decoration: none;">
     ${badgeHtml}
 </a>`;
@@ -337,7 +337,7 @@ This ${attestation.document_type === 'latex' ? 'paper' : 'work'} was ${attestati
     dataUrlEl.textContent = fullDataUrl;
     
     // Generate curl command for API
-    const curlCommand = `curl -s "https://attest.ink/api/create.html?content_name=${encodeURIComponent(attestation.content_name)}&model=${encodeURIComponent(attestation.model)}&role=${encodeURIComponent(attestation.role)}&document_type=${encodeURIComponent(attestation.document_type)}&author=${encodeURIComponent(attestation.author || 'Anonymous')}&output=curl"`;
+    const curlCommand = `curl -s "https://attest.97115104.com/api/create.html?content_name=${encodeURIComponent(attestation.content_name)}&model=${encodeURIComponent(attestation.model)}&role=${encodeURIComponent(attestation.role)}&document_type=${encodeURIComponent(attestation.document_type)}&author=${encodeURIComponent(attestation.author || 'Anonymous')}&output=curl"`;
     document.getElementById('api-curl-command').textContent = curlCommand;
 }
 
@@ -524,7 +524,7 @@ async function showEmbeddedCheckout(clientSecret, email, attestation) {
     `;
     header.innerHTML = `
         <div style="display: flex; align-items: center; gap: 10px;">
-            <img src="/assets/logo/circular-2-ai.svg" alt="attest.ink" style="width: 32px; height: 32px;">
+            <img src="/assets/logo/circular-2-ai.svg" alt="attest" style="width: 32px; height: 32px;">
             <span style="font-size: 18px; font-weight: 600;">Complete Your Purchase</span>
         </div>
         <button id="close-checkout" style="

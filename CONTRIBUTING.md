@@ -1,6 +1,6 @@
-# Contributing to attest.ink
+# Contributing to attest
 
-Thank you for your interest in contributing to attest.ink! We welcome contributions from the community and are excited to work with you.
+Thank you for your interest in contributing to attest! We welcome contributions from the community and are excited to work with you.
 
 ## Table of Contents
 - [Code of Conduct](#code-of-conduct)
@@ -71,8 +71,8 @@ Enhancement suggestions are welcome! Please provide:
 
 ```bash
 # Clone the repository
-git clone https://github.com/statusdothealth/attest.ink.git
-cd attest.ink
+git clone https://github.com/97115104/attest.git
+cd attest
 
 # Start a local server
 python -m http.server 8000
@@ -95,8 +95,8 @@ SMTP_HOST=smtp.gmail.com
 SMTP_PORT=587
 SMTP_USER=your-email@gmail.com
 SMTP_PASS=your-app-password
-EMAIL_FROM=noreply@attest.ink
-EMAIL_NAME=attest.ink
+EMAIL_FROM=noreply@attest.97115104.com
+EMAIL_NAME=attest
 
 # Payment Processing (optional)
 STRIPE_SECRET_KEY=sk_test_...
@@ -183,7 +183,7 @@ function makeAttest(n) {
 ### File Organization
 
 ```
-attest.ink/
+attest/
 ├── index.html          # Homepage
 ├── create/            # Feature directories
 ├── verify/
@@ -269,7 +269,7 @@ We plan to add automated testing. Contributions welcome!
 
 - **GitHub Issues**: For bugs and feature requests
 - **Discussions**: For questions and ideas
-- **Email**: info@attest.ink for general inquiries
+- **Email**: info@attest.97115104.com for general inquiries
 
 ### Ways to Contribute
 
@@ -297,4 +297,4 @@ Feel free to open an issue or reach out to the maintainers. We're here to help!
 
 ---
 
-Thank you for contributing to attest.ink! 🎉
+Thank you for contributing to attest! 🎉

@@ -1,4 +1,4 @@
-# attest.ink Features & Changelog
+# attest Features & Changelog
 
 ## Latest Features (August 2025)
 
@@ -128,8 +128,8 @@ SMTP_HOST=smtp.gmail.com
 SMTP_PORT=587
 SMTP_USER=your-email@gmail.com
 SMTP_PASS=your-app-password
-EMAIL_FROM=noreply@attest.ink
-EMAIL_NAME=attest.ink
+EMAIL_FROM=noreply@attest.97115104.com
+EMAIL_NAME=attest
 
 # Payment Processing
 STRIPE_SECRET_KEY=sk_test_...
@@ -147,10 +147,10 @@ REDIS_URL=redis://...
 
 ## Support
 
-- **Documentation**: https://attest.ink/docs
-- **GitHub Issues**: https://github.com/statusdothealth/attest.ink/issues
-- **Email**: support@attest.ink
-- **API Status**: https://status.attest.ink
+- **Documentation**: https://attest.97115104.com/docs
+- **GitHub Issues**: https://github.com/97115104/attest/issues
+- **Email**: support@attest.97115104.com
+- **API Status**: https://status.attest.97115104.com
 
 ---
 

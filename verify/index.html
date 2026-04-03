@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Verify Attestation - attest.ink</title>
+    SKIP_TITLE
     <meta name="description" content="Verify AI content attestations">
     <link rel="icon" type="image/svg+xml" href="/assets/logo/favicon.svg">
     <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
@@ -40,8 +40,8 @@
         <nav>
             <div class="nav-inner">
                 <a href="/" class="logo">
-                    <img src="/assets/logo/circular-2-ai.svg" alt="attest.ink logo">
-                    <span>attest.ink</span>
+                    <img src="/assets/logo/circular-2-ai.svg" alt="attest logo">
+                    <span>attest</span>
                 </a>
                 <ul>
                     <li><a href="/create/">Create</a></li>
@@ -54,7 +54,7 @@
                             <a href="/examples/">Examples</a>
                             <a href="/developers/">Developer Docs</a>
                             <a href="/faq.html">FAQ</a>
-                            <a href="https://github.com/statusdothealth/attest.ink" target="_blank">GitHub</a>
+                            <a href="https://github.com/97115104/attest" target="_blank">GitHub</a>
                         </div>
                     </li>
                 </ul>
@@ -182,7 +182,7 @@
                 if (jsonInput) {
                     attestation = JSON.parse(jsonInput);
                 } else if (urlInput) {
-                    // Check if it's a short URL (e.g., https://attest.ink/s/abc123)
+                    // Check if it's a short URL (e.g., https://attest.97115104.com/s/abc123)
                     const shortUrlPattern = /https?:\/\/(?:.*\.)?attest\.ink\/s\/([a-z0-9]+)/i;
                     const shortMatch = urlInput.match(shortUrlPattern);
                     
@@ -208,7 +208,7 @@
                             throw new Error('No data URL in response');
                         }
                     } else if (urlInput.includes('/verify/?id=') || urlInput.includes('/verify?id=')) {
-                        // Check if it's an attest.ink verify URL with ID
+                        // Check if it's an attest verify URL with ID
                         const attestInkPattern = /https?:\/\/attest\.ink\/verify\/?\?id=([^&]+)/;
                         const match = urlInput.match(attestInkPattern);
                         

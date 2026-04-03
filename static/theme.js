@@ -1,5 +1,5 @@
 /**
- * attest.ink Theme Manager
+ * attest Theme Manager
  * Handles light/dark mode with keyboard shortcuts and auto-detection
  */
 

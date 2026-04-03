@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Documentation - attest.ink AI Attribution Badges</title>
-    <meta name="description" content="Complete documentation for implementing attest.ink AI attribution badges">
+    SKIP_TITLE
+    <meta name="description" content="Complete documentation for implementing attest AI attribution badges">
     
     <!-- Modern Design System -->
     <link rel="stylesheet" href="css/modern-design-system.css?v=6">
@@ -30,7 +30,7 @@
                     <circle cx="12" cy="12" r="2" fill="currentColor"/>
                     <path d="M12 6V8M12 16V18M18 12H16M8 12H6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
                 </svg>
-                <span>attest.ink</span>
+                <span>attest</span>
             </a>
             
             <!-- Navigation links -->
@@ -41,7 +41,7 @@
                 <li><a href="/examples/">Examples</a></li>
                 <li><a href="demo.html">Demo</a></li>
                 <li><a href="docs.html" class="active">Docs</a></li>
-                <li><a href="https://github.com/statusdothealth/attest.ink" class="nav-github">GitHub</a></li>
+                <li><a href="https://github.com/97115104/attest" class="nav-github">GitHub</a></li>
             </ul>
             
             <!-- Theme Toggle (moved inside navbar) -->
@@ -132,14 +132,14 @@
         <main class="docs-content">
             <!-- Introduction -->
             <section id="introduction" class="docs-section">
-                <h1>attest.ink Documentation</h1>
+                <h1>attest Documentation</h1>
                 <p class="lead">
-                    Welcome to the attest.ink documentation. Learn how to implement beautiful, customizable AI attribution badges in your projects.
+                    Welcome to the attest documentation. Learn how to implement beautiful, customizable AI attribution badges in your projects.
                 </p>
                 
                 <div class="info-box">
-                    <h3>What is attest.ink?</h3>
-                    <p>attest.ink provides standardized badges for transparent AI attribution. In an era where AI-assisted content creation is becoming ubiquitous, these badges help maintain transparency and build trust with your audience.</p>
+                    <h3>What is attest?</h3>
+                    <p>attest provides standardized badges for transparent AI attribution. In an era where AI-assisted content creation is becoming ubiquitous, these badges help maintain transparency and build trust with your audience.</p>
                 </div>
             </section>
 
@@ -150,12 +150,12 @@
                 
                 <div class="code-example">
                     <h3>1. Include the CSS</h3>
-                    <pre><code>&lt;link rel="stylesheet" href="https://attest.ink/css/badge-variants.css?v=6"&gt;</code></pre>
+                    <pre><code>&lt;link rel="stylesheet" href="https://attest.97115104.com/css/badge-variants.css?v=6"&gt;</code></pre>
                 </div>
                 
                 <div class="code-example">
                     <h3>2. Add a Badge</h3>
-                    <pre><code>&lt;a href="https://attest.ink" class="ai-badge ai-badge-medium ai-badge-glass"&gt;
+                    <pre><code>&lt;a href="https://attest.97115104.com" class="ai-badge ai-badge-medium ai-badge-glass"&gt;
     &lt;svg class="ai-logo" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"&gt;
         &lt;circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="1.5"/&gt;
         &lt;path d="M8 12C8 9.79086 9.79086 8 12 8C14.2091 8 16 9.79086 16 12C16 14.2091 14.2091 16 12 16" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/&gt;
@@ -168,7 +168,7 @@
                 
                 <div class="demo-preview">
                     <h3>Result:</h3>
-                    <a href="https://attest.ink" class="ai-badge ai-badge-medium ai-badge-glass">
+                    <a href="https://attest.97115104.com" class="ai-badge ai-badge-medium ai-badge-glass">
                         <svg class="ai-logo" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="1.5"/>
                             <path d="M8 12C8 9.79086 9.79086 8 12 8C14.2091 8 16 9.79086 16 12C16 14.2091 14.2091 16 12 16" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
@@ -188,10 +188,10 @@
                 <p>The easiest way to get started is by including our CSS files via CDN:</p>
                 
                 <pre><code>&lt;!-- Modern badge system --&gt;
-&lt;link rel="stylesheet" href="https://attest.ink/css/badge-variants.css?v=6"&gt;
+&lt;link rel="stylesheet" href="https://attest.97115104.com/css/badge-variants.css?v=6"&gt;
 
 &lt;!-- Optional: Backward compatibility for legacy badges --&gt;
-&lt;link rel="stylesheet" href="https://attest.ink/css/badge-compatibility.css?v=6"&gt;</code></pre>
+&lt;link rel="stylesheet" href="https://attest.97115104.com/css/badge-compatibility.css?v=6"&gt;</code></pre>
                 
                 <h3>Download</h3>
                 <p>You can also download the CSS files and host them yourself:</p>
@@ -202,7 +202,7 @@
                 </div>
                 
                 <h3>NPM (Coming Soon)</h3>
-                <pre><code>npm install @attest-ink/badges</code></pre>
+                <pre><code>npm install @attest/badges</code></pre>
             </section>
 
             <!-- Basic Usage -->
@@ -212,7 +212,7 @@
                 <h3>Option 1: Simple PNG Badges</h3>
                 <p>For less technical users or quick implementation, use our pre-made PNG badges:</p>
                 
-                <pre><code>&lt;img src="https://attest.ink/badges/ai-glass-medium.png" 
+                <pre><code>&lt;img src="https://attest.97115104.com/badges/ai-glass-medium.png" 
      alt="Made with AI" 
      width="120" 
      height="32"&gt;</code></pre>
@@ -222,7 +222,7 @@
                 <h3>Option 2: HTML/CSS Badges</h3>
                 <p>For full customization and interactivity, use our CSS-based badges:</p>
                 
-                <pre><code>&lt;a href="https://attest.ink" class="ai-badge [size] [style] [platform]"&gt;
+                <pre><code>&lt;a href="https://attest.97115104.com" class="ai-badge [size] [style] [platform]"&gt;
     &lt;svg class="ai-logo"&gt;...&lt;/svg&gt;
     &lt;span&gt;Badge Text&lt;/span&gt;
 &lt;/a&gt;</code></pre>
@@ -525,7 +525,7 @@
                 <h2>JavaScript API</h2>
                 <p>For dynamic badge management, use our JavaScript API:</p>
                 
-                <pre><code>&lt;script src="https://attest.ink/js/attest.js"&gt;&lt;/script&gt;
+                <pre><code>&lt;script src="https://attest.97115104.com/js/attest.js"&gt;&lt;/script&gt;
 &lt;script&gt;
 // Add badge to element
 AttestInk.addBadge('ai', '#my-content', {
@@ -551,7 +551,7 @@ AttestInk.updateBadge('#my-content', {
                 <h2>Framework Integration</h2>
                 
                 <h3>React</h3>
-                <pre><code>import { AIBadge } from '@attest-ink/react';
+                <pre><code>import { AIBadge } from '@attest/react';
 
 function Article() {
     return (
@@ -583,7 +583,7 @@ function Article() {
 &lt;/template&gt;
 
 &lt;script&gt;
-import { AIBadge } from '@attest-ink/vue';
+import { AIBadge } from '@attest/vue';
 
 export default {
     components: { AIBadge }
@@ -610,7 +610,7 @@ export default {
     &lt;/div&gt;
     
     &lt;footer&gt;
-        &lt;a href="https://attest.ink" class="ai-badge ai-badge-small ai-badge-glass"&gt;
+        &lt;a href="https://attest.97115104.com" class="ai-badge ai-badge-small ai-badge-glass"&gt;
             &lt;svg class="ai-logo"&gt;...&lt;/svg&gt;
             &lt;span&gt;AI Assisted&lt;/span&gt;
         &lt;/a&gt;
@@ -625,7 +625,7 @@ export default {
                 
                 <pre><code>&lt;figure class="ai-image"&gt;
     &lt;img src="generated-image.jpg" alt="AI Generated Landscape"&gt;
-    &lt;a href="https://attest.ink" class="ai-badge ai-badge-small ai-badge-solid ai-badge-dalle ai-badge-fixed-top-right"&gt;
+    &lt;a href="https://attest.97115104.com" class="ai-badge ai-badge-small ai-badge-solid ai-badge-dalle ai-badge-fixed-top-right"&gt;
         &lt;svg class="ai-logo"&gt;...&lt;/svg&gt;
         &lt;span&gt;DALL-E&lt;/span&gt;
     &lt;/a&gt;
@@ -639,12 +639,12 @@ export default {
                 <p>Upgrading from legacy badges? Follow this guide:</p>
                 
                 <h3>Old Implementation</h3>
-                <pre><code>&lt;a href="https://attest.ink" class="badge-link"&gt;
-    &lt;img src="https://attest.ink/assets/badges/ai-generated.svg" width="120" height="30"&gt;
+                <pre><code>&lt;a href="https://attest.97115104.com" class="badge-link"&gt;
+    &lt;img src="https://attest.97115104.com/assets/badges/ai-generated.svg" width="120" height="30"&gt;
 &lt;/a&gt;</code></pre>
                 
                 <h3>New Implementation</h3>
-                <pre><code>&lt;a href="https://attest.ink" class="ai-badge ai-badge-medium ai-badge-glass"&gt;
+                <pre><code>&lt;a href="https://attest.97115104.com" class="ai-badge ai-badge-medium ai-badge-glass"&gt;
     &lt;svg class="ai-logo"&gt;...&lt;/svg&gt;
     &lt;span&gt;Made with AI&lt;/span&gt;
 &lt;/a&gt;</code></pre>
@@ -679,10 +679,10 @@ export default {
             <!-- Contributing -->
             <section id="contributing" class="docs-section">
                 <h2>Contributing</h2>
-                <p>We welcome contributions to attest.ink! Here's how you can help:</p>
+                <p>We welcome contributions to attest! Here's how you can help:</p>
                 
                 <h3>Report Issues</h3>
-                <p>Found a bug? <a href="https://github.com/statusdothealth/attest.ink/issues">Open an issue</a> on GitHub.</p>
+                <p>Found a bug? <a href="https://github.com/97115104/attest/issues">Open an issue</a> on GitHub.</p>
                 
                 <h3>Submit Pull Requests</h3>
                 <ol>
@@ -693,8 +693,8 @@ export default {
                 </ol>
                 
                 <h3>Development Setup</h3>
-                <pre><code>git clone https://github.com/statusdothealth/attest.ink.git
-cd attest.ink
+                <pre><code>git clone https://github.com/97115104/attest.git
+cd attest
 # Open index.html in your browser</code></pre>
             </section>
         </main>

@@ -159,17 +159,17 @@ jobs:
         run: |
           # Test key endpoints
           urls=(
-            "https://attest.ink/"
-            "https://attest.ink/create/"
-            "https://attest.ink/verify/"
-            "https://attest.ink/showcase/"
-            "https://attest.ink/examples/"
-            "https://attest.ink/developers/"
-            "https://attest.ink/protocol/"
-            "https://attest.ink/faq.html"
-            "https://attest.ink/static/badge-renderer.js"
-            "https://attest.ink/static/attestation-tool.js"
-            "https://attest.ink/static/ai-models.js"
+            "https://attest.97115104.com/"
+            "https://attest.97115104.com/create/"
+            "https://attest.97115104.com/verify/"
+            "https://attest.97115104.com/showcase/"
+            "https://attest.97115104.com/examples/"
+            "https://attest.97115104.com/developers/"
+            "https://attest.97115104.com/protocol/"
+            "https://attest.97115104.com/faq.html"
+            "https://attest.97115104.com/static/badge-renderer.js"
+            "https://attest.97115104.com/static/attestation-tool.js"
+            "https://attest.97115104.com/static/ai-models.js"
           )
           
           for url in "${urls[@]}"; do

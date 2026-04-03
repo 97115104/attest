@@ -1,5 +1,5 @@
 /**
- * attest.ink Badge Renderer
+ * attest Badge Renderer
  * Displays attestation badges that link to verification
  */
 
@@ -78,7 +78,7 @@
             const attestation = await response.json();
             
             // Create verification URL
-            const verifyUrl = `https://attest.ink/verify/?url=${encodeURIComponent(attestationUrl)}`;
+            const verifyUrl = `https://attest.97115104.com/verify/?url=${encodeURIComponent(attestationUrl)}`;
             
             // Create badge SVG
             const svg = createBadgeSVG(attestation.model, attestation.role);
@@ -136,7 +136,7 @@
         renderAllBadges: renderAllBadges,
         createBadgeSVG: createBadgeSVG,
         getBadgeUrl: function(model) {
-            return `https://attest.ink/static/badges/${model}.svg`;
+            return `https://attest.97115104.com/static/badges/${model}.svg`;
         }
     };
 })();

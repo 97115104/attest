@@ -43,7 +43,7 @@ export async function sendApiKeyEmail(email, apiKey, paymentDetails = {}) {
     return false;
   }
   
-  const fromName = process.env.EMAIL_NAME || 'attest.ink';
+  const fromName = process.env.EMAIL_NAME || 'attest';
   const fromEmail = process.env.EMAIL_FROM || process.env.SMTP_USER;
   
   // Format payment details
@@ -63,12 +63,12 @@ export async function sendApiKeyEmail(email, apiKey, paymentDetails = {}) {
   const mailOptions = {
     from: `${fromName} <${fromEmail}>`,
     to: email,
-    subject: `attest.ink Receipt - Order ${invoiceNumber}`,
+    subject: `attest Receipt - Order ${invoiceNumber}`,
     html: `
       <div style="font-family: system-ui, -apple-system, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #ffffff;">
         <!-- Header with Logo -->
         <div style="text-align: center; margin-bottom: 40px; padding-bottom: 30px; border-bottom: 2px solid #e5e7eb;">
-          <img src="https://attest.ink/assets/logo/logo-256.png" alt="attest.ink" width="100" height="100" style="width: 100px; height: 100px; margin-bottom: 20px; display: block; margin-left: auto; margin-right: auto;">
+          <img src="https://attest.97115104.com/assets/logo/logo-256.png" alt="attest" width="100" height="100" style="width: 100px; height: 100px; margin-bottom: 20px; display: block; margin-left: auto; margin-right: auto;">
           <h1 style="margin: 0; color: #111827; font-size: 28px;">Thank you for your purchase!</h1>
         </div>
         
@@ -94,7 +94,7 @@ export async function sendApiKeyEmail(email, apiKey, paymentDetails = {}) {
           <div style="border-top: 1px solid #e5e7eb; border-bottom: 1px solid #e5e7eb; padding: 20px 0; margin: 20px 0;">
             <table style="width: 100%; border-collapse: collapse;">
               <tr>
-                <td style="padding: 8px 0; color: #111827;">attest.ink lifetime short URLs</td>
+                <td style="padding: 8px 0; color: #111827;">attest lifetime short URLs</td>
                 <td style="padding: 8px 0; text-align: right; color: #111827;">$${subtotal.toFixed(2)}</td>
               </tr>
               ${tax > 0 ? `
@@ -125,7 +125,7 @@ export async function sendApiKeyEmail(email, apiKey, paymentDetails = {}) {
             ${apiKey}
           </code>
           <p style="margin-bottom: 0; margin-top: 15px; color: #065f46; font-size: 14px;">
-            Keep this key secure. It provides lifetime access to attest.ink's premium features.
+            Keep this key secure. It provides lifetime access to attest's premium features.
           </p>
         </div>
         
@@ -143,12 +143,12 @@ export async function sendApiKeyEmail(email, apiKey, paymentDetails = {}) {
         <!-- Footer -->
         <div style="margin-top: 50px; padding-top: 30px; border-top: 2px solid #e5e7eb; text-align: center; color: #6b7280; font-size: 14px;">
           <p style="margin-bottom: 10px;">
-            <strong>attest.ink</strong> - Attestation Infrastructure for AI Content
+            <strong>attest</strong> - Attestation Infrastructure for AI Content
           </p>
           <p style="margin-bottom: 20px;">
-            <a href="https://attest.ink" style="color: #3b82f6; text-decoration: none;">Website</a> • 
-            <a href="https://github.com/statusdothealth/attest.ink" style="color: #3b82f6; text-decoration: none;">GitHub</a> • 
-            <a href="mailto:support@attest.ink" style="color: #3b82f6; text-decoration: none;">Support</a>
+            <a href="https://attest.97115104.com" style="color: #3b82f6; text-decoration: none;">Website</a> • 
+            <a href="https://github.com/97115104/attest" style="color: #3b82f6; text-decoration: none;">GitHub</a> • 
+            <a href="mailto:support@attest.97115104.com" style="color: #3b82f6; text-decoration: none;">Support</a>
           </p>
           <p style="color: #9ca3af; font-size: 12px;">
             This is a receipt for your records. No action is required.
@@ -190,7 +190,7 @@ export async function sendPaymentNotification(customerEmail, apiKey, amount) {
     return false;
   }
   
-  const fromName = process.env.EMAIL_NAME || 'attest.ink';
+  const fromName = process.env.EMAIL_NAME || 'attest';
   const fromEmail = process.env.EMAIL_FROM || process.env.SMTP_USER;
   
   const founderEmail = process.env.FOUNDER_EMAIL || 'founder@status.health';
@@ -199,11 +199,11 @@ export async function sendPaymentNotification(customerEmail, apiKey, amount) {
   const mailOptions = {
     from: `${fromName} <${fromEmail}>`,
     to: founderEmail,
-    subject: 'New attest.ink Payment Received - $' + amount,
+    subject: 'New attest Payment Received - $' + amount,
     html: `
       <div style="font-family: system-ui, -apple-system, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
         <div style="text-align: center; margin-bottom: 30px;">
-          <img src="https://attest.ink/assets/logo/logo-256.png" alt="attest.ink" width="80" height="80" style="width: 80px; height: 80px;">
+          <img src="https://attest.97115104.com/assets/logo/logo-256.png" alt="attest" width="80" height="80" style="width: 80px; height: 80px;">
           <h1 style="margin: 20px 0; color: #111827;">Payment Received!</h1>
         </div>
         
@@ -218,7 +218,7 @@ export async function sendPaymentNotification(customerEmail, apiKey, amount) {
         <p style="color: #4b5563;">The customer now has lifetime access to create permanent short URLs.</p>
         
         <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #e5e7eb; text-align: center; color: #6b7280; font-size: 14px;">
-          <p>attest.ink payment notification</p>
+          <p>attest payment notification</p>
         </div>
       </div>
     `

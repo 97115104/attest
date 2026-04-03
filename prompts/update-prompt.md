@@ -2,13 +2,13 @@ Absolutely—here is a **first-principles, ground-up prompt/specification** for 
 
 ---
 
-## **Prompt: Build the Next-Gen attest.ink — Automated, Open, Backward-Compatible AI Content Attestation Protocol and Web App**
+## **Prompt: Build the Next-Gen attest — Automated, Open, Backward-Compatible AI Content Attestation Protocol and Web App**
 
 ---
 
 ### **Overview**
 
-Design and implement a new version of [attest.ink](https://attest.ink/) as a fully open-source, static, web-based protocol and toolset for AI content attestation. The new system must:
+Design and implement a new version of [attest.97115104.com](https://attest.97115104.com/) as a fully open-source, static, web-based protocol and toolset for AI content attestation. The new system must:
 
 * **Allow full automation:** Any website, blog, or CI/CD pipeline can generate and include AI attestation badges programmatically—no manual site visit required.
 * **Be 100% static and free to host:** All app logic, badges, and attestation records must be statically served via GitHub Pages (or equivalent)—no servers or paid infrastructure.
@@ -28,7 +28,7 @@ Design and implement a new version of [attest.ink](https://attest.ink/) as a ful
   * Compute SHA-256 hashes of content and prompt (never uploading sensitive data).
   * Output a JSON attestation file conforming to a published schema (see below).
   * Optionally sign the attestation using a local PGP key, Ethereum wallet (EIP-191), or Ed25519 key.
-  * Allow self-hosting of attestation JSON files or automatic PR to the main attest.ink repo.
+  * Allow self-hosting of attestation JSON files or automatic PR to the main attest repo.
   * Generate badge embed snippets (HTML/JS or static image) referencing the attestation.
 
 #### **2. Programmable Badge Rendering**
@@ -133,13 +133,13 @@ Design and implement a new version of [attest.ink](https://attest.ink/) as a ful
 
 ```html
 <div class="ai-attest-badge" data-attestation-url="https://yourblog.com/attestations/blog-2025-07-07.json"></div>
-<script src="https://attest.ink/static/badge-renderer.js"></script>
+<script src="https://attest.97115104.com/static/badge-renderer.js"></script>
 ```
 
 **Legacy PNG badge (for backward compatibility):**
 
 ```html
-<img src="https://attest.ink/badges/ai-assisted.png" title="AI-assisted content" />
+<img src="https://attest.97115104.com/badges/ai-assisted.png" title="AI-assisted content" />
 ```
 
 ---
@@ -148,10 +148,10 @@ Design and implement a new version of [attest.ink](https://attest.ink/) as a ful
 
 ```bash
 # Generate attestation
-npx attest-ink --input post.md --model "GPT-4o" --output ./attestations/blog-2025-07-07.json
+npx attest --input post.md --model "GPT-4o" --output ./attestations/blog-2025-07-07.json
 
 # Sign attestation (optional, with private key or wallet)
-npx attest-ink sign --file ./attestations/blog-2025-07-07.json --wallet 0x...
+npx attest sign --file ./attestations/blog-2025-07-07.json --wallet 0x...
 
 # Insert badge in markdown/html (your SSG/plugin can automate this)
 ```
@@ -181,4 +181,4 @@ No lock-in, ever.**
 
 ---
 
-Store and hand this to Claude as a full, rigorous product/engineering spec for building the next generation of attest.ink. If you want it broken up by user stories, acceptance criteria, or want sample repo scaffolding and workflows included, just ask.
+Store and hand this to Claude as a full, rigorous product/engineering spec for building the next generation of attest. If you want it broken up by user stories, acceptance criteria, or want sample repo scaffolding and workflows included, just ask.

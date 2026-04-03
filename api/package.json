@@ -1,5 +1,5 @@
 {
-  "name": "attest-ink-api",
+  "name": "attest-api",
   "version": "1.0.0",
   "type": "module",
   "dependencies": {

@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CI/CD Automation Guide - attest.ink</title>
-    <meta name="description" content="Integrate attest.ink into your CI/CD pipelines for automatic AI attestation">
+    SKIP_TITLE
+    <meta name="description" content="Integrate attest into your CI/CD pipelines for automatic AI attestation">
     <link rel="icon" type="image/svg+xml" href="/assets/logo/favicon.svg">
     <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
     <link rel="icon" type="image/x-icon" href="/assets/favicon.ico">
@@ -250,8 +250,8 @@
         <nav>
             <div class="nav-inner">
                 <a href="/" class="logo">
-                    <img src="/assets/logo/circular-2-ai.svg" alt="attest.ink logo">
-                    <span>attest.ink</span>
+                    <img src="/assets/logo/circular-2-ai.svg" alt="attest logo">
+                    <span>attest</span>
                 </a>
                 <ul>
                     <li><a href="/create/">Create</a></li>
@@ -273,7 +273,7 @@
         <main>
             <section class="hero">
                 <h1>CI/CD Automation Guide</h1>
-                <p>Integrate attest.ink into your continuous integration and deployment pipelines</p>
+                <p>Integrate attest into your continuous integration and deployment pipelines</p>
             </section>
 
             <div class="guide-container">
@@ -300,7 +300,7 @@
 
                 <section id="overview">
                     <h2>Overview</h2>
-                    <p>Integrating attest.ink into your CI/CD pipeline allows you to:</p>
+                    <p>Integrating attest into your CI/CD pipeline allows you to:</p>
                     <ul>
                         <li>Automatically document AI involvement in code generation</li>
                         <li>Create attestations for every build or release</li>
@@ -315,11 +315,11 @@
                     <p>The simplest way to create an attestation in any CI/CD system:</p>
                     
                     <pre><code class="language-bash"># Basic attestation creation
-curl -s "https://attest.ink/api/create.html?content_name=MyProject&model=github-copilot&role=assisted&output=json" > attestation.json
+curl -s "https://attest.97115104.com/api/create.html?content_name=MyProject&model=github-copilot&role=assisted&output=json" > attestation.json
 
 # With content hash
 CONTENT_HASH=$(sha256sum myfile.js | cut -d' ' -f1)
-curl -s "https://attest.ink/api/create.html?content_name=myfile.js&content_hash=sha256:$CONTENT_HASH&model=gpt-4&role=generated"</code></pre>
+curl -s "https://attest.97115104.com/api/create.html?content_name=myfile.js&content_hash=sha256:$CONTENT_HASH&model=gpt-4&role=generated"</code></pre>
 
                     <div class="quick-links">
                         <a href="#github-actions" class="quick-link">
@@ -373,7 +373,7 @@ jobs:
         CONTENT=$(find . -name "*.js" -type f -exec cat {} \; | sha256sum | cut -d' ' -f1)
         
         # Create attestation
-        RESPONSE=$(curl -s "https://attest.ink/api/create.html" \
+        RESPONSE=$(curl -s "https://attest.97115104.com/api/create.html" \
           --data-urlencode "content_name=${{ github.repository }}" \
           --data-urlencode "content_hash=sha256:$CONTENT" \
           --data-urlencode "model=github-copilot" \
@@ -386,7 +386,7 @@ jobs:
         
         # Extract badge URL and add to README
         DATA_URL=$(echo "$RESPONSE" | jq -r '.dataUrl')
-        echo -e "\n\n[![AI Assisted](https://attest.ink/assets/badges/ai-assisted.svg)]($DATA_URL)" >> README.md
+        echo -e "\n\n[![AI Assisted](https://attest.97115104.com/assets/badges/ai-assisted.svg)]($DATA_URL)" >> README.md
     
     - name: Upload attestation
       uses: actions/upload-artifact@v3
@@ -431,7 +431,7 @@ create-attestation:
   script:
     # Create attestation for the entire project
     - |
-      ATTESTATION=$(curl -s -X POST "https://attest.ink/api/create.html" \
+      ATTESTATION=$(curl -s -X POST "https://attest.97115104.com/api/create.html" \
         -d "content_name=$CI_PROJECT_NAME" \
         -d "model=claude-3-opus" \
         -d "role=assisted" \
@@ -444,7 +444,7 @@ create-attestation:
     # Create badge file
     - |
       DATA_URL=$(echo "$ATTESTATION" | jq -r '.dataUrl')
-      echo "[![AI Assisted](https://attest.ink/assets/badges/ai-assisted.svg)]($DATA_URL)" > badge.md
+      echo "[![AI Assisted](https://attest.97115104.com/assets/badges/ai-assisted.svg)]($DATA_URL)" > badge.md
   
   artifacts:
     paths:
@@ -490,7 +490,7 @@ create-attestation:
                     // Create attestation
                     def response = sh(
                         script: """
-                            curl -s 'https://attest.ink/api/create.html' \
+                            curl -s 'https://attest.97115104.com/api/create.html' \
                                 --data-urlencode 'content_name=${env.JOB_NAME}' \
                                 --data-urlencode 'content_hash=sha256:${contentHash}' \
                                 --data-urlencode 'model=${env.AI_MODEL}' \
@@ -553,7 +553,7 @@ jobs:
             sudo apt-get update && sudo apt-get install -y jq
             
             # Create attestation
-            ATTESTATION=$(curl -s "https://attest.ink/api/create.html" \
+            ATTESTATION=$(curl -s "https://attest.97115104.com/api/create.html" \
               --data-urlencode "content_name=$CIRCLE_PROJECT_REPONAME" \
               --data-urlencode "model=gpt-4" \
               --data-urlencode "role=assisted" \
@@ -615,7 +615,7 @@ stages:
     steps:
     - script: |
         # Create attestation
-        RESPONSE=$(curl -s "https://attest.ink/api/create.html" \
+        RESPONSE=$(curl -s "https://attest.97115104.com/api/create.html" \
           --data-urlencode "content_name=$(Build.Repository.Name)" \
           --data-urlencode "model=github-copilot" \
           --data-urlencode "role=assisted" \
@@ -643,11 +643,11 @@ stages:
                     <p>If you have a premium API key for permanent short URLs:</p>
                     
                     <pre><code class="language-bash"># First create the attestation
-ATTESTATION=$(curl -s "https://attest.ink/api/create.html?content_name=MyProject&model=gpt-4&role=generated&output=json")
+ATTESTATION=$(curl -s "https://attest.97115104.com/api/create.html?content_name=MyProject&model=gpt-4&role=generated&output=json")
 
 # Then create a short URL
 DATA_URL=$(echo "$ATTESTATION" | jq -r '.dataUrl')
-SHORT_URL=$(curl -s -X POST "https://attest.ink/api/shorten" \
+SHORT_URL=$(curl -s -X POST "https://attest.97115104.com/api/shorten" \
   -H "Content-Type: application/json" \
   -d "{\"dataUrl\": \"$DATA_URL\", \"apiKey\": \"$ATTEST_INK_API_KEY\"}" \
   | jq -r '.shortUrl')
@@ -663,7 +663,7 @@ echo "Short URL: $SHORT_URL"</code></pre>
 for file in src/*.js; do
   if [ -f "$file" ]; then
     HASH=$(sha256sum "$file" | cut -d' ' -f1)
-    ATTESTATION=$(curl -s "https://attest.ink/api/create.html" \
+    ATTESTATION=$(curl -s "https://attest.97115104.com/api/create.html" \
       --data-urlencode "content_name=$(basename $file)" \
       --data-urlencode "content_hash=sha256:$HASH" \
       --data-urlencode "model=github-copilot" \
@@ -685,7 +685,7 @@ RUN npm install && npm run build
 
 # Create attestation
 RUN apt-get update && apt-get install -y curl jq && \
-    ATTESTATION=$(curl -s "https://attest.ink/api/create.html?content_name=docker-image&model=github-copilot&role=assisted&output=json") && \
+    ATTESTATION=$(curl -s "https://attest.97115104.com/api/create.html?content_name=docker-image&model=github-copilot&role=assisted&output=json") && \
     echo "$ATTESTATION" > /app/attestation.json
 
 FROM nginx:alpine
@@ -698,7 +698,7 @@ COPY --from=builder /app/attestation.json /usr/share/nginx/html/</code></pre>
                     <pre><code class="language-hcl"># attestation.tf
 data "external" "attestation" {
   program = ["bash", "-c", <<-EOT
-    ATTESTATION=$(curl -s "https://attest.ink/api/create.html?content_name=terraform-config&model=gpt-4&role=assisted&output=json")
+    ATTESTATION=$(curl -s "https://attest.97115104.com/api/create.html?content_name=terraform-config&model=gpt-4&role=assisted&output=json")
     echo "$ATTESTATION"
   EOT
   ]
@@ -789,11 +789,11 @@ curl --data-urlencode "content_hash=sha256:$HASH"</code></pre>
                             <h4>API Reference</h4>
                             <p>Complete API documentation</p>
                         </a>
-                        <a href="https://github.com/statusdothealth/attest.ink/tree/main/examples/ci-cd" class="quick-link">
+                        <a href="https://github.com/97115104/attest/tree/main/examples/ci-cd" class="quick-link">
                             <h4>Examples Repository</h4>
                             <p>Sample configurations for all platforms</p>
                         </a>
-                        <a href="mailto:support@attest.ink" class="quick-link">
+                        <a href="mailto:support@attest.97115104.com" class="quick-link">
                             <h4>Support</h4>
                             <p>Get help with your integration</p>
                         </a>

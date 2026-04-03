@@ -77,7 +77,7 @@ export default async function handler(req, res) {
         await redis.set(`url:${shortId}`, dataUrl);
         await redis.set(`url:${shortId}:owner`, email);
         
-        shortUrl = `https://attest.ink/s/${shortId}`;
+        shortUrl = `https://attest.97115104.com/s/${shortId}`;
       } catch (error) {
         console.error('Error creating short URL from attestation data:', error);
       }
@@ -91,8 +91,8 @@ export default async function handler(req, res) {
     // Check if we have line items (when tax is added as separate line item)
     if (session.line_items && session.line_items.data) {
       const productItem = session.line_items.data.find(item => 
-        item.description?.includes('attest.ink') || 
-        item.price?.product?.name?.includes('attest.ink')
+        item.description?.includes('attest.97115104.com') || 
+        item.price?.product?.name?.includes('attest.97115104.com')
       );
       const taxItem = session.line_items.data.find(item => 
         item.description?.includes('Tax') || 

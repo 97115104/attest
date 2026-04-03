@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Create Attestation - attest.ink</title>
+    SKIP_TITLE
     <meta name="description" content="Create a verifiable attestation for your AI-generated content">
     <link rel="icon" type="image/svg+xml" href="/assets/logo/favicon.svg">
     <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
@@ -39,8 +39,8 @@
         <nav>
             <div class="nav-inner">
                 <a href="/" class="logo">
-                    <img src="/assets/logo/circular-2-ai.svg" alt="attest.ink logo">
-                    <span>attest.ink</span>
+                    <img src="/assets/logo/circular-2-ai.svg" alt="attest logo">
+                    <span>attest</span>
                 </a>
                 <ul>
                     <li><a href="/create/" class="active">Create</a></li>
@@ -53,7 +53,7 @@
                             <a href="/examples/">Examples</a>
                             <a href="/developers/">Developer Docs</a>
                             <a href="/faq.html">FAQ</a>
-                            <a href="https://github.com/statusdothealth/attest.ink" target="_blank">GitHub</a>
+                            <a href="https://github.com/97115104/attest" target="_blank">GitHub</a>
                         </div>
                     </li>
                 </ul>
@@ -978,7 +978,7 @@
                     <button class="btn btn-secondary" style="display: block; margin: 10px auto; max-width: 300px;" onclick="openMetaMaskMobile('${metamaskUniversalLink}', '${metamaskDeepLink}')">Open in MetaMask Browser</button>
                     <br>
                     <div style="font-size: 14px; color: var(--text-secondary);">
-                        This will open attest.ink in MetaMask's browser where you can sign with your wallet.
+                        This will open attest in MetaMask's browser where you can sign with your wallet.
                     </div>
                     <br>
                     Or use <strong>"Local Signature"</strong> below for a simpler option.
@@ -1154,7 +1154,7 @@
                 model: model,
                 role: role,
                 timestamp: new Date().toISOString(),
-                platform: "attest.ink",
+                platform: "attest.97115104.com",
                 badge_style: formData.get('badge_style') || 'default'
             };
             
@@ -1315,7 +1315,7 @@
                     );
                     
                     // Derive signing key
-                    const salt = enc.encode('attest.ink.v1.' + attestation.id);
+                    const salt = enc.encode('attest.v1.' + attestation.id);
                     const key = await crypto.subtle.deriveKey(
                         {
                             name: 'PBKDF2',
@@ -1341,7 +1341,7 @@
                     const sigHex = sigArray.map(b => b.toString(16).padStart(2, '0')).join('');
                     
                     // Create signer ID from password (hash it)
-                    const signerData = enc.encode('attest.ink.signer.' + password);
+                    const signerData = enc.encode('attest.signer.' + password);
                     const signerHash = await crypto.subtle.digest('SHA-256', signerData);
                     const signerArray = Array.from(new Uint8Array(signerHash));
                     const signerId = '0x' + signerArray.slice(0, 20).map(b => b.toString(16).padStart(2, '0')).join('');

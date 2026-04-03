@@ -76,7 +76,7 @@ export default async function handler(req, res) {
     console.log('Zip code:', zipCode, 'Tax rate:', taxRate, 'Tax amount:', taxAmount / 100);
     
     // Always use the production URL for checkout redirects
-    const baseUrl = 'https://attest.ink';
+    const baseUrl = 'https://attest.97115104.com';
     
     // Build line items
     const lineItems = [
@@ -84,9 +84,9 @@ export default async function handler(req, res) {
         price_data: {
           currency: 'usd',
           product_data: {
-            name: 'attest.ink Lifetime Short URLs',
+            name: 'attest Lifetime Short URLs',
             description: 'Create unlimited permanent short URLs for your AI attestations',
-            images: ['https://attest.ink/assets/logo/circular-2-ai.svg'],
+            images: ['https://attest.97115104.com/assets/logo/circular-2-ai.svg'],
           },
           unit_amount: subtotal,
         },

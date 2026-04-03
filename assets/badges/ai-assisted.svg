@@ -19,7 +19,7 @@
   <g transform="translate(140, 30)" text-anchor="middle">
     <text x="0" y="-5" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#445572">AI Assisted</text>
     <text x="0" y="12" font-family="Optima, Palatino, serif" font-size="11" fill="#627696">Crafted with data and humans</text>
-    <text x="75" y="-15" font-family="'Segoe UI', Roboto, sans-serif" font-size="6" fill="#627696">attest.ink™</text>
+    <text x="75" y="-15" font-family="'Segoe UI', Roboto, sans-serif" font-size="6" fill="#627696">attest™</text>
   </g>
 
   <line x1="24" y1="18" x2="24" y2="42" stroke="#8da5c7" stroke-width="0.5" />

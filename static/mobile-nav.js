@@ -1,4 +1,4 @@
-// Mobile navigation handling for attest.ink
+// Mobile navigation handling for attest
 
 document.addEventListener('DOMContentLoaded', function() {
     // Handle dropdown menus

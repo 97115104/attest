@@ -6,8 +6,8 @@
             <div class="footer-content">
                 <div class="footer-brand">
                     <a href="/" class="logo">
-                        <img src="/assets/logo/circular-2-ai.svg" alt="attest.ink logo">
-                        <span>attest.ink</span>
+                        <img src="/assets/logo/circular-2-ai.svg" alt="attest logo">
+                        <span>attest</span>
                     </a>
                     <p>Transparent AI attribution for the modern web</p>
                 </div>
@@ -16,17 +16,17 @@
                     <a href="/showcase/">Badges</a>
                     <a href="/examples/">Examples</a>
                     <a href="/developers/">Documentation</a>
-                    <a href="https://github.com/statusdothealth/attest.ink" target="_blank">GitHub</a>
-                    <a href="mailto:info@attest.ink">Contact</a>
+                    <a href="https://github.com/97115104/attest" target="_blank">GitHub</a>
+                    <a href="mailto:info@attest.97115104.com">Contact</a>
                 </div>
             </div>
             
             <div class="footer-bottom">
                 <p style="display: inline-flex; align-items: center; margin: 0;">&copy; 2025&nbsp;&nbsp;<a href="https://0x42r.io/" target="_blank">0x42 Research</a>.&nbsp;&nbsp;
-                    <a href="https://github.com/statusdothealth/attest.ink/blob/main/LICENSE" target="_blank">
+                    <a href="https://github.com/97115104/attest/blob/main/LICENSE" target="_blank">
                         <img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="MIT License" style="vertical-align: middle;">
                     </a>
-                    <a href="https://attest.ink/verify/?data=eyJ2ZXJzaW9uIjoiMi4wIiwiaWQiOiIyMDI1LTA3LTE2LTM0ZXpucyIsImNvbnRlbnRfbmFtZSI6ImltcG9ydGVkLWNvbnRlbnQiLCJkb2N1bWVudF90eXBlIjoid2Vic2l0ZSIsIm1vZGVsIjoiY2xhdWRlLTQtb3B1cyIsInJvbGUiOiJhc3Npc3RlZCIsInRpbWVzdGFtcCI6IjIwMjUtMDctMTZUMDI6NTI6MDYuNjU1WiIsInBsYXRmb3JtIjoiYXR0ZXN0LmluayIsImNvbnRlbnRfaGFzaCI6InNoYTI1NjplNWUzMDJmMzczOWViZjU4MTI5YWM5NGJlZGU4OTQ0ZGJhOGVkYWM3N2FlYzBmOGM2ZWQ1ZmY5ZGExOWYwMGJmIiwiYXV0aG9yIjoiMHg0MiBSZXNlYXJjaCIsInNpZ25hdHVyZSI6eyJ0eXBlIjoiZXRoZXJldW0iLCJ2YWx1ZSI6IjB4OTExODcwMGYzZDBiMGQ5M2RiMDQ4YTRkODNlZTk4MTZlZjI0NzEyNWJiN2ExMzNiYzA1MWM2NmIzZGZjNWE4OTRmMWRlYzY1OTMyNWRlNTViMWYxNGIyZmQxYzg1MjlkZjExM2E2OGYyZGE1ZjFiMzUwYjc5YzllMzgyMGQ5NTYxYiIsInNpZ25lciI6IjB4NzlhNzJhMDJiOWIxOTNjNDUyMGYyMmYyY2QyZDYzYTM1NGRmZTRkMyIsIm1lc3NhZ2UiOiJ7XCJjb250ZW50X25hbWVcIjpcImltcG9ydGVkLWNvbnRlbnRcIixcIm1vZGVsXCI6XCJjbGF1ZGUtNC1vcHVzXCIsXCJ0aW1lc3RhbXBcIjpcIjIwMjUtMDctMTZUMDI6NTI6MDYuNjU1WlwiLFwiY29udGVudF9oYXNoXCI6XCJzaGEyNTY6ZTVlMzAyZjM3MzllYmY1ODEyOWFjOTRiZWRlODk0NGRiYThlZGFjNzdhZWMwZjhjNmVkNWZmOWRhMTlmMDBiZlwifSJ9fQ==" target="_blank" style="margin-left: 8px;">
+                    <a href="https://attest.97115104.com/verify/?data=eyJ2ZXJzaW9uIjoiMi4wIiwiaWQiOiIyMDI1LTA3LTE2LTM0ZXpucyIsImNvbnRlbnRfbmFtZSI6ImltcG9ydGVkLWNvbnRlbnQiLCJkb2N1bWVudF90eXBlIjoid2Vic2l0ZSIsIm1vZGVsIjoiY2xhdWRlLTQtb3B1cyIsInJvbGUiOiJhc3Npc3RlZCIsInRpbWVzdGFtcCI6IjIwMjUtMDctMTZUMDI6NTI6MDYuNjU1WiIsInBsYXRmb3JtIjoiYXR0ZXN0LmluayIsImNvbnRlbnRfaGFzaCI6InNoYTI1NjplNWUzMDJmMzczOWViZjU4MTI5YWM5NGJlZGU4OTQ0ZGJhOGVkYWM3N2FlYzBmOGM2ZWQ1ZmY5ZGExOWYwMGJmIiwiYXV0aG9yIjoiMHg0MiBSZXNlYXJjaCIsInNpZ25hdHVyZSI6eyJ0eXBlIjoiZXRoZXJldW0iLCJ2YWx1ZSI6IjB4OTExODcwMGYzZDBiMGQ5M2RiMDQ4YTRkODNlZTk4MTZlZjI0NzEyNWJiN2ExMzNiYzA1MWM2NmIzZGZjNWE4OTRmMWRlYzY1OTMyNWRlNTViMWYxNGIyZmQxYzg1MjlkZjExM2E2OGYyZGE1ZjFiMzUwYjc5YzllMzgyMGQ5NTYxYiIsInNpZ25lciI6IjB4NzlhNzJhMDJiOWIxOTNjNDUyMGYyMmYyY2QyZDYzYTM1NGRmZTRkMyIsIm1lc3NhZ2UiOiJ7XCJjb250ZW50X25hbWVcIjpcImltcG9ydGVkLWNvbnRlbnRcIixcIm1vZGVsXCI6XCJjbGF1ZGUtNC1vcHVzXCIsXCJ0aW1lc3RhbXBcIjpcIjIwMjUtMDctMTZUMDI6NTI6MDYuNjU1WlwiLFwiY29udGVudF9oYXNoXCI6XCJzaGEyNTY6ZTVlMzAyZjM3MzllYmY1ODEyOWFjOTRiZWRlODk0NGRiYThlZGFjNzdhZWMwZjhjNmVkNWZmOWRhMTlmMDBiZlwifSJ9fQ==" target="_blank" style="margin-left: 8px;">
                         <img src="data:image/svg+xml,%3Csvg width='94' height='20' viewBox='0 0 94 20' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cdefs%3E%3ClinearGradient id='pixelGrad' x1='0' y1='0' x2='94' y2='0'%3E%3Cstop offset='0%25' stop-color='%2300ffcc' stop-opacity='1'/%3E%3Cstop offset='100%25' stop-color='%23ff006e' stop-opacity='1'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='94' height='20' fill='%23000'/%3E%3Crect x='1' y='1' width='92' height='18' fill='none' stroke='url(%23pixelGrad)' stroke-width='2'/%3E%3Crect x='3' y='3' width='88' height='14' fill='none' stroke='%23333' stroke-width='1'/%3E%3Crect x='8' y='8' width='2' height='2' fill='%2300ffcc'/%3E%3Crect x='10' y='6' width='2' height='2' fill='%23ff006e'/%3E%3Crect x='12' y='8' width='2' height='2' fill='%2300ffcc'/%3E%3Crect x='10' y='10' width='2' height='2' fill='%23ff006e'/%3E%3Ctext x='20' y='14' font-family='Courier New, monospace' font-size='10' font-weight='bold' fill='url(%23pixelGrad)'%3EAI ASSISTED%3C/text%3E%3C/svg%3E" alt="AI Assisted" style="vertical-align: middle;">
                     </a>
                 </p>

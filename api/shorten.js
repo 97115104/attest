@@ -110,7 +110,7 @@ export default async function handler(req, res) {
     console.log('Verification - stored:', stored ? 'Success' : 'Failed');
     
     // Always use the production domain for short URLs
-    const shortUrl = `https://attest.ink/s/${shortId}`;
+    const shortUrl = `https://attest.97115104.com/s/${shortId}`;
     
     res.status(200).json({ shortUrl, shortId });
   } catch (error) {

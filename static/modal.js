@@ -1,4 +1,4 @@
-// Branded modal system for attest.ink
+// Branded modal system for attest
 window.AttestModal = {
     show: function(title, message, options = {}) {
         // Remove any existing modals
@@ -23,7 +23,7 @@ window.AttestModal = {
         
         const logo = document.createElement('img');
         logo.src = '/assets/logo/circular-2-ai.svg';
-        logo.alt = 'attest.ink';
+        logo.alt = 'attest';
         logo.className = 'attest-modal-logo';
         
         logoContainer.appendChild(logo);

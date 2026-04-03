@@ -42,7 +42,7 @@ async function createAttestation(params) {
         model: model,
         role: role,
         timestamp: new Date().toISOString(),
-        platform: "attest.ink"
+        platform: "attest.97115104.com"
     };
 
     // Add optional fields
@@ -73,8 +73,8 @@ async function createAttestation(params) {
 
     // Generate URLs
     const encodedData = btoa(JSON.stringify(attestation));
-    const shortUrl = `https://attest.ink/verify/?id=${id}`;
-    const dataUrl = `https://attest.ink/verify/?data=${encodedData}`;
+    const shortUrl = `https://attest.97115104.com/verify/?id=${id}`;
+    const dataUrl = `https://attest.97115104.com/verify/?data=${encodedData}`;
 
     // Store in localStorage (for demo)
     try {
@@ -137,11 +137,11 @@ if (urlParams.has('content_name')) {
     // Show API documentation
     document.body.innerHTML = `
 <div style="max-width: 800px; margin: 0 auto; padding: 20px; font-family: -apple-system, sans-serif;">
-    <h1>attest.ink API</h1>
+    <h1>attest API</h1>
     <p>Create attestations programmatically using GET requests.</p>
     
     <h2>Endpoint</h2>
-    <pre style="background: #f5f5f5; padding: 10px; overflow-x: auto;">GET https://attest.ink/api/create.html</pre>
+    <pre style="background: #f5f5f5; padding: 10px; overflow-x: auto;">GET https://attest.97115104.com/api/create.html</pre>
     
     <h2>Parameters</h2>
     <table style="width: 100%; border-collapse: collapse;">
@@ -198,13 +198,13 @@ if (urlParams.has('content_name')) {
     </table>
     
     <h2>Example: Using curl</h2>
-    <pre style="background: #f5f5f5; padding: 10px; overflow-x: auto;">curl -s "https://attest.ink/api/create.html?content_name=My%20Blog%20Post&model=claude-3-opus&role=assisted&output=curl"</pre>
+    <pre style="background: #f5f5f5; padding: 10px; overflow-x: auto;">curl -s "https://attest.97115104.com/api/create.html?content_name=My%20Blog%20Post&model=claude-3-opus&role=assisted&output=curl"</pre>
     
     <h2>Example: URL encoding</h2>
-    <pre style="background: #f5f5f5; padding: 10px; overflow-x: auto;">curl -s "https://attest.ink/api/create.html?$(echo 'content_name=My AI Story&content=Once upon a time...&model=gpt-4' | tr ' ' '+' | tr '&' '\\n' | xargs -I {} echo -n '{}&' | sed 's/&$//')"</pre>
+    <pre style="background: #f5f5f5; padding: 10px; overflow-x: auto;">curl -s "https://attest.97115104.com/api/create.html?$(echo 'content_name=My AI Story&content=Once upon a time...&model=gpt-4' | tr ' ' '+' | tr '&' '\\n' | xargs -I {} echo -n '{}&' | sed 's/&$//')"</pre>
     
     <h2>Example: With jq</h2>
-    <pre style="background: #f5f5f5; padding: 10px; overflow-x: auto;">curl -s "https://attest.ink/api/create.html?content_name=Test&model=claude-3-opus" | jq '.attestation'</pre>
+    <pre style="background: #f5f5f5; padding: 10px; overflow-x: auto;">curl -s "https://attest.97115104.com/api/create.html?content_name=Test&model=claude-3-opus" | jq '.attestation'</pre>
     
     <h2>Example: Bash script</h2>
     <pre style="background: #f5f5f5; padding: 10px; overflow-x: auto;">#!/bin/bash
@@ -218,7 +218,7 @@ ENCODED_NAME=$(echo -n "$NAME" | jq -sRr @uri)
 ENCODED_CONTENT=$(echo -n "$CONTENT" | jq -sRr @uri)
 
 # Create attestation
-curl -s "https://attest.ink/api/create.html?content_name=$ENCODED_NAME&content=$ENCODED_CONTENT&model=$MODEL" | jq '.urls.full'</pre>
+curl -s "https://attest.97115104.com/api/create.html?content_name=$ENCODED_NAME&content=$ENCODED_CONTENT&model=$MODEL" | jq '.urls.full'</pre>
 
     <h2>Note</h2>
     <p>This API runs entirely in your browser. The attestation is created client-side and stored in your browser's localStorage. The short URLs only work in the same browser session. Use the full data URLs for sharing attestations across devices.</p>

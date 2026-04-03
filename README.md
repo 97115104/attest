@@ -1,15 +1,15 @@
-# <img src="assets/logo/circular-2-ai.svg" alt="attest.ink" width="40" height="40" align="left"> attest.ink - AI Content Attestation Protocol
+# <img src="assets/logo/circular-2-ai.svg" alt="attest" width="40" height="40" align="left"> attest - AI Content Attestation Protocol
 
-[![AI Assisted](https://img.shields.io/badge/AI-Assisted-blue)](https://attest.ink/verify/?data=eyJ2ZXJzaW9uIjoiMi4wIiwiaWQiOiIyMDI1LTA3LTE2LTM0ZXpucyIsImNvbnRlbnRfbmFtZSI6ImltcG9ydGVkLWNvbnRlbnQiLCJkb2N1bWVudF90eXBlIjoid2Vic2l0ZSIsIm1vZGVsIjoiY2xhdWRlLTQtb3B1cyIsInJvbGUiOiJhc3Npc3RlZCIsInRpbWVzdGFtcCI6IjIwMjUtMDctMTZUMDI6NTI6MDYuNjU1WiIsInBsYXRmb3JtIjoiYXR0ZXN0LmluayIsImNvbnRlbnRfaGFzaCI6InNoYTI1NjplNWUzMDJmMzczOWViZjU4MTI5YWM5NGJlZGU4OTQ0ZGJhOGVkYWM3N2FlYzBmOGM2ZWQ1ZmY5ZGExOWYwMGJmIiwiYXV0aG9yIjoiMHg0MiBSZXNlYXJjaCIsInNpZ25hdHVyZSI6eyJ0eXBlIjoiZXRoZXJldW0iLCJ2YWx1ZSI6IjB4OTExODcwMGYzZDBiMGQ5M2RiMDQ4YTRkODNlZTk4MTZlZjI0NzEyNWJiN2ExMzNiYzA1MWM2NmIzZGZjNWE4OTRmMWRlYzY1OTMyNWRlNTViMWYxNGIyZmQxYzg1MjlkZjExM2E2OGYyZGE1ZjFiMzUwYjc5YzllMzgyMGQ5NTYxYiIsInNpZ25lciI6IjB4NzlhNzJhMDJiOWIxOTNjNDUyMGYyMmYyY2QyZDYzYTM1NGRmZTRkMyIsIm1lc3NhZ2UiOiJ7XCJjb250ZW50X25hbWVcIjpcImltcG9ydGVkLWNvbnRlbnRcIixcIm1vZGVsXCI6XCJjbGF1ZGUtNC1vcHVzXCIsXCJ0aW1lc3RhbXBcIjpcIjIwMjUtMDctMTZUMDI6NTI6MDYuNjU1WlwiLFwiY29udGVudF9oYXNoXCI6XCJzaGEyNTY6ZTVlMzAyZjM3MzllYmY1ODEyOWFjOTRiZWRlODk0NGRiYThlZGFjNzdhZWMwZjhjNmVkNWZmOWRhMTlmMDBiZlwifSJ9fQ==)
+[![AI Assisted](https://img.shields.io/badge/AI-Assisted-blue)](https://attest.97115104.com/verify/?data=eyJ2ZXJzaW9uIjoiMi4wIiwiaWQiOiIyMDI1LTA3LTE2LTM0ZXpucyIsImNvbnRlbnRfbmFtZSI6ImltcG9ydGVkLWNvbnRlbnQiLCJkb2N1bWVudF90eXBlIjoid2Vic2l0ZSIsIm1vZGVsIjoiY2xhdWRlLTQtb3B1cyIsInJvbGUiOiJhc3Npc3RlZCIsInRpbWVzdGFtcCI6IjIwMjUtMDctMTZUMDI6NTI6MDYuNjU1WiIsInBsYXRmb3JtIjoiYXR0ZXN0LmluayIsImNvbnRlbnRfaGFzaCI6InNoYTI1NjplNWUzMDJmMzczOWViZjU4MTI5YWM5NGJlZGU4OTQ0ZGJhOGVkYWM3N2FlYzBmOGM2ZWQ1ZmY5ZGExOWYwMGJmIiwiYXV0aG9yIjoiMHg0MiBSZXNlYXJjaCIsInNpZ25hdHVyZSI6eyJ0eXBlIjoiZXRoZXJldW0iLCJ2YWx1ZSI6IjB4OTExODcwMGYzZDBiMGQ5M2RiMDQ4YTRkODNlZTk4MTZlZjI0NzEyNWJiN2ExMzNiYzA1MWM2NmIzZGZjNWE4OTRmMWRlYzY1OTMyNWRlNTViMWYxNGIyZmQxYzg1MjlkZjExM2E2OGYyZGE1ZjFiMzUwYjc5YzllMzgyMGQ5NTYxYiIsInNpZ25lciI6IjB4NzlhNzJhMDJiOWIxOTNjNDUyMGYyMmYyY2QyZDYzYTM1NGRmZTRkMyIsIm1lc3NhZ2UiOiJ7XCJjb250ZW50X25hbWVcIjpcImltcG9ydGVkLWNvbnRlbnRcIixcIm1vZGVsXCI6XCJjbGF1ZGUtNC1vcHVzXCIsXCJ0aW1lc3RhbXBcIjpcIjIwMjUtMDctMTZUMDI6NTI6MDYuNjU1WlwiLFwiY29udGVudF9oYXNoXCI6XCJzaGEyNTY6ZTVlMzAyZjM3MzllYmY1ODEyOWFjOTRiZWRlODk0NGRiYThlZGFjNzdhZWMwZjhjNmVkNWZmOWRhMTlmMDBiZlwifSJ9fQ==)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Vercel Deployment](https://img.shields.io/badge/Vercel-Deployed-00E196)](https://attest.ink)
-[![GitHub stars](https://img.shields.io/github/stars/statusdothealth/attest.ink.svg?style=social)](https://github.com/statusdothealth/attest.ink)
+[![Vercel Deployment](https://img.shields.io/badge/Vercel-Deployed-00E196)](https://attest.97115104.com)
+[![GitHub stars](https://img.shields.io/github/stars/97115104/attest.svg?style=social)](https://github.com/97115104/attest)
 
 A decentralized, privacy-preserving protocol for creating verifiable attestations about AI involvement in content creation. It works offline and there's no servers or blockchain implementation required.
 
 ## Overview
 
-attest.ink is an open-source protocol that enables transparent disclosure of AI involvement in content creation through:
+attest is an open-source protocol that enables transparent disclosure of AI involvement in content creation through:
 
 - **Cryptographic Attestations**: Create tamper-proof records of AI usage
 - **Beautiful Badges**: Display verification badges that link to cryptographic proofs
@@ -20,7 +20,7 @@ attest.ink is an open-source protocol that enables transparent disclosure of AI 
 ## Key Features
 
 ### For Content Creators
-- **Simple Creation**: Generate attestations in seconds at [attest.ink/create](https://attest.ink/create/)
+- **Simple Creation**: Generate attestations in seconds at [attest.97115104.com/create](https://attest.97115104.com/create/)
 - **Multiple AI Models**: Support for 100+ models from OpenAI, Anthropic, Google, Meta, and more
 - **Flexible Roles**: Document if AI generated, assisted, or edited your content
 - **File Support**: Attest any content type - text, code, images, audio, video
@@ -45,18 +45,18 @@ attest.ink is an open-source protocol that enables transparent disclosure of AI 
 ### 1. Create an Attestation
 
 #### Web Interface
-Visit [attest.ink/create](https://attest.ink/create/) and fill out the form.
+Visit [attest.97115104.com/create](https://attest.97115104.com/create/) and fill out the form.
 
 #### API / Automation
 ```bash
 # Create attestation via curl
-curl -s "https://attest.ink/api/create.html?content_name=My%20Blog%20Post&model=gpt-4&role=assisted&output=curl"
+curl -s "https://attest.97115104.com/api/create.html?content_name=My%20Blog%20Post&model=gpt-4&role=assisted&output=curl"
 
 # With content hash
-curl -s "https://attest.ink/api/create.html?content_name=My%20Article&content=$(cat article.txt | jq -sRr @uri)&model=claude-3-opus"
+curl -s "https://attest.97115104.com/api/create.html?content_name=My%20Article&content=$(cat article.txt | jq -sRr @uri)&model=claude-3-opus"
 
 # Create permanent short URL (requires API key)
-curl -X POST https://attest.ink/api/shorten \
+curl -X POST https://attest.97115104.com/api/shorten \
   -H "Content-Type: application/json" \
   -d '{"dataUrl": "data:application/json;base64,...", "apiKey": "ak_..."}'
 ```
@@ -66,25 +66,25 @@ curl -X POST https://attest.ink/api/shorten \
 #### HTML
 ```html
 <!-- Self-contained badge with full attestation data -->
-<a href="https://attest.ink/verify/?data=eyJ2ZXJzaW9uIj..." target="_blank">
-    <img src="https://attest.ink/assets/badges/gpt-4-generated.svg" alt="AI Generated with GPT-4" />
+<a href="https://attest.97115104.com/verify/?data=eyJ2ZXJzaW9uIj..." target="_blank">
+    <img src="https://attest.97115104.com/assets/badges/gpt-4-generated.svg" alt="AI Generated with GPT-4" />
 </a>
 ```
 
 #### Markdown
 ```markdown
-[![AI Generated](https://attest.ink/assets/badges/ai-generated.svg)](https://attest.ink/verify/?data=...)
+[![AI Generated](https://attest.97115104.com/assets/badges/ai-generated.svg)](https://attest.97115104.com/verify/?data=...)
 ```
 
 #### Dynamic Loading
 ```html
 <div class="ai-attest-badge" data-attestation-url="https://example.com/attestation.json"></div>
-<script src="https://attest.ink/static/badge-renderer.js"></script>
+<script src="https://attest.97115104.com/static/badge-renderer.js"></script>
 ```
 
 ### 3. Verify Content
 
-Click any attestation badge or visit [attest.ink/verify](https://attest.ink/verify/) to verify:
+Click any attestation badge or visit [attest.97115104.com/verify](https://attest.97115104.com/verify/) to verify:
 - Attestation format and schema validity
 - Content hash (if original content provided)
 - Digital signatures (if present)
@@ -104,7 +104,7 @@ Click any attestation badge or visit [attest.ink/verify](https://attest.ink/veri
   "role": "assisted",
   "author": "Dr. Jane Smith",
   "timestamp": "2025-01-16T10:30:00Z",
-  "platform": "attest.ink",
+  "platform": "attest.97115104.com",
   "prompt": "Write an introduction to quantum computing",
   "prompt_hash": "sha256:a1b2c3d4...",
   "signature": {
@@ -161,7 +161,7 @@ Classic badge designs:
 #### SVG Badges
 Pre-rendered badges for all major AI models:
 ```
-https://attest.ink/assets/badges/{model}-{role}.svg
+https://attest.97115104.com/assets/badges/{model}-{role}.svg
 
 Examples:
 - gpt-4-generated.svg
@@ -184,13 +184,13 @@ Over 100 AI models across multiple providers:
 - **xAI**: Grok 1.5
 - **And many more...**
 
-View the complete gallery at [attest.ink/showcase](https://attest.ink/showcase/)
+View the complete gallery at [attest.97115104.com/showcase](https://attest.97115104.com/showcase/)
 
 ## Technical Architecture
 
 ### Project Structure
 ```
-attest.ink/
+attest/
 ├── index.html              # Homepage
 ├── create/                 # Attestation creator
 ├── verify/                 # Attestation verifier
@@ -236,7 +236,7 @@ Create permanent short URLs for your attestations with lifetime access:
 
 #### Create Attestation
 ```
-GET https://attest.ink/api/create.html
+GET https://attest.97115104.com/api/create.html
 
 Parameters:
 - content_name (required): Name of the content
@@ -252,7 +252,7 @@ Parameters:
 
 #### Shorten URL (Premium)
 ```
-POST https://attest.ink/api/shorten
+POST https://attest.97115104.com/api/shorten
 
 Headers:
 - Content-Type: application/json
@@ -265,7 +265,7 @@ Body:
 
 Response:
 {
-  "shortUrl": "https://attest.ink/s/abc123",
+  "shortUrl": "https://attest.97115104.com/s/abc123",
   "shortId": "abc123"
 }
 ```
@@ -287,8 +287,8 @@ AttestInk.renderBadges();
 ### Local Development
 ```bash
 # Clone repository
-git clone https://github.com/statusdothealth/attest.ink.git
-cd attest.ink
+git clone https://github.com/97115104/attest.git
+cd attest
 
 # Serve locally (any static server works)
 python -m http.server 8000
@@ -339,9 +339,9 @@ We welcome contributions! Please see our [Contributing Guidelines](CONTRIBUTING.
 ## Documentation
 
 ### Core Documentation
-- [Protocol Specification](https://attest.ink/protocol/) - Technical protocol details
-- [Badge Gallery](https://attest.ink/showcase/) - Complete badge collection
-- [Integration Examples](https://attest.ink/examples/) - Real-world usage examples
+- [Protocol Specification](https://attest.97115104.com/protocol/) - Technical protocol details
+- [Badge Gallery](https://attest.97115104.com/showcase/) - Complete badge collection
+- [Integration Examples](https://attest.97115104.com/examples/) - Real-world usage examples
 - [API Reference](docs/api-reference.html) - Complete API documentation
 - [CI/CD Automation Guide](docs/ci-cd-automation.html) - Pipeline integration guide
 
@@ -363,13 +363,13 @@ jobs:
       - name: Create AI Attestation
         run: |
           # Generate attestation for your README
-          ATTESTATION=$(curl -s "https://attest.ink/api/create.html?content_name=README&content=$(cat README.md | jq -sRr @uri)&model=gpt-4&role=assisted&output=json")
+          ATTESTATION=$(curl -s "https://attest.97115104.com/api/create.html?content_name=README&content=$(cat README.md | jq -sRr @uri)&model=gpt-4&role=assisted&output=json")
           
           # Extract the data URL
           DATA_URL=$(echo $ATTESTATION | jq -r '.dataUrl')
           
           # Add badge to README
-          echo -e "\n\n[![AI Assisted](https://attest.ink/assets/badges/ai-assisted.svg)]($DATA_URL)" >> README.md
+          echo -e "\n\n[![AI Assisted](https://attest.97115104.com/assets/badges/ai-assisted.svg)]($DATA_URL)" >> README.md
           
       - name: Commit changes
         run: |
@@ -387,7 +387,7 @@ attest:
     - |
       # Create attestation for documentation
       CONTENT=$(cat docs/*.md | base64 -w 0)
-      ATTESTATION=$(curl -X POST https://attest.ink/api/create.html \
+      ATTESTATION=$(curl -X POST https://attest.97115104.com/api/create.html \
         -d "content_name=Documentation" \
         -d "content=$CONTENT" \
         -d "model=claude-3-opus" \
@@ -411,7 +411,7 @@ pipeline {
                     // Create attestation for build artifacts
                     def content = readFile('dist/bundle.js')
                     def attestation = sh(
-                        script: """curl -s 'https://attest.ink/api/create.html?content_name=Build&model=github-copilot&role=assisted&content=\${content}'""",
+                        script: """curl -s 'https://attest.97115104.com/api/create.html?content_name=Build&model=github-copilot&role=assisted&content=\${content}'""",
                         returnStdout: true
                     ).trim()
                     
@@ -450,11 +450,11 @@ async function createAttestation() {
     output: 'json'
   });
   
-  const response = await fetch(`https://attest.ink/api/create.html?${params}`);
+  const response = await fetch(`https://attest.97115104.com/api/create.html?${params}`);
   const attestation = await response.json();
   
   // Add badge to README
-  const badge = `[![AI Assisted](https://attest.ink/assets/badges/ai-assisted.svg)](${attestation.dataUrl})`;
+  const badge = `[![AI Assisted](https://attest.97115104.com/assets/badges/ai-assisted.svg)](${attestation.dataUrl})`;
   const readme = fs.readFileSync('README.md', 'utf8');
   fs.writeFileSync('README.md', readme + '\n\n' + badge);
 }
@@ -474,7 +474,7 @@ def create_attestation(file_path, model="gpt-4"):
         content = f.read()
     
     # Create attestation
-    response = requests.get('https://attest.ink/api/create.html', params={
+    response = requests.get('https://attest.97115104.com/api/create.html', params={
         'content_name': file_path,
         'content': content,
         'model': model,
@@ -502,8 +502,8 @@ if __name__ == '__main__':
 ```php
 // In your theme or plugin
 function add_ai_attestation_badge() {
-    echo '<a href="https://attest.ink/verify/?data=..." target="_blank">';
-    echo '<img src="https://attest.ink/assets/badges/ai-assisted.svg" alt="AI Assisted" />';
+    echo '<a href="https://attest.97115104.com/verify/?data=..." target="_blank">';
+    echo '<img src="https://attest.97115104.com/assets/badges/ai-assisted.svg" alt="AI Assisted" />';
     echo '</a>';
 }
 ```
@@ -512,7 +512,7 @@ function add_ai_attestation_badge() {
 ```jsx
 const AIBadge = ({ attestationUrl }) => (
     <a href={attestationUrl} target="_blank" rel="noopener noreferrer">
-        <img src="https://attest.ink/assets/badges/ai-generated.svg" alt="AI Generated" />
+        <img src="https://attest.97115104.com/assets/badges/ai-generated.svg" alt="AI Generated" />
     </a>
 );
 ```
@@ -521,7 +521,7 @@ const AIBadge = ({ attestationUrl }) => (
 ```vue
 <template>
   <a :href="attestationUrl" target="_blank">
-    <img src="https://attest.ink/assets/badges/ai-assisted.svg" alt="AI Assisted" />
+    <img src="https://attest.97115104.com/assets/badges/ai-assisted.svg" alt="AI Assisted" />
   </a>
 </template>
 
@@ -538,7 +538,7 @@ import Image from 'next/image';
 
 export default function AIBadge({ attestation }) {
   return (
-    <a href={`https://attest.ink/verify/?data=${attestation}`} target="_blank">
+    <a href={`https://attest.97115104.com/verify/?data=${attestation}`} target="_blank">
       <Image 
         src="/ai-assisted-badge.svg" 
         alt="AI Assisted"
@@ -553,7 +553,7 @@ export default function AIBadge({ attestation }) {
 #### LaTeX
 ```latex
 \usepackage{hyperref}
-\href{https://attest.ink/verify/?data=...}{%
+\href{https://attest.97115104.com/verify/?data=...}{%
     \includegraphics[width=3cm]{ai-attestation-badge.pdf}%
 }
 ```
@@ -651,14 +651,14 @@ MIT License - see [LICENSE](LICENSE) file for details.
 
 ## Contact
 
-- **Email**: info@attest.ink
-- **GitHub**: [github.com/statusdothealth/attest.ink](https://github.com/statusdothealth/attest.ink)
-- **Issues**: [Report bugs or request features](https://github.com/statusdothealth/attest.ink/issues)
+- **Email**: info@attest.97115104.com
+- **GitHub**: [github.com/97115104/attest](https://github.com/97115104/attest)
+- **Issues**: [Report bugs or request features](https://github.com/97115104/attest/issues)
 
 ---
 
 <div align="center">
-    <img src="https://attest.ink/assets/badges/ai-assisted.svg" alt="AI Assisted" width="120" height="30" />
+    <img src="https://attest.97115104.com/assets/badges/ai-assisted.svg" alt="AI Assisted" width="120" height="30" />
     <br>
     <em>This README was created with AI assistance and human oversight</em>
     <br>

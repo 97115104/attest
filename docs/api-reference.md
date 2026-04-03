@@ -1,6 +1,6 @@
-# attest.ink API Reference
+# attest API Reference
 
-Complete API documentation for programmatic access to attest.ink services.
+Complete API documentation for programmatic access to attest services.
 
 ## Table of Contents
 - [Authentication](#authentication)
@@ -20,7 +20,7 @@ Most endpoints are publicly accessible. Premium features require an API key:
 
 ```bash
 # Premium endpoints require API key
-curl -X POST https://attest.ink/api/shorten \
+curl -X POST https://attest.97115104.com/api/shorten \
   -H "Content-Type: application/json" \
   -d '{"apiKey": "ak_your_api_key", ...}'
 ```
@@ -50,7 +50,7 @@ Create a new AI attestation for your content.
 
 **Example Request:**
 ```bash
-curl -s "https://attest.ink/api/create.html?content_name=My%20Article&model=claude-3-opus&role=assisted&output=json"
+curl -s "https://attest.97115104.com/api/create.html?content_name=My%20Article&model=claude-3-opus&role=assisted&output=json"
 ```
 
 **Example Response (JSON):**
@@ -62,22 +62,22 @@ curl -s "https://attest.ink/api/create.html?content_name=My%20Article&model=clau
   "model": "claude-3-opus",
   "role": "assisted",
   "timestamp": "2025-08-05T10:30:00Z",
-  "platform": "attest.ink",
+  "platform": "attest.97115104.com",
   "dataUrl": "data:application/json;base64,eyJ2ZXJzaW9uIjoiMi4wIi...",
-  "verifyUrl": "https://attest.ink/verify/?data=eyJ2ZXJzaW9uIjoiMi4wIi...",
-  "badgeUrl": "https://attest.ink/assets/badges/claude-assisted.svg"
+  "verifyUrl": "https://attest.97115104.com/verify/?data=eyJ2ZXJzaW9uIjoiMi4wIi...",
+  "badgeUrl": "https://attest.97115104.com/assets/badges/claude-assisted.svg"
 }
 ```
 
 **Example Response (curl format):**
 ```bash
 # Badge HTML
-<a href="https://attest.ink/verify/?data=..." target="_blank">
-  <img src="https://attest.ink/assets/badges/claude-assisted.svg" alt="AI Assisted">
+<a href="https://attest.97115104.com/verify/?data=..." target="_blank">
+  <img src="https://attest.97115104.com/assets/badges/claude-assisted.svg" alt="AI Assisted">
 </a>
 
 # Markdown
-[![AI Assisted](https://attest.ink/assets/badges/claude-assisted.svg)](https://attest.ink/verify/?data=...)
+[![AI Assisted](https://attest.97115104.com/assets/badges/claude-assisted.svg)](https://attest.97115104.com/verify/?data=...)
 ```
 
 ### Shorten URL
@@ -95,7 +95,7 @@ Content-Type: application/json
 ```json
 {
   "dataUrl": "data:application/json;base64,...",
-  "url": "https://attest.ink/verify/?data=...",
+  "url": "https://attest.97115104.com/verify/?data=...",
   "apiKey": "ak_your_api_key",
   "email": "user@example.com"
 }
@@ -113,7 +113,7 @@ Content-Type: application/json
 
 **Example Request:**
 ```bash
-curl -X POST https://attest.ink/api/shorten \
+curl -X POST https://attest.97115104.com/api/shorten \
   -H "Content-Type: application/json" \
   -d '{
     "dataUrl": "data:application/json;base64,eyJ2ZXJzaW9uIjoiMi4wIi4uLg==",
@@ -124,7 +124,7 @@ curl -X POST https://attest.ink/api/shorten \
 **Example Response:**
 ```json
 {
-  "shortUrl": "https://attest.ink/s/abc123",
+  "shortUrl": "https://attest.97115104.com/s/abc123",
   "shortId": "abc123",
   "expiresAt": null
 }
@@ -174,7 +174,7 @@ Retrieve the list of supported AI models.
 
 **Example Request:**
 ```bash
-curl -s https://attest.ink/api/ai-models
+curl -s https://attest.97115104.com/api/ai-models
 ```
 
 **Example Response:**
@@ -284,12 +284,12 @@ async function createAttestation(contentName, model = 'gpt-4') {
     output: 'json'
   });
   
-  const response = await axios.get(`https://attest.ink/api/create.html?${params}`);
+  const response = await axios.get(`https://attest.97115104.com/api/create.html?${params}`);
   return response.data;
 }
 
 async function shortenUrl(dataUrl, apiKey) {
-  const response = await axios.post('https://attest.ink/api/shorten', {
+  const response = await axios.post('https://attest.97115104.com/api/shorten', {
     dataUrl: dataUrl,
     apiKey: apiKey
   });
@@ -324,7 +324,7 @@ def create_attestation(content_name, model='gpt-4', role='assisted'):
     }
     
     response = requests.get(
-        'https://attest.ink/api/create.html',
+        'https://attest.97115104.com/api/create.html',
         params=params
     )
     response.raise_for_status()
@@ -333,7 +333,7 @@ def create_attestation(content_name, model='gpt-4', role='assisted'):
 def shorten_url(data_url, api_key):
     """Create a short URL for an attestation"""
     response = requests.post(
-        'https://attest.ink/api/shorten',
+        'https://attest.97115104.com/api/shorten',
         json={
             'dataUrl': data_url,
             'apiKey': api_key
@@ -366,7 +366,7 @@ function createAttestation($contentName, $model = 'gpt-4', $role = 'assisted') {
         'output' => 'json'
     ]);
     
-    $url = "https://attest.ink/api/create.html?{$params}";
+    $url = "https://attest.97115104.com/api/create.html?{$params}";
     $response = file_get_contents($url);
     return json_decode($response, true);
 }
@@ -386,7 +386,7 @@ function shortenUrl($dataUrl, $apiKey) {
     ];
     
     $context = stream_context_create($options);
-    $response = file_get_contents('https://attest.ink/api/shorten', false, $context);
+    $response = file_get_contents('https://attest.97115104.com/api/shorten', false, $context);
     $result = json_decode($response, true);
     return $result['shortUrl'];
 }
@@ -409,7 +409,7 @@ require 'json'
 require 'uri'
 
 def create_attestation(content_name, model: 'gpt-4', role: 'assisted')
-  uri = URI('https://attest.ink/api/create.html')
+  uri = URI('https://attest.97115104.com/api/create.html')
   uri.query = URI.encode_www_form(
     content_name: content_name,
     model: model,
@@ -422,7 +422,7 @@ def create_attestation(content_name, model: 'gpt-4', role: 'assisted')
 end
 
 def shorten_url(data_url, api_key)
-  uri = URI('https://attest.ink/api/shorten')
+  uri = URI('https://attest.97115104.com/api/shorten')
   http = Net::HTTP.new(uri.host, uri.port)
   http.use_ssl = true
   
@@ -480,7 +480,7 @@ func createAttestation(contentName, model string) (*Attestation, error) {
     params.Add("role", "assisted")
     params.Add("output", "json")
     
-    resp, err := http.Get("https://attest.ink/api/create.html?" + params.Encode())
+    resp, err := http.Get("https://attest.97115104.com/api/create.html?" + params.Encode())
     if err != nil {
         return nil, err
     }
@@ -506,7 +506,7 @@ func shortenURL(dataURL, apiKey string) (string, error) {
     }
     
     resp, err := http.Post(
-        "https://attest.ink/api/shorten",
+        "https://attest.97115104.com/api/shorten",
         "application/json",
         bytes.NewBuffer(jsonData),
     )
@@ -550,9 +550,9 @@ Future support for webhooks to notify your application of events:
 
 ## Support
 
-- Documentation: https://attest.ink/docs
-- GitHub Issues: https://github.com/statusdothealth/attest.ink/issues
-- Email: api@attest.ink
+- Documentation: https://attest.97115104.com/docs
+- GitHub Issues: https://github.com/97115104/attest/issues
+- Email: api@attest.97115104.com
 
 ---
 

@@ -1,4 +1,4 @@
-# Good First Issues for attest.ink
+# Good First Issues for attest
 
 ## Issue 1: Add Loading States for Badge Rendering
 **Labels:** `good first issue`, `enhancement`, `frontend`

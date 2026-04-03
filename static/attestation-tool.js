@@ -1,5 +1,5 @@
 /**
- * attest.ink Attestation Tool
+ * attest Attestation Tool
  * Core logic for creating and verifying AI content attestations
  */
 
@@ -141,7 +141,7 @@
                 role: formData.get('role'),
                 timestamp: utils.formatTimestamp(),
                 author: formData.get('author') || undefined,
-                platform: 'attest.ink',
+                platform: 'attest.97115104.com',
                 badge_style: formData.get('badge-style') || 'default'
             };
 
@@ -238,15 +238,15 @@
 
         showPRInstructions() {
             const instructions = `
-To submit your attestation to the attest.ink repository:
+To submit your attestation to the attest repository:
 
-1. Fork the repository: https://github.com/autophage/attest.ink
+1. Fork the repository: https://github.com/97115104/attest
 2. Create a new file in: attestations/v2/${this.currentAttestation.id}.json
 3. Paste your attestation JSON
 4. Create a pull request
 
 Or use the GitHub CLI:
-gh repo fork autophage/attest.ink
+gh repo fork 97115104/attest
 git checkout -b add-attestation-${this.currentAttestation.id}
 # Add your file
 git commit -m "Add attestation ${this.currentAttestation.id}"

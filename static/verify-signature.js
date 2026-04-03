@@ -1,5 +1,5 @@
 /**
- * Signature verification functions for attest.ink
+ * Signature verification functions for attest
  */
 
 async function verifySignature(attestation, results) {
@@ -64,7 +64,7 @@ async function verifyLocalSignature(attestation) {
         );
         
         // Derive signing key
-        const salt = enc.encode('attest.ink.v1.' + attestation.id);
+        const salt = enc.encode('attest.v1.' + attestation.id);
         const key = await crypto.subtle.deriveKey(
             {
                 name: 'PBKDF2',
@@ -90,7 +90,7 @@ async function verifyLocalSignature(attestation) {
         const calculatedSig = '0x' + sigArray.map(b => b.toString(16).padStart(2, '0')).join('');
         
         // Verify signer ID
-        const signerData = enc.encode('attest.ink.signer.' + password);
+        const signerData = enc.encode('attest.signer.' + password);
         const signerHash = await crypto.subtle.digest('SHA-256', signerData);
         const signerArray = Array.from(new Uint8Array(signerHash));
         const calculatedSigner = '0x' + signerArray.slice(0, 20).map(b => b.toString(16).padStart(2, '0')).join('');

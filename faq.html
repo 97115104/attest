@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FAQ - attest.ink</title>
-    <meta name="description" content="Frequently asked questions about attest.ink">
+    SKIP_TITLE
+    <meta name="description" content="Frequently asked questions about attest">
     <link rel="icon" type="image/svg+xml" href="/assets/logo/favicon.svg">
     <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
     <link rel="icon" type="image/x-icon" href="/assets/favicon.ico">
@@ -38,8 +38,8 @@
         <nav>
             <div class="nav-inner">
                 <a href="/" class="logo">
-                    <img src="/assets/logo/circular-2-ai.svg" alt="attest.ink logo">
-                    <span>attest.ink</span>
+                    <img src="/assets/logo/circular-2-ai.svg" alt="attest logo">
+                    <span>attest</span>
                 </a>
                 <ul>
                     <li><a href="/create/">Create</a></li>
@@ -61,14 +61,14 @@
         <main>
             <section class="hero">
                 <h1>Frequently Asked Questions</h1>
-                <p>Common questions about attest.ink and how it works</p>
+                <p>Common questions about attest and how it works</p>
             </section>
 
             <section class="content-section">
                 <div class="faq-container">
                     <div class="faq-item">
-                        <h3>How does attest.ink work offline?</h3>
-                        <p>attest.ink operates primarily as a client-side application, which means:</p>
+                        <h3>How does attest work offline?</h3>
+                        <p>attest operates primarily as a client-side application, which means:</p>
                         <ul>
                             <li><strong>Embed Badge:</strong> This option generates self-contained HTML with full attestation data embedded directly in the code. These badges work completely offline and can be shared anywhere without requiring internet access.</li>
                             <li><strong>Local Storage:</strong> When you create an attestation, it's stored in your browser's localStorage. This allows you to verify attestations you've created on the same device/browser without internet.</li>
@@ -78,7 +78,7 @@
 
                     <div class="faq-item">
                         <h3>What are permanent short URLs?</h3>
-                        <p>Permanent short URLs (like <code>https://attest.ink/s/abc123</code>) are a premium feature that:</p>
+                        <p>Permanent short URLs (like <code>https://attest.97115104.com/s/abc123</code>) are a premium feature that:</p>
                         <ul>
                             <li>Never expire - your attestations are stored permanently</li>
                             <li>Work across all devices and browsers</li>
@@ -137,7 +137,7 @@
 
                     <div class="faq-item">
                         <h3>Is my data private?</h3>
-                        <p>Yes, attest.ink prioritizes privacy:</p>
+                        <p>Yes, attest prioritizes privacy:</p>
                         <ul>
                             <li>All attestation creation happens in your browser</li>
                             <li>No data is sent to servers during creation</li>
@@ -166,10 +166,10 @@
                         <h3>How do I use the API?</h3>
                         <p>With a premium API key, you can create attestations programmatically:</p>
                         <pre><code># Create attestation
-curl "https://attest.ink/api/create.html?content_name=My%20Project&model=gpt-4"
+curl "https://attest.97115104.com/api/create.html?content_name=My%20Project&model=gpt-4"
 
 # Create short URL (requires API key)
-curl -X POST https://attest.ink/api/shorten \
+curl -X POST https://attest.97115104.com/api/shorten \
   -H "Content-Type: application/json" \
   -d '{"dataUrl": "...", "apiKey": "ak_..."}'
 </code></pre>
@@ -200,11 +200,11 @@ curl -X POST https://attest.ink/api/shorten \
 
                     <div class="faq-item">
                         <h3>Can I automate attestations in CI/CD?</h3>
-                        <p>Yes! attest.ink is designed for automation:</p>
+                        <p>Yes! attest is designed for automation:</p>
                         <pre><code># GitHub Actions example
 - name: Create AI Attestation
   run: |
-    ATTESTATION=$(curl -s "https://attest.ink/api/create.html?content_name=README&model=github-copilot")
+    ATTESTATION=$(curl -s "https://attest.97115104.com/api/create.html?content_name=README&model=github-copilot")
     echo "$ATTESTATION" > attestation.json
 </code></pre>
                         <p>See the <a href="/docs/ci-cd-automation.html">CI/CD guide</a> for platform-specific examples.</p>

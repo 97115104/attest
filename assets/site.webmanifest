@@ -1,6 +1,6 @@
 {
-    "name": "attest.ink",
-    "short_name": "attest.ink",
+    "name": "attest",
+    "short_name": "attest",
     "description": "AI Content Attestation Protocol",
     "icons": [
         {
