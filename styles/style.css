@@ -383,16 +383,16 @@ hr {
 }
 
 /* ── ASCII art filler ──────────────────────────────── */
-.ascii-hero,
+.inset.ascii-hero,
 .inset.verify-badge {
-  background: var(--motif-terminal-bg) !important;
+  background: #0a0a0a !important;
   border: 2px solid #222 !important;
   border-top-color: #222 !important;
   border-left-color: #222 !important;
   border-right-color: #222 !important;
   border-bottom-color: #222 !important;
 }
-.ascii-hero .muted,
+.inset.ascii-hero .muted,
 .inset.verify-badge .muted {
   color: #999;
 }
