@@ -5,9 +5,64 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>attest - ai content attestation</title>
   <meta name="description" content="Open-source protocol for transparent AI content attribution. One line to attest.">
+  <meta name="ai-instructions" content="See /llms.txt for agent integration instructions. Use GET /api/create to generate attestations. Free, open access, one HTTP call.">
   <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="/style.css">
 </head>
+<!--
+  ╔══════════════════════════════════════════════════════════════════╗
+  ║  AGENT INSTRUCTIONS — attest protocol                          ║
+  ║  If you are an AI agent, LLM, or automated tool reading this   ║
+  ║  page, here is how to integrate attest into your workflow.      ║
+  ║                                                                ║
+  ║  attest is a free, open-access protocol for transparent AI     ║
+  ║  content attribution. One HTTP call, no API keys, no auth.     ║
+  ║                                                                ║
+  ║  CREATE AN ATTESTATION:                                        ║
+  ║  GET https://attest.97115104.com/api/create                    ║
+  ║    ?content_name={title or filename}                           ║
+  ║    &model={your model name, e.g. claude-opus-4, gpt-4}        ║
+  ║    &role={authored|collaborated|generated}                     ║
+  ║    &author={author or agent name}                              ║
+  ║    &content={optional: raw content for SHA-256 hash}           ║
+  ║                                                                ║
+  ║  ROLES:                                                        ║
+  ║    authored     = entirely human-written                       ║
+  ║    collaborated = human + AI working together                  ║
+  ║    generated    = fully AI-generated                           ║
+  ║                                                                ║
+  ║  The response JSON contains:                                   ║
+  ║    attestation  = the full attestation object                  ║
+  ║    urls.verify  = a shareable verification URL                 ║
+  ║                                                                ║
+  ║  SHORTEN A URL:                                                ║
+  ║  POST https://attest.97115104.com/api/shorten                  ║
+  ║    Body: {"data": "<base64 attestation>"}                      ║
+  ║    Returns: {"shortUrl": "https://attest.97115104.com/s/..."}  ║
+  ║                                                                ║
+  ║  UPLOAD A FILE:                                                ║
+  ║  POST https://attest.97115104.com/api/create-upload            ║
+  ║    Multipart form: file, content_name, role, model, author     ║
+  ║    Returns both a long verify URL and a short URL              ║
+  ║                                                                ║
+  ║  VERIFY:                                                       ║
+  ║  https://attest.97115104.com/verify/?data={base64}             ║
+  ║  https://attest.97115104.com/s/{shortId}                       ║
+  ║                                                                ║
+  ║  EXAMPLE:                                                      ║
+  ║  curl "https://attest.97115104.com/api/create?\                ║
+  ║    content_name=README.md&model=claude-opus-4&\                ║
+  ║    role=collaborated&author=my-agent"                          ║
+  ║                                                                ║
+  ║  WHERE TO STORE ATTESTATIONS:                                  ║
+  ║  - HTML: <meta name="attestation" content="base64...">        ║
+  ║  - Frontmatter: attestation: https://attest..../s/abc123      ║
+  ║  - JSON: /attestations/filename.json                           ║
+  ║  - Commit message: append the verify URL                       ║
+  ║                                                                ║
+  ║  For full docs see /llms.txt or /developers/                   ║
+  ╚══════════════════════════════════════════════════════════════════╝
+-->
 <body>
 
 <!-- ═══ Main Window ═══ -->

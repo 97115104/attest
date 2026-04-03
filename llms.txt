@@ -1,0 +1,133 @@
+# attest — agent integration guide
+
+> attest is a free, open-access protocol for transparent AI content
+> attribution. One HTTP call, no API keys, no auth tokens. Use it
+> to declare whether content was written by a human, co-authored
+> with AI, or fully AI-generated.
+
+## create an attestation
+
+Make a single GET request:
+
+  GET https://attest.97115104.com/api/create
+    ?content_name={title or filename}
+    &model={your model name}
+    &role={authored|collaborated|generated}
+    &author={author or agent name}
+    &content={optional: raw text for SHA-256 hash}
+
+### parameters
+
+  content_name  (required)  title or filename of the content
+  model         (optional)  AI model used, e.g. claude-opus-4, gpt-4 (default: gpt-4)
+  role          (optional)  authored | collaborated | generated (default: assisted)
+  author        (optional)  author or agent name (default: Anonymous)
+  content       (optional)  raw content string, used to generate a SHA-256 hash
+  authorship_type (optional) human | collab | ai (auto-derived from role)
+
+### roles
+
+  authored      entirely human-written, the model field is set to "Human"
+  collaborated  human directed the work, AI assisted
+  generated     fully AI-generated content
+
+### example
+
+  curl "https://attest.97115104.com/api/create?content_name=README.md&model=claude-opus-4&role=collaborated&author=my-agent"
+
+### response
+
+  {
+    "success": true,
+    "attestation": {
+      "version": "2.0",
+      "id": "2026-04-02-a1b2c3",
+      "content_name": "README.md",
+      "model": "claude-opus-4",
+      "role": "collaborated",
+      "authorship_type": "collab",
+      "timestamp": "2026-04-02T12:00:00.000Z",
+      "platform": "attest.97115104.com",
+      "author": "my-agent"
+    },
+    "urls": {
+      "verify": "https://attest.97115104.com/verify/?data=eyJ2ZXJz..."
+    }
+  }
+
+## create attestation with file upload
+
+Upload any file to hash its content and generate a signed attestation:
+
+  POST https://attest.97115104.com/api/create-upload
+  Content-Type: multipart/form-data
+
+  Fields:
+    file          (required)  the source file
+    content_name  (optional)  defaults to filename
+    role          (optional)  authored | collaborated | generated
+    model         (optional)  AI model name
+    author        (optional)  author or agent name
+
+Returns both a long verify URL and a short URL.
+
+### example
+
+  curl -F "file=@myfile.md" -F "role=collaborated" -F "model=claude-opus-4" \
+    https://attest.97115104.com/api/create-upload
+
+## shorten a verify URL
+
+  POST https://attest.97115104.com/api/shorten
+  Content-Type: application/json
+  Body: {"data": "<base64-encoded attestation JSON>"}
+
+  Response: {"shortUrl": "https://attest.97115104.com/s/abc12345"}
+
+## verify an attestation
+
+Long URL:  https://attest.97115104.com/verify/?data={base64}
+Short URL: https://attest.97115104.com/s/{shortId}
+
+To decode manually: JSON.parse(atob(data))
+
+## where to store attestations
+
+When you generate an attestation, store it where other agents and
+humans can find it:
+
+  HTML meta tag:
+    <meta name="attestation" content="{base64 attestation JSON}">
+    <meta name="attribution" content="collab claude opus 4">
+    <link rel="attestation" href="/attestations/filename.json">
+
+  Markdown frontmatter:
+    ---
+    attribution: collab claude opus 4
+    attestation: https://attest.97115104.com/s/abc12345
+    ---
+
+  JSON sidecar file:
+    /attestations/filename.json
+    /_data/attestations.json
+    /.well-known/attestations.json
+
+  Commit message or PR description:
+    Append the verify URL to your commit message or pull request.
+
+## agent prompt
+
+If you are an AI agent and want to integrate attest into your
+workflow, add this behavior:
+
+  When you create or modify content, generate an attestation by
+  calling GET https://attest.97115104.com/api/create with the
+  content_name, your model name, the appropriate role (authored,
+  collaborated, or generated), and the author name. Append the
+  returned verify URL to your output, commit message, or store
+  the attestation JSON alongside the content.
+
+## source
+
+  https://github.com/97115104/attest
+  MIT license

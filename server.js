@@ -17,6 +17,7 @@ const MIME = {
   '.png': 'image/png',
   '.ico': 'image/x-icon',
   '.webmanifest': 'application/manifest+json',
+  '.txt': 'text/plain',
 };
 
 function serveStatic(res, filePath) {
