@@ -1,948 +1,281 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    SKIP_TITLE
-    <meta name="description" content="Complete developer guide for integrating AI attestations into your applications">
-    <link rel="icon" type="image/svg+xml" href="/assets/logo/favicon.svg">
-    <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
-    <link rel="icon" type="image/x-icon" href="/assets/favicon.ico">
-    <link rel="manifest" href="/assets/site.webmanifest">
-    <meta name="theme-color" content="#111827">
-    <link rel="stylesheet" href="/static/style.css">
-    <link rel="stylesheet" href="/static/badge-styles.css">
-    <link rel="stylesheet" href="/static/mobile-fixes.css">
-    <script src="/static/ai-models.js"></script>
-    <script>
-        // Prevent theme flicker
-        (function() {
-            const saved = localStorage.getItem('theme');
-            let theme = 'light';
-            if (saved) {
-                theme = saved;
-            } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-                theme = 'dark';
-            } else {
-                const hour = new Date().getHours();
-                if (hour >= 18 || hour < 6) {
-                    theme = 'dark';
-                }
-            }
-            document.documentElement.setAttribute('data-theme', theme);
-        })();
-    </script>
-    <style>
-        /* Modern Developer Documentation Styles */
-        
-        /* Quick Start Cards */
-        .quick-start {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 24px;
-            margin-bottom: 60px;
-        }
-        
-        .quick-card {
-            background: var(--bg-panel);
-            border: 2px solid var(--border-color);
-            padding: 24px;
-            border-radius: 8px;
-            transition: all 0.3s;
-            cursor: pointer;
-            text-decoration: none;
-            color: inherit;
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-        }
-        
-        .quick-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
-            border-color: var(--pixel-primary);
-        }
-        
-        .quick-card-icon {
-            font-size: 48px;
-            line-height: 1;
-        }
-        
-        .quick-card h3 {
-            margin: 0;
-            font-size: 24px;
-            color: var(--pixel-primary);
-        }
-        
-        .quick-card p {
-            margin: 0;
-            color: var(--text-secondary);
-            flex: 1;
-        }
-        
-        .quick-card-arrow {
-            color: var(--pixel-accent);
-            font-size: 20px;
-            align-self: flex-end;
-        }
-        
-        /* Main Content Layout */
-        .dev-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 20px;
-        }
-        
-        /* Documentation Grid */
-        .doc-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
-            gap: 32px;
-            margin-bottom: 60px;
-        }
-        
-        .doc-section {
-            background: var(--bg-panel);
-            border: 2px solid var(--border-color);
-            padding: 32px;
-            border-radius: 8px;
-        }
-        
-        .doc-section h2 {
-            margin: 0 0 24px 0;
-            font-size: 28px;
-            color: var(--pixel-primary);
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-        
-        .doc-section-icon {
-            font-size: 32px;
-        }
-        
-        /* Code Examples */
-        .code-tabs {
-            background: var(--bg-secondary);
-            border: 2px solid var(--border-color);
-            border-radius: 8px;
-            overflow: hidden;
-            margin: 16px 0;
-        }
-        
-        .code-tab-buttons {
-            display: flex;
-            background: var(--bg-panel);
-            border-bottom: 2px solid var(--border-color);
-        }
-        
-        .code-tab-button {
-            padding: 12px 24px;
-            background: none;
-            border: none;
-            color: var(--text-secondary);
-            cursor: pointer;
-            font-family: inherit;
-            font-size: 14px;
-            transition: all 0.2s;
-            border-right: 1px solid var(--border-color);
-        }
-        
-        .code-tab-button:last-child {
-            border-right: none;
-        }
-        
-        .code-tab-button:nth-child(4) {
-            border-right: none;
-        }
-        
-        .code-tab-button:hover {
-            background: var(--bg-secondary);
-            color: var(--text-primary);
-        }
-        
-        .code-tab-button.active {
-            background: var(--bg-secondary);
-            color: var(--pixel-primary);
-            font-weight: bold;
-        }
-        
-        .code-tab-content {
-            display: none;
-            padding: 20px;
-        }
-        
-        .code-tab-content.active {
-            display: block;
-        }
-        
-        .code-tab-content pre {
-            margin: 0;
-            overflow-x: auto;
-            font-family: 'Consolas', 'Monaco', monospace;
-            font-size: 14px;
-            line-height: 1.5;
-        }
-        
-        /* Feature Grid */
-        .feature-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 16px;
-            margin: 24px 0;
-        }
-        
-        .feature-item {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 16px;
-            background: var(--bg-secondary);
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-        }
-        
-        .feature-icon {
-            font-size: 24px;
-            color: var(--pixel-accent);
-        }
-        
-        .feature-text {
-            flex: 1;
-        }
-        
-        /* API Endpoint Styles */
-        .endpoint-card {
-            background: var(--bg-secondary);
-            border: 2px solid var(--border-color);
-            border-radius: 8px;
-            padding: 20px;
-            margin: 16px 0;
-        }
-        
-        .endpoint-header {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-            margin-bottom: 16px;
-        }
-        
-        .method-badge {
-            padding: 4px 12px;
-            border-radius: 4px;
-            font-size: 14px;
-            font-weight: bold;
-            color: white;
-        }
-        
-        .method-get { background: #28a745; }
-        .method-post { background: #007bff; }
-        .method-put { background: #ffc107; color: #000; }
-        .method-delete { background: #dc3545; }
-        
-        .endpoint-path {
-            font-family: 'Consolas', 'Monaco', monospace;
-            font-size: 18px;
-            color: var(--text-primary);
-        }
-        
-        /* Interactive Demo */
-        .demo-container {
-            background: var(--bg-secondary);
-            border: 2px solid var(--border-color);
-            border-radius: 8px;
-            padding: 32px;
-            margin: 32px 0;
-        }
-        
-        .demo-controls {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 16px;
-            margin-bottom: 24px;
-        }
-        
-        .demo-control {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
-        
-        .demo-control label {
-            font-weight: bold;
-            color: var(--text-primary);
-        }
-        
-        .demo-control select,
-        .demo-control input {
-            padding: 10px;
-            background: var(--bg-main);
-            border: 2px solid var(--border-color);
-            color: var(--text-primary);
-            font-family: inherit;
-            font-size: 16px;
-            border-radius: 4px;
-        }
-        
-        .demo-preview {
-            background: var(--bg-main);
-            border: 2px solid var(--border-color);
-            border-radius: 8px;
-            padding: 24px;
-            text-align: center;
-        }
-        
-        /* Resource Links */
-        .resource-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 20px;
-            margin: 32px 0;
-        }
-        
-        .resource-card {
-            background: var(--bg-secondary);
-            border: 2px solid var(--border-color);
-            border-radius: 8px;
-            padding: 20px;
-            text-decoration: none;
-            color: inherit;
-            transition: all 0.3s;
-            display: flex;
-            align-items: center;
-            gap: 16px;
-        }
-        
-        .resource-card:hover {
-            transform: translateX(4px);
-            border-color: var(--pixel-primary);
-        }
-        
-        .resource-icon {
-            font-size: 32px;
-            color: var(--pixel-accent);
-        }
-        
-        .resource-content h4 {
-            margin: 0 0 4px 0;
-            color: var(--pixel-primary);
-        }
-        
-        .resource-content p {
-            margin: 0;
-            font-size: 14px;
-            color: var(--text-secondary);
-        }
-        
-        /* Mobile Responsive */
-        @media (max-width: 768px) {
-            .quick-card-icon {
-                width: 40px;
-                height: 40px;
-            }
-            
-            .code-tab-buttons {
-                overflow-x: auto;
-                -webkit-overflow-scrolling: touch;
-                scrollbar-width: none;
-            }
-            
-            .code-tab-buttons::-webkit-scrollbar {
-                display: none;
-            }
-            
-            .code-tab-button {
-                flex-shrink: 0;
-                white-space: nowrap;
-            }
-            
-        @media (max-width: 768px) {
-            .quick-start {
-                grid-template-columns: 1fr;
-            }
-            
-            .doc-grid {
-                grid-template-columns: 1fr;
-                gap: 24px;
-            }
-            
-            .doc-section {
-                padding: 24px;
-            }
-            
-            .doc-section h2 {
-                font-size: 24px;
-            }
-            
-            .code-tab-button {
-                padding: 10px 16px;
-                font-size: 12px;
-            }
-            
-            .code-tab-content {
-                padding: 16px;
-            }
-            
-            .code-tab-content pre {
-                font-size: 12px;
-            }
-            
-            .endpoint-path {
-                font-size: 14px;
-                word-break: break-all;
-            }
-            
-            .demo-container {
-                padding: 20px;
-            }
-            
-            .resource-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-        
-        /* Copy button for code blocks */
-        .code-block {
-            position: relative;
-        }
-        
-        .copy-button {
-            position: absolute;
-            top: 8px;
-            right: 8px;
-            padding: 4px 12px;
-            background: var(--bg-panel);
-            border: 1px solid var(--border-color);
-            color: var(--text-secondary);
-            font-size: 12px;
-            cursor: pointer;
-            border-radius: 4px;
-            transition: all 0.2s;
-        }
-        
-        .copy-button:hover {
-            background: var(--pixel-primary);
-            color: var(--bg-main);
-        }
-        
-        .copy-button.copied {
-            background: var(--pixel-accent);
-            color: var(--bg-main);
-        }
-        
-        /* Status indicators */
-        .status-badge {
-            display: inline-block;
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: bold;
-            margin-left: 8px;
-        }
-        
-        .status-stable { background: #28a745; color: white; }
-        .status-beta { background: #ffc107; color: #000; }
-        .status-experimental { background: #dc3545; color: white; }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Developer Docs — attest</title>
+  <meta name="description" content="Developer documentation for attest — AI content attestation protocol">
+  <link rel="icon" href="/assets/favicon.ico">
+  <link rel="stylesheet" href="/style.css">
 </head>
 <body>
-    <button class="theme-toggle" id="theme-toggle" aria-label="Toggle theme">D</button>
-    <div class="container">
-        <nav>
-            <div class="nav-inner">
-                <a href="/" class="logo">
-                    <img src="/assets/logo/circular-2-ai.svg" alt="attest logo">
-                    <span>attest</span>
-                </a>
-                <ul>
-                    <li><a href="/create/">Create</a></li>
-                    <li><a href="/verify/">Verify</a></li>
-                    <li class="dropdown">
-                        <span class="dropdown-toggle">More</span>
-                        <div class="dropdown-menu">
-                            <a href="/protocol/">Protocol</a>
-                            <a href="/showcase/">Badges</a>
-                            <a href="/examples/">Examples</a>
-                            <a href="/developers/" class="active">Developer Docs</a>
-                            <a href="/faq.html">FAQ</a>
-                            <a href="https://github.com/97115104/attest" target="_blank">GitHub</a>
-                        </div>
-                    </li>
-                </ul>
-            </div>
-        </nav>
 
-        <main>
-            <section class="hero">
-                <h1>Developer Documentation</h1>
-                <p>Build with attest - integrate AI attestations into your applications</p>
-            </section>
+<!-- ═══ Docs Window ═══ -->
+<div class="window">
+  <div class="title-bar">
+    <img src="/assets/logo/circular-2-ai.svg" alt="">
+    <span>docs.exe — Developer Documentation</span>
+    <div class="title-bar-controls">
+      <div class="title-btn">─</div>
+      <div class="title-btn">□</div>
+      <div class="title-btn">×</div>
+    </div>
+  </div>
+  <div class="window-body">
 
-            <div class="dev-container">
-                <!-- Quick Start Section -->
-                <section id="quickstart" class="doc-section">
-                    <h2>
-                        <svg class="doc-section-icon" width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M13 20L8 16L12 12" stroke="var(--pixel-primary)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                            <path d="M20 12L24 16L20 20" stroke="var(--pixel-primary)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                            <path d="M18 8L14 24" stroke="var(--pixel-accent)" stroke-width="2" stroke-linecap="round"/>
-                        </svg>
-                        Quick Start
-                    </h2>
-                    
-                    <p style="font-size: 18px; margin-bottom: 24px;">Create your first AI attestation in 3 simple steps:</p>
-                    
-                    <div class="code-tabs">
-                        <div class="code-tab-buttons">
-                            <button class="code-tab-button active" onclick="showTab('quick', 'curl')">cURL</button>
-                            <button class="code-tab-button" onclick="showTab('quick', 'js')">JavaScript</button>
-                            <button class="code-tab-button" onclick="showTab('quick', 'python')">Python</button>
-                            <button class="code-tab-button" onclick="showTab('quick', 'html')">HTML</button>
-                        </div>
-                        
-                        <div id="quick-curl" class="code-tab-content active">
-                            <div class="code-block">
-                                <button class="copy-button" onclick="copyCode(this)">Copy</button>
-                                <pre><code># Step 1: Create an attestation
-curl "https://attest.97115104.com/api/create.html?content_name=My%20Article&model=gpt-4&role=assisted"
-
-# Step 2: Get the verification URL from response
-# Step 3: Add the badge to your content</code></pre>
-                            </div>
-                        </div>
-                        
-                        <div id="quick-js" class="code-tab-content">
-                            <div class="code-block">
-                                <button class="copy-button" onclick="copyCode(this)">Copy</button>
-                                <pre><code>// Step 1: Create an attestation
-const response = await fetch('https://attest.97115104.com/api/create.html?' + 
-  new URLSearchParams({
-    content_name: 'My Article',
-    model: 'gpt-4',
-    role: 'assisted'
-  })
-);
-
-const data = await response.json();
-
-// Step 2: Add badge to your page
-document.getElementById('badge').innerHTML = data.embedHtml;</code></pre>
-                            </div>
-                        </div>
-                        
-                        <div id="quick-python" class="code-tab-content">
-                            <div class="code-block">
-                                <button class="copy-button" onclick="copyCode(this)">Copy</button>
-                                <pre><code>import requests
-
-# Step 1: Create an attestation
-response = requests.get('https://attest.97115104.com/api/create.html', params={
-    'content_name': 'My Article',
-    'model': 'gpt-4',
-    'role': 'assisted'
-})
-
-data = response.json()
-
-# Step 2: Get the badge HTML
-badge_html = data['embedHtml']
-verify_url = data['verifyUrl']</code></pre>
-                            </div>
-                        </div>
-                        
-                        <div id="quick-html" class="code-tab-content">
-                            <div class="code-block">
-                                <button class="copy-button" onclick="copyCode(this)">Copy</button>
-                                <pre><code>&lt;!-- Add AI attestation badge to your page --&gt;
-&lt;a href="https://attest.97115104.com/verify/?data=YOUR_ATTESTATION_DATA" target="_blank"&gt;
-    &lt;img src="https://attest.97115104.com/assets/badges/gpt-4-assisted.svg" 
-         alt="AI Assisted" 
-         width="140" 
-         height="30"&gt;
-&lt;/a&gt;</code></pre>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <h3 style="margin-top: 32px;">Key Features</h3>
-                    <div class="feature-grid">
-                        <div class="feature-item">
-                            <svg class="feature-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M12 2L4 7V12C4 16.4 6.9 20.4 11 21.7C11.3 21.8 11.7 21.9 12 21.9C12.3 21.9 12.7 21.8 13 21.7C17.1 20.4 20 16.4 20 12V7L12 2Z" stroke="var(--pixel-accent)" stroke-width="2" stroke-linejoin="round"/>
-                                <path d="M9 12L11 14L15 10" stroke="var(--pixel-accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                            </svg>
-                            <div class="feature-text">No API key required</div>
-                        </div>
-                        <div class="feature-item">
-                            <svg class="feature-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <rect x="3" y="5" width="18" height="14" stroke="var(--pixel-accent)" stroke-width="2" stroke-linejoin="round"/>
-                                <path d="M8 9H16M8 13H16" stroke="var(--pixel-accent)" stroke-width="2" stroke-linecap="round"/>
-                            </svg>
-                            <div class="feature-text">Works offline</div>
-                        </div>
-                        <div class="feature-item">
-                            <svg class="feature-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <circle cx="12" cy="12" r="10" stroke="var(--pixel-accent)" stroke-width="2"/>
-                                <path d="M2 12H22M12 2C12 2 7 7 7 12C7 17 12 22 12 22M12 2C12 2 17 7 17 12C17 17 12 22 12 22" stroke="var(--pixel-accent)" stroke-width="2"/>
-                            </svg>
-                            <div class="feature-text">Decentralized</div>
-                        </div>
-                        <div class="feature-item">
-                            <svg class="feature-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M13 2L3.5 13H12L11 22L20.5 11H12L13 2Z" stroke="var(--pixel-accent)" stroke-width="2" stroke-linejoin="round"/>
-                            </svg>
-                            <div class="feature-text">Instant verification</div>
-                        </div>
-                    </div>
-                </section>
-
-                <div style="height: 60px;"></div>
-
-                <!-- API Reference Grid -->
-                <div id="api-reference" class="doc-grid">
-                    <div class="doc-section">
-                        <h2>
-                            <svg class="doc-section-icon" width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M12 20L8 16L12 12" stroke="var(--pixel-primary)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                                <path d="M20 12L24 16L20 20" stroke="var(--pixel-primary)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                                <path d="M18 8L14 24" stroke="var(--pixel-accent)" stroke-width="2" stroke-linecap="round"/>
-                            </svg>
-                            Core API
-                        </h2>
-                        
-                        <div class="endpoint-card">
-                            <div class="endpoint-header">
-                                <span class="method-badge method-get">GET</span>
-                                <span class="endpoint-path">/api/create.html</span>
-                            </div>
-                            <p>Create a new attestation for your content. Returns JSON with attestation data and embed code.</p>
-                            <a href="/docs/api-reference.html#create-api" class="btn btn-secondary" style="margin-top: 16px;">View Documentation →</a>
-                        </div>
-                        
-                        <div class="endpoint-card">
-                            <div style="margin-bottom: 8px;">
-                                <span class="status-badge status-beta">Premium</span>
-                            </div>
-                            <div class="endpoint-header">
-                                <span class="method-badge method-post">POST</span>
-                                <span class="endpoint-path">/api/shorten</span>
-                            </div>
-                            <p>Create permanent short URLs for your attestations. Requires API key.</p>
-                            <a href="/docs/api-reference.html#shorten-api" class="btn btn-secondary" style="margin-top: 16px;">View Documentation →</a>
-                        </div>
-                    </div>
-                    
-                    <div class="doc-section">
-                        <h2>
-                            <svg class="doc-section-icon" width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M16 4C16 4 10 6 10 12V18C10 24 16 28 16 28C16 28 22 24 22 18V12C22 6 16 4 16 4Z" stroke="var(--pixel-primary)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                                <path d="M13 16L15 18L19 14" stroke="var(--pixel-accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                            </svg>
-                            Badge Customization
-                        </h2>
-                        
-                        <p>Choose from multiple badge styles to match your brand:</p>
-                        
-                        <div style="display: flex; flex-direction: column; gap: 16px; margin: 24px 0;">
-                            <div style="display: flex; align-items: center; gap: 16px;">
-                                <img src="/assets/badges/ai-assisted.svg" alt="Standard" width="140" height="30">
-                                <span style="color: var(--text-secondary);">Standard</span>
-                            </div>
-                            <div style="display: flex; align-items: center; gap: 16px;">
-                                <span class="badge-glass badge-glass-primary">AI ASSISTED</span>
-                                <span style="color: var(--text-secondary);">Glass</span>
-                            </div>
-                            <div style="display: flex; align-items: center; gap: 16px;">
-                                <img src="https://img.shields.io/badge/AI-Assisted-blue" alt="Shield" height="30">
-                                <span style="color: var(--text-secondary);">Shield.io</span>
-                            </div>
-                        </div>
-                        
-                        <a href="/showcase/" class="btn btn-secondary">View All Badge Styles →</a>
-                    </div>
-                </div>
-
-
-                <!-- Framework Integrations -->
-                <section id="integrations" class="doc-section">
-                    <h2>
-                        <svg class="doc-section-icon" width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <rect x="6" y="14" width="8" height="12" stroke="var(--pixel-primary)" stroke-width="2" stroke-linejoin="round"/>
-                            <rect x="18" y="6" width="8" height="20" stroke="var(--pixel-accent)" stroke-width="2" stroke-linejoin="round"/>
-                            <path d="M10 14V8" stroke="var(--pixel-primary)" stroke-width="2" stroke-linecap="round"/>
-                            <path d="M22 26V28" stroke="var(--pixel-accent)" stroke-width="2" stroke-linecap="round"/>
-                        </svg>
-                        Framework Integrations
-                    </h2>
-                    
-                    <div class="code-tabs">
-                        <div class="code-tab-buttons">
-                            <button class="code-tab-button active" onclick="showTab('framework', 'react')">React</button>
-                            <button class="code-tab-button" onclick="showTab('framework', 'vue')">Vue</button>
-                            <button class="code-tab-button" onclick="showTab('framework', 'next')">Next.js</button>
-                            <button class="code-tab-button" onclick="showTab('framework', 'svelte')">Svelte</button>
-                        </div>
-                        
-                        <div id="framework-react" class="code-tab-content active">
-                            <div class="code-block">
-                                <button class="copy-button" onclick="copyCode(this)">Copy</button>
-                                <pre><code>import { useEffect, useState } from 'react';
-
-function AIBadge({ contentName, model = 'gpt-4', role = 'assisted' }) {
-  const [badgeHtml, setBadgeHtml] = useState('');
-  
-  useEffect(() => {
-    fetch(`https://attest.97115104.com/api/create.html?` + 
-      new URLSearchParams({ content_name: contentName, model, role }))
-      .then(res => res.json())
-      .then(data => setBadgeHtml(data.embedHtml));
-  }, [contentName, model, role]);
-  
-  return <div dangerouslySetInnerHTML={{ __html: badgeHtml }} />;
-}</code></pre>
-                            </div>
-                        </div>
-                        
-                        <div id="framework-vue" class="code-tab-content">
-                            <div class="code-block">
-                                <button class="copy-button" onclick="copyCode(this)">Copy</button>
-                                <pre><code>&lt;template&gt;
-  &lt;div v-html="badgeHtml"&gt;&lt;/div&gt;
-&lt;/template&gt;
-
-&lt;script&gt;
-export default {
-  props: ['contentName', 'model', 'role'],
-  data() {
-    return { badgeHtml: '' }
-  },
-  async mounted() {
-    const params = new URLSearchParams({
-      content_name: this.contentName,
-      model: this.model || 'gpt-4',
-      role: this.role || 'assisted'
-    });
-    const res = await fetch(`https://attest.97115104.com/api/create.html?${params}`);
-    const data = await res.json();
-    this.badgeHtml = data.embedHtml;
-  }
-}
-&lt;/script&gt;</code></pre>
-                            </div>
-                        </div>
-                        
-                        <div id="framework-next" class="code-tab-content">
-                            <div class="code-block">
-                                <button class="copy-button" onclick="copyCode(this)">Copy</button>
-                                <pre><code>// pages/api/attestation.js
-export default async function handler(req, res) {
-  const { content_name, model = 'gpt-4', role = 'assisted' } = req.query;
-  
-  const response = await fetch('https://attest.97115104.com/api/create.html?' + 
-    new URLSearchParams({ content_name, model, role }));
-  
-  const data = await response.json();
-  res.status(200).json(data);
-}
-
-// Component
-import useSWR from 'swr';
-
-function AIBadge({ contentName }) {
-  const { data } = useSWR(`/api/attestation?content_name=${contentName}`);
-  return data ? <div dangerouslySetInnerHTML={{ __html: data.embedHtml }} /> : null;
-}</code></pre>
-                            </div>
-                        </div>
-                        
-                        <div id="framework-svelte" class="code-tab-content">
-                            <div class="code-block">
-                                <button class="copy-button" onclick="copyCode(this)">Copy</button>
-                                <pre><code>&lt;script&gt;
-  import { onMount } from 'svelte';
-  
-  export let contentName;
-  export let model = 'gpt-4';
-  export let role = 'assisted';
-  
-  let badgeHtml = '';
-  
-  onMount(async () => {
-    const params = new URLSearchParams({ content_name: contentName, model, role });
-    const res = await fetch(`https://attest.97115104.com/api/create.html?${params}`);
-    const data = await res.json();
-    badgeHtml = data.embedHtml;
-  });
-&lt;/script&gt;
-
-{@html badgeHtml}</code></pre>
-                            </div>
-                        </div>
-                    </div>
-                </section>
-
-                <!-- Resources -->
-                <section>
-                    <h2 style="font-size: 32px; margin: 48px 0 32px 0; display: flex; align-items: center; justify-content: center; gap: 12px;">
-                        <svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M6 8H12V28H6V8Z" stroke="var(--pixel-primary)" stroke-width="2" stroke-linejoin="round"/>
-                            <path d="M15 4H21V28H15V4Z" stroke="var(--pixel-accent)" stroke-width="2" stroke-linejoin="round"/>
-                            <path d="M24 12H30V28H24V12Z" stroke="var(--pixel-primary)" stroke-width="2" stroke-linejoin="round"/>
-                            <path d="M4 32H32" stroke="var(--pixel-primary)" stroke-width="2" stroke-linecap="round"/>
-                        </svg>
-                        Resources & Support
-                    </h2>
-                    
-                    <div class="resource-grid">
-                        <a href="/docs/api-reference.html" class="resource-card">
-                            <svg class="resource-icon" width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M6 6H14C15.1046 6 16 6.89543 16 8V26C16 25.4477 15.5523 25 15 25H6V6Z" stroke="var(--pixel-accent)" stroke-width="2" stroke-linejoin="round"/>
-                                <path d="M26 6H18C16.8954 6 16 6.89543 16 8V26C16 25.4477 16.4477 25 17 25H26V6Z" stroke="var(--pixel-accent)" stroke-width="2" stroke-linejoin="round"/>
-                            </svg>
-                            <div class="resource-content">
-                                <h4>API Reference</h4>
-                                <p>Complete API documentation with examples</p>
-                            </div>
-                        </a>
-                        
-                        <a href="/docs/ci-cd-automation.html" class="resource-card">
-                            <svg class="resource-icon" width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <rect x="4" y="8" width="14" height="16" stroke="var(--pixel-accent)" stroke-width="2" stroke-linejoin="round"/>
-                                <path d="M20 12H24C25.1046 12 26 12.8954 26 14V22C26 23.1046 25.1046 24 24 24H20" stroke="var(--pixel-accent)" stroke-width="2"/>
-                                <path d="M14 8V4H24C25.1046 4 26 4.89543 26 6V10" stroke="var(--pixel-accent)" stroke-width="2"/>
-                                <path d="M11 5V8M11 24V27" stroke="var(--pixel-accent)" stroke-width="2" stroke-linecap="round"/>
-                            </svg>
-                            <div class="resource-content">
-                                <h4>CI/CD Guide</h4>
-                                <p>Automate attestations in your pipeline</p>
-                            </div>
-                        </a>
-                        
-                        <a href="/showcase/" class="resource-card">
-                            <svg class="resource-icon" width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M16 6C16 6 10 8 10 14V20C10 26 16 30 16 30C16 30 22 26 22 20V14C22 8 16 6 16 6Z" stroke="var(--pixel-accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                                <circle cx="16" cy="16" r="3" fill="var(--pixel-accent)"/>
-                            </svg>
-                            <div class="resource-content">
-                                <h4>Badge Gallery</h4>
-                                <p>Browse all available badge styles</p>
-                            </div>
-                        </a>
-                        
-                        <a href="/examples/" class="resource-card">
-                            <svg class="resource-icon" width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M16 2C11.58 2 8 5.58 8 10C8 12.8 9.4 15.28 11.52 16.72C12.44 17.36 13 18.44 13 19.6V22H19V19.6C19 18.44 19.56 17.36 20.48 16.72C22.6 15.28 24 12.8 24 10C24 5.58 20.42 2 16 2Z" stroke="var(--pixel-accent)" stroke-width="2" stroke-linejoin="round"/>
-                                <path d="M13 26H19" stroke="var(--pixel-accent)" stroke-width="2" stroke-linecap="round"/>
-                                <path d="M16 26V30" stroke="var(--pixel-accent)" stroke-width="2" stroke-linecap="round"/>
-                            </svg>
-                            <div class="resource-content">
-                                <h4>Examples</h4>
-                                <p>Real-world integration examples</p>
-                            </div>
-                        </a>
-                        
-                        <a href="https://github.com/97115104/attest" target="_blank" class="resource-card">
-                            <svg class="resource-icon" width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <circle cx="16" cy="12" r="6" stroke="var(--pixel-accent)" stroke-width="2"/>
-                                <path d="M10 18C10 18 9 26 6 28" stroke="var(--pixel-accent)" stroke-width="2" stroke-linecap="round"/>
-                                <path d="M22 18C22 18 23 26 26 28" stroke="var(--pixel-accent)" stroke-width="2" stroke-linecap="round"/>
-                                <path d="M13 18C13 18 12 24 10 26" stroke="var(--pixel-accent)" stroke-width="2" stroke-linecap="round"/>
-                                <path d="M19 18C19 18 20 24 22 26" stroke="var(--pixel-accent)" stroke-width="2" stroke-linecap="round"/>
-                                <path d="M16 18V28" stroke="var(--pixel-accent)" stroke-width="2" stroke-linecap="round"/>
-                            </svg>
-                            <div class="resource-content">
-                                <h4>GitHub</h4>
-                                <p>Source code and issue tracker</p>
-                            </div>
-                        </a>
-                        
-                        <a href="/faq.html" class="resource-card">
-                            <svg class="resource-icon" width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <circle cx="16" cy="16" r="10" stroke="var(--pixel-accent)" stroke-width="2"/>
-                                <path d="M16 19V18C16 17 16.5 16.5 17 16C17.5 15.5 18 15 18 14C18 12.9 17.1 12 16 12C14.9 12 14 12.9 14 14" stroke="var(--pixel-accent)" stroke-width="2" stroke-linecap="round"/>
-                                <circle cx="16" cy="22" r="0.5" fill="var(--pixel-accent)"/>
-                            </svg>
-                            <div class="resource-content">
-                                <h4>FAQ</h4>
-                                <p>Common questions answered</p>
-                            </div>
-                        </a>
-                    </div>
-                </section>
-
-                <!-- Support Section -->
-                <section class="doc-section" style="margin-top: 60px; text-align: center;">
-                    <h2>Need Help?</h2>
-                    <p style="font-size: 18px; color: var(--text-secondary); margin-bottom: 32px;">
-                        We're here to help you integrate AI attestations into your projects
-                    </p>
-                    <div style="display: flex; gap: 16px; justify-content: center; flex-wrap: wrap;">
-                        <a href="https://github.com/97115104/attest/issues" target="_blank" class="btn">
-                            Report an Issue
-                        </a>
-                        <a href="mailto:support@attest.97115104.com" class="btn btn-secondary">
-                            Email Support
-                        </a>
-                    </div>
-                </section>
-            </div>
-        </main>
+    <!-- Tab bar -->
+    <div class="tab-bar">
+      <div class="tab active" data-tab="quickstart">Quick Start</div>
+      <div class="tab" data-tab="api">API</div>
+      <div class="tab" data-tab="format">Format</div>
+      <div class="tab" data-tab="cicd">CI/CD</div>
     </div>
 
-    <script>
-        // Tab switching functionality
-        function showTab(group, tab) {
-            // Hide all tabs in group
-            document.querySelectorAll(`[id^="${group}-"]`).forEach(content => {
-                content.classList.remove('active');
-            });
-            
-            // Remove active from all buttons in group
-            document.querySelectorAll('.code-tab-button').forEach(button => {
-                if (button.closest('.code-tabs').querySelector(`[id^="${group}-"]`)) {
-                    button.classList.remove('active');
-                }
-            });
-            
-            // Show selected tab
-            document.getElementById(`${group}-${tab}`).classList.add('active');
-            
-            // Mark button as active
-            event.target.classList.add('active');
-        }
-        
-        // Copy code functionality
-        function copyCode(button) {
-            const code = button.parentElement.querySelector('code').textContent;
-            navigator.clipboard.writeText(code).then(() => {
-                button.textContent = 'Copied!';
-                button.classList.add('copied');
-                setTimeout(() => {
-                    button.textContent = 'Copy';
-                    button.classList.remove('copied');
-                }, 2000);
-            });
-        }
-        
-        
-        // Smooth scroll for anchor links
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
-                if (target) {
-                    target.scrollIntoView({
-                        behavior: 'smooth',
-                        block: 'start'
-                    });
-                }
-            });
-        });
-    </script>
+    <!-- ── Quick Start ─────────────────────────────── -->
+    <div class="inset tab-content active" id="tab-quickstart">
 
-    <script src="/static/theme.js"></script>
-    <script src="/static/mobile-nav.js"></script>
-    <script src="/static/badge-renderer.js"></script>
-    <script src="/static/global-footer.js"></script>
+      <h2>▸ 1. Add attribution to your content</h2>
+      <p>In any markdown file's frontmatter, add an <code>attribution</code> field:</p>
+      <pre><code>---
+title: My Post
+attribution: collab claude opus 4
+---
+
+Your content here...</code></pre>
+
+      <table>
+        <tr><th>Value</th><th>Meaning</th></tr>
+        <tr><td><code>human</code></td><td>Written entirely by a human</td></tr>
+        <tr><td><code>collab &lt;model&gt;</code></td><td>Human + AI collaboration</td></tr>
+        <tr><td><code>ai &lt;model&gt;</code></td><td>Fully AI-generated</td></tr>
+      </table>
+
+      <hr>
+
+      <h2>▸ 2. Generate attestations</h2>
+      <p>Use the generation script (Node.js) to process all posts:</p>
+      <pre><code>node generate-attestations.js</code></pre>
+      <p>This reads every <code>_posts/*.md</code>, hashes the content, signs it, and writes attestation data to <code>_data/attestations.json</code>.</p>
+
+      <hr>
+
+      <h2>▸ 3. Or use the API (one line)</h2>
+      <pre><code>curl "https://attest.97115104.com/api/create?content_name=My+Post&amp;model=claude-opus-4&amp;role=collaborated"</code></pre>
+      <p class="muted">Returns JSON immediately. No auth needed. Free forever.</p>
+
+    </div>
+
+    <!-- ── API Reference ───────────────────────────── -->
+    <div class="inset tab-content" id="tab-api">
+
+      <h2>▸ Create Attestation</h2>
+      <div class="fieldset">
+        <div class="fieldset-legend">GET /api/create</div>
+        <table>
+          <tr><th>Param</th><th>Required</th><th>Description</th></tr>
+          <tr><td><code>content_name</code></td><td>Yes</td><td>Title of the content</td></tr>
+          <tr><td><code>model</code></td><td>No</td><td>AI model used (default: gpt-4)</td></tr>
+          <tr><td><code>role</code></td><td>No</td><td><code>authored</code> | <code>collaborated</code> | <code>generated</code> (default: assisted)</td></tr>
+          <tr><td><code>authorship_type</code></td><td>No</td><td><code>human</code> | <code>collab</code> | <code>ai</code> (auto-derived from role)</td></tr>
+          <tr><td><code>author</code></td><td>No</td><td>Author name (default: Anonymous)</td></tr>
+          <tr><td><code>content</code></td><td>No</td><td>Raw content (for SHA-256 hash)</td></tr>
+        </table>
+      </div>
+
+      <h3>Example request</h3>
+      <pre><code>curl "https://attest.97115104.com/api/create?content_name=README&model=claude-opus-4&role=collaborated"</code></pre>
+
+      <h3>Example response</h3>
+      <pre><code>{
+  "success": true,
+  "attestation": {
+    "version": "2.0",
+    "id": "2026-04-02-a1b2c3",
+    "content_name": "README",
+    "model": "claude-opus-4",
+    "role": "collaborated",
+    "authorship_type": "collab",
+    "timestamp": "2026-04-02T12:00:00.000Z",
+    "platform": "attest.97115104.com",
+    "author": "Anonymous"
+  },
+  "urls": {
+    "verify": "https://attest.97115104.com/verify/?data=eyJ2ZXJz..."
+  }
+}</code></pre>
+
+      <hr>
+
+      <h2>▸ Shorten URL</h2>
+      <div class="fieldset">
+        <div class="fieldset-legend">POST /api/shorten</div>
+        <p>Store attestation data in the database and get a short link.</p>
+        <pre><code>curl -X POST https://attest.97115104.com/api/shorten \
+  -H "Content-Type: application/json" \
+  -d '{"data":"eyJ2ZXJzaW9uIjoiMi4wIi..."}'</code></pre>
+        <h3>Response</h3>
+        <pre><code>{"shortUrl":"https://attest.97115104.com/s/abc12345","shortId":"abc12345"}</code></pre>
+        <p class="muted">Short URLs redirect to the verify page with the attestation data. Free. No auth.</p>
+      </div>
+
+      <hr>
+
+      <h2>▸ Verify</h2>
+      <p>Attestations are self-verifying. The data URL contains the full attestation as base64 JSON:</p>
+      <pre><code>https://attest.97115104.com/verify/?data=eyJ2ZXJzaW9uIjoiMi4wIi...</code></pre>
+      <p>Short URLs (<code>/s/{id}</code>) redirect to the verify page automatically.</p>
+
+    </div>
+
+    <!-- ── Attestation Format ──────────────────────── -->
+    <div class="inset tab-content" id="tab-format">
+
+      <h2>▸ Attestation v2.0 Schema</h2>
+      <pre><code>{
+  "version": "2.0",
+  "id": "2026-04-02-a1b2c3",
+  "content_name": "My Blog Post",
+  "timestamp": "2026-04-02T12:00:00.000Z",
+  "platform": "attest.97115104.com",
+  "authorship_type": "collab",        // human | collab | ai
+  "model": "claude-opus-4",           // or "Human"
+  "role": "collaborated",             // authored | collaborated | generated
+  "content_hash": "sha256:abcdef...", // SHA-256 of full content
+  "document_type": "markdown",
+  "author": "97 115 104",
+  "signature": {
+    "type": "hmac-sha256",
+    "value": "4b2d5967...",
+    "algorithm": "HMAC-SHA256",
+    "data_to_sign": "{\"content_hash\":...}"
+  },
+  "signer": {
+    "name": "97 115 104",
+    "id": "97115104"
+  }
+}</code></pre>
+
+      <hr>
+
+      <h2>▸ Authorship types</h2>
+      <table>
+        <tr><th>authorship_type</th><th>role</th><th>model</th><th>Meaning</th></tr>
+        <tr><td><code>human</code></td><td><code>authored</code></td><td><code>Human</code></td><td>No AI involvement</td></tr>
+        <tr><td><code>collab</code></td><td><code>collaborated</code></td><td>e.g. <code>claude-opus-4</code></td><td>Human directed, AI assisted</td></tr>
+        <tr><td><code>ai</code></td><td><code>generated</code></td><td>e.g. <code>gpt-5</code></td><td>Fully AI-generated</td></tr>
+      </table>
+
+      <hr>
+
+      <h2>▸ Content hash</h2>
+      <p>SHA-256 of the full file content including frontmatter, prefixed with <code>sha256:</code>.</p>
+      <pre><code>sha256:$(shasum -a 256 post.md | cut -d' ' -f1)</code></pre>
+
+      <hr>
+
+      <h2>▸ Signature</h2>
+      <p>HMAC-SHA256 over a JSON string of key attestation fields, using a shared signing key.</p>
+      <pre><code>data_to_sign = JSON.stringify({
+  content_hash, model, timestamp,
+  authorship_type, role
+})
+
+signature = HMAC-SHA256(signing_key, data_to_sign)</code></pre>
+
+    </div>
+
+    <!-- ── CI/CD ───────────────────────────────────── -->
+    <div class="inset tab-content" id="tab-cicd">
+
+      <h2>▸ GitHub Actions</h2>
+      <p>Auto-generate attestations on every push to <code>_posts/</code>:</p>
+      <pre><code>name: Generate Attestations
+on:
+  push:
+    paths: ['_posts/**']
+  workflow_dispatch:
+
+jobs:
+  attest:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: '20' }
+      - run: node _scripts/generate-attestations.js
+      - run: |
+          git config user.name "attest-bot"
+          git config user.email "bot@attest.97115104.com"
+          git add _data/attestations.json
+          git diff --cached --quiet || git commit -m "Update attestations"
+          git push</code></pre>
+
+      <hr>
+
+      <h2>▸ Generation script</h2>
+      <p>The Node.js script reads all <code>_posts/*.md</code> files, parses frontmatter, and writes <code>_data/attestations.json</code>:</p>
+      <pre><code>#!/usr/bin/env node
+const fs = require('fs');
+const crypto = require('crypto');
+
+// For each post:
+// 1. Read content
+// 2. Parse "attribution:" from frontmatter
+// 3. Hash content with SHA-256
+// 4. Sign with HMAC-SHA256
+// 5. Write to _data/attestations.json
+
+// See full script at:
+// github.com/97115104/attest</code></pre>
+
+      <hr>
+
+      <h2>▸ Jekyll Plugin</h2>
+      <p>If you use Jekyll, install the <code>_plugins/attest_hook.rb</code> plugin to auto-generate attestations during <code>jekyll build</code>. See the <a href="https://github.com/97115104/attest">repo</a> for details.</p>
+    </div>
+
+    <div class="btn-row">
+      <a href="/" class="btn">← Home</a>
+      <a href="/verify/" class="btn">🔍 Verify</a>
+      <a href="https://github.com/97115104/attest" target="_blank" class="btn">⌂ GitHub</a>
+    </div>
+
+    <div class="status-bar">
+      Docs v2.0 — MIT License — <a href="https://github.com/97115104/attest">github.com/97115104/attest</a>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ Taskbar ═══ -->
+<div class="taskbar">
+  <a href="/" class="btn start-btn">
+    <img src="/assets/logo/circular-2-ai.svg" alt="">
+    Start
+  </a>
+  <a href="/" class="btn" style="font-size:12px;">attest.exe</a>
+  <a href="/developers/" class="btn" style="font-size:12px;">docs.exe</a>
+  <div class="taskbar-clock" id="clock"></div>
+</div>
+
+<script>
+// Tabs
+document.querySelectorAll('.tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+    tab.classList.add('active');
+    document.getElementById('tab-' + tab.dataset.tab).classList.add('active');
+  });
+});
+
+// Clock
+function tick() {
+  const d = new Date();
+  document.getElementById('clock').textContent =
+    d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+}
+tick();
+setInterval(tick, 30000);
+</script>
 </body>
 </html>

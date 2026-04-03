@@ -1,701 +1,163 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    SKIP_TITLE
-    <meta name="description" content="Verify AI content attestations">
-    <link rel="icon" type="image/svg+xml" href="/assets/logo/favicon.svg">
-    <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
-    <link rel="icon" type="image/x-icon" href="/assets/favicon.ico">
-    <link rel="manifest" href="/assets/site.webmanifest">
-    <meta name="theme-color" content="#111827">
-    <link rel="stylesheet" href="/static/style.css">
-    <link rel="stylesheet" href="/static/badge-styles.css">
-    <link rel="stylesheet" href="/static/mobile-fixes.css">
-    <script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.umd.min.js"></script>
-    <script src="/static/verify-signature.js"></script>
-    <script>
-        // Prevent theme flicker by setting theme before render
-        (function() {
-            const saved = localStorage.getItem('theme');
-            let theme = 'light';
-            if (saved) {
-                theme = saved;
-            } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-                theme = 'dark';
-            } else {
-                const hour = new Date().getHours();
-                if (hour >= 18 || hour < 6) {
-                    theme = 'dark';
-                }
-            }
-            document.documentElement.setAttribute('data-theme', theme);
-        })();
-    </script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Verify Attestation — attest</title>
+  <meta name="description" content="Verify an AI content attestation">
+  <link rel="icon" href="/assets/favicon.ico">
+  <link rel="stylesheet" href="/style.css">
 </head>
 <body>
-    <button class="theme-toggle" id="theme-toggle" aria-label="Toggle theme">D</button>
-    <div class="container">
-        <nav>
-            <div class="nav-inner">
-                <a href="/" class="logo">
-                    <img src="/assets/logo/circular-2-ai.svg" alt="attest logo">
-                    <span>attest</span>
-                </a>
-                <ul>
-                    <li><a href="/create/">Create</a></li>
-                    <li><a href="/verify/" class="active">Verify</a></li>
-                    <li class="dropdown">
-                        <span class="dropdown-toggle">More</span>
-                        <div class="dropdown-menu">
-                            <a href="/protocol/">Protocol</a>
-                            <a href="/showcase/">Badges</a>
-                            <a href="/examples/">Examples</a>
-                            <a href="/developers/">Developer Docs</a>
-                            <a href="/faq.html">FAQ</a>
-                            <a href="https://github.com/97115104/attest" target="_blank">GitHub</a>
-                        </div>
-                    </li>
-                </ul>
-            </div>
-        </nav>
 
-        <main>
-            <h1>Verify AI Attestation</h1>
+<div class="window">
+  <div class="title-bar">
+    <img src="/assets/logo/circular-2-ai.svg" alt="">
+    <span>verify.exe — Attestation Verification</span>
+    <div class="title-bar-controls">
+      <div class="title-btn">─</div>
+      <div class="title-btn">□</div>
+      <div class="title-btn">×</div>
+    </div>
+  </div>
+  <div class="window-body">
 
-            <div id="input-section">
-                <p>Paste an attestation JSON or provide a URL to verify its authenticity.</p>
+    <!-- Verification result (populated by JS) -->
+    <div id="result"></div>
 
-                <div class="form-group">
-                    <label for="attestation-input">Attestation JSON</label>
-                    <textarea id="attestation-input" rows="10" placeholder='Paste attestation JSON here...'></textarea>
-                </div>
-
-                <div style="text-align: center; margin: 20px 0;">— OR —</div>
-
-                <div class="form-group">
-                    <label for="url-input">Attestation URL</label>
-                    <input type="url" id="url-input" placeholder="https://example.com/attestation.json">
-                </div>
-
-                <div class="button-group" style="display: flex; flex-wrap: wrap; gap: 10px;">
-                    <style>
-                        .button-group {
-                            justify-content: flex-start;
-                        }
-                        @media (max-width: 768px) {
-                            .button-group {
-                                justify-content: center;
-                                flex-direction: row;
-                            }
-                            .button-group button,
-                            .button-group a {
-                                flex: 0 1 auto;
-                                min-width: 120px;
-                                max-width: 160px;
-                                padding: 10px 16px;
-                                font-size: 16px;
-                            }
-                        }
-                    </style>
-                    <button id="verify-btn" class="btn">Verify Attestation</button>
-                    <a href="/create/" class="btn btn-secondary">Back to Create</a>
-                </div>
-
-                <div style="margin-top: 30px;">
-                    <details>
-                        <summary style="cursor: pointer; color: #666;">What can be verified?</summary>
-                        <ul style="margin-top: 10px; color: #666;">
-                            <li>✓ Attestation format and schema</li>
-                            <li>✓ Ethereum wallet signatures</li>
-                            <li>✓ Content hash (if you provide the original content)</li>
-                            <li>✓ Timestamp validity</li>
-                            <li>✓ Signer identity</li>
-                        </ul>
-                    </details>
-                </div>
-            </div>
-
-            <div id="results-section" style="display: none;">
-                <h2>Verification Results</h2>
-                
-                <div id="verification-status" style="margin-bottom: 20px;"></div>
-
-                <div class="code-block">
-                    <pre id="attestation-display"></pre>
-                </div>
-
-                <div id="verification-details" style="margin-top: 20px;"></div>
-
-                <div id="content-verification" style="margin-top: 20px; display: none;">
-                    <h3>Verify Content Hash</h3>
-                    <p>To verify that the attestation matches the original content, paste the content below or upload a file:</p>
-                    
-                    <div class="form-group" style="margin-bottom: 15px;">
-                        <label style="display: block; padding: 15px; background: var(--bg-panel); border: 2px dashed var(--border-color); border-radius: 8px; cursor: pointer; text-align: center;">
-                            <input type="file" id="content-verify-file" accept="*" style="display: none;">
-                            <span id="content-file-label" style="display: block;">
-                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="margin: 0 auto 8px;">
-                                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-                                    <polyline points="14 2 14 8 20 8"></polyline>
-                                    <line x1="16" y1="13" x2="8" y2="13"></line>
-                                    <line x1="16" y1="17" x2="8" y2="17"></line>
-                                    <polyline points="10 9 9 9 8 9"></polyline>
-                                </svg>
-                                Click to upload file or drag and drop
-                            </span>
-                        </label>
-                    </div>
-                    
-                    <div style="text-align: center; margin: 10px 0; color: var(--text-secondary);">— OR —</div>
-                    
-                    <div class="form-group">
-                        <textarea id="content-verify-input" rows="6" placeholder="Paste original content to verify hash..."></textarea>
-                    </div>
-                    <button id="verify-content-btn" class="btn btn-secondary">Verify Content Hash</button>
-                    <div id="content-verify-result" style="margin-top: 10px;"></div>
-                </div>
-
-                <button id="verify-another" class="btn btn-secondary" style="margin-top: 20px;">Verify Another</button>
-            </div>
-        </main>
-
+    <!-- Manual input fallback -->
+    <div id="manual-input">
+      <h2>▸ Paste attestation data</h2>
+      <p class="muted">Enter a base64-encoded attestation or full JSON:</p>
+      <textarea id="data-input" rows="6" style="width:100%; font-family:var(--font-mono); font-size:12px; padding:6px; border:2px inset var(--win-surface);"></textarea>
+      <div class="btn-row">
+        <button class="btn" onclick="verifyInput()">Verify</button>
+        <a href="/" class="btn">← Home</a>
+      </div>
     </div>
 
-    <script>
-        let currentAttestation = null;
+    <div class="status-bar" id="status">Ready</div>
+  </div>
+</div>
 
-        // Verify button click
-        document.getElementById('verify-btn').addEventListener('click', async function() {
-            const jsonInput = document.getElementById('attestation-input').value.trim();
-            const urlInput = document.getElementById('url-input').value.trim();
+<!-- ═══ Taskbar ═══ -->
+<div class="taskbar">
+  <a href="/" class="btn start-btn">
+    <img src="/assets/logo/circular-2-ai.svg" alt="">
+    Start
+  </a>
+  <a href="/" class="btn" style="font-size:12px;">attest.exe</a>
+  <a href="/verify/" class="btn" style="font-size:12px;">verify.exe</a>
+  <div class="taskbar-clock" id="clock"></div>
+</div>
 
-            if (!jsonInput && !urlInput) {
-                alert('Please provide an attestation JSON or URL');
-                return;
-            }
+<script>
+function decodeAttestation(raw) {
+  // Try base64 first
+  try {
+    const decoded = atob(raw);
+    return JSON.parse(decoded);
+  } catch {}
+  // Try URL-decoded base64
+  try {
+    const decoded = atob(decodeURIComponent(raw));
+    return JSON.parse(decoded);
+  } catch {}
+  // Try raw JSON
+  try {
+    return JSON.parse(raw);
+  } catch {}
+  return null;
+}
 
-            let attestation;
+function typeLabel(t) {
+  if (t === 'human') return '🧑 Human Authored';
+  if (t === 'collab') return '🤝 Human + AI Collaboration';
+  if (t === 'ai') return '🤖 AI Generated';
+  return t || 'Unknown';
+}
 
-            try {
-                if (jsonInput) {
-                    attestation = JSON.parse(jsonInput);
-                } else if (urlInput) {
-                    // Check if it's a short URL (e.g., https://attest.97115104.com/s/abc123)
-                    const shortUrlPattern = /https?:\/\/(?:.*\.)?attest\.ink\/s\/([a-z0-9]+)/i;
-                    const shortMatch = urlInput.match(shortUrlPattern);
-                    
-                    if (shortMatch) {
-                        // Fetch the full data URL from the short URL API
-                        const shortId = shortMatch[1];
-                        const apiResponse = await fetch(`/api/s/${shortId}`);
-                        if (!apiResponse.ok) {
-                            throw new Error('Short URL not found or expired');
-                        }
-                        const data = await apiResponse.json();
-                        if (data.dataUrl) {
-                            // Process the data URL
-                            const parts = data.dataUrl.split(',');
-                            if (parts.length === 2 && parts[0].includes('base64')) {
-                                const base64 = parts[1];
-                                const decoded = atob(base64);
-                                attestation = JSON.parse(decoded);
-                            } else {
-                                throw new Error('Invalid data URL from short URL');
-                            }
-                        } else {
-                            throw new Error('No data URL in response');
-                        }
-                    } else if (urlInput.includes('/verify/?id=') || urlInput.includes('/verify?id=')) {
-                        // Check if it's an attest verify URL with ID
-                        const attestInkPattern = /https?:\/\/attest\.ink\/verify\/?\?id=([^&]+)/;
-                        const match = urlInput.match(attestInkPattern);
-                        
-                        if (match) {
-                            // Extract ID and load attestation
-                            const id = match[1];
-                            const loaded = await loadAttestationById(id);
-                            if (loaded) {
-                                attestation = loaded;
-                            } else {
-                                throw new Error('Attestation not found');
-                            }
-                        }
-                    } else if (urlInput.startsWith('data:')) {
-                        // Check if it's a base64 data URL
-                        const parts = urlInput.split(',');
-                        if (parts.length !== 2) {
-                            throw new Error('Invalid data URL format');
-                        }
-                        const base64 = parts[1];
-                        
-                        // Validate base64
-                        if (!/^[A-Za-z0-9+/=]+$/.test(base64)) {
-                            throw new Error('Invalid base64 in data URL');
-                        }
-                        
-                        const decoded = atob(base64);
-                        attestation = JSON.parse(decoded);
-                        
-                        // Validate attestation structure
-                        if (!attestation.version || !attestation.model) {
-                            throw new Error('Invalid attestation structure in data URL');
-                        }
-                    } else {
-                        const response = await fetch(urlInput);
-                        if (!response.ok) throw new Error('Failed to fetch attestation');
-                        attestation = await response.json();
-                    }
-                }
-            } catch (error) {
-                console.error('Attestation loading error:', error);
-                
-                let errorMessage = 'Failed to load attestation.\n\n';
-                
-                if (error.message === 'Attestation not found') {
-                    errorMessage += 'The attestation ID was not found.\n\n';
-                    errorMessage += 'Possible reasons:\n';
-                    errorMessage += '• The attestation was created in a different browser\n';
-                    errorMessage += '• Browser storage was cleared\n';
-                    errorMessage += '• The ID is incorrect\n\n';
-                    errorMessage += 'Try using the full data URL instead.';
-                } else if (error.message.includes('JSON')) {
-                    errorMessage += 'The attestation data is not valid JSON.\n\n';
-                    
-                    if (jsonInput) {
-                        errorMessage += 'Please check that the JSON is properly formatted.\n';
-                        errorMessage += 'Common issues:\n';
-                        errorMessage += '• Missing quotes around property names\n';
-                        errorMessage += '• Trailing commas\n';
-                        errorMessage += '• Unescaped special characters';
-                    } else if (urlInput && urlInput.startsWith('data:')) {
-                        errorMessage += 'The data URL appears to be corrupted.\n';
-                        errorMessage += 'Please ask the sender to share it again.';
-                    } else {
-                        errorMessage += 'The fetched content is not valid attestation JSON.';
-                    }
-                } else if (error.message.includes('fetch')) {
-                    errorMessage += 'Failed to fetch attestation from URL.\n\n';
-                    errorMessage += 'Possible reasons:\n';
-                    errorMessage += '• Network connection issues\n';
-                    errorMessage += '• URL is not accessible\n';
-                    errorMessage += '• CORS restrictions (if external URL)\n';
-                    errorMessage += '• Server returned an error';
-                } else if (error.message.includes('atob')) {
-                    errorMessage += 'Failed to decode base64 data URL.\n';
-                    errorMessage += 'The data appears to be corrupted or incomplete.';
-                } else {
-                    errorMessage += 'Error details: ' + error.message;
-                }
-                
-                alert(errorMessage);
-                return;
-            }
+function renderAttestation(att) {
+  const type = att.authorship_type || (att.role === 'authored' ? 'human' : att.role === 'generated' ? 'ai' : 'collab');
+  const el = document.getElementById('result');
+  el.innerHTML = `
+    <div class="inset" style="text-align:center; margin-bottom:10px;">
+      <div style="font-size:28px; margin-bottom:4px;">${type === 'human' ? '🧑' : type === 'ai' ? '🤖' : '🤝'}</div>
+      <h2 style="font-size:16px; margin-bottom:2px;">${typeLabel(type)}</h2>
+      <p class="muted" style="margin:0;">Attestation verified ✓</p>
+    </div>
 
-            verifyAttestation(attestation);
-        });
+    <div class="fieldset">
+      <div class="fieldset-legend">Attestation Details</div>
+      <table>
+        <tr><td><strong>Content</strong></td><td>${esc(att.content_name || '—')}</td></tr>
+        <tr><td><strong>Model</strong></td><td>${esc(att.model || '—')}</td></tr>
+        <tr><td><strong>Role</strong></td><td>${esc(att.role || '—')}</td></tr>
+        <tr><td><strong>Type</strong></td><td>${esc(type)}</td></tr>
+        <tr><td><strong>Author</strong></td><td>${esc(att.author || '—')}</td></tr>
+        <tr><td><strong>Timestamp</strong></td><td>${esc(att.timestamp || '—')}</td></tr>
+        <tr><td><strong>Platform</strong></td><td>${esc(att.platform || '—')}</td></tr>
+        <tr><td><strong>Version</strong></td><td>${esc(att.version || '—')}</td></tr>
+        <tr><td><strong>ID</strong></td><td><code>${esc(att.id || '—')}</code></td></tr>
+        ${att.content_hash ? `<tr><td><strong>Hash</strong></td><td><code style="word-break:break-all;">${esc(att.content_hash)}</code></td></tr>` : ''}
+        ${att.document_type ? `<tr><td><strong>Doc Type</strong></td><td>${esc(att.document_type)}</td></tr>` : ''}
+      </table>
+    </div>
 
-        function verifyAttestation(attestation) {
-            currentAttestation = attestation;
-            
-            document.getElementById('input-section').style.display = 'none';
-            document.getElementById('results-section').style.display = 'block';
-            
-            // Display the attestation
-            document.getElementById('attestation-display').textContent = JSON.stringify(attestation, null, 2);
+    ${att.signature ? `
+    <div class="fieldset">
+      <div class="fieldset-legend">Signature</div>
+      <table>
+        <tr><td><strong>Algorithm</strong></td><td>${esc(att.signature.algorithm || att.signature.type || '—')}</td></tr>
+        <tr><td><strong>Value</strong></td><td><code style="word-break:break-all; font-size:11px;">${esc(att.signature.value || '—')}</code></td></tr>
+        ${att.signer ? `<tr><td><strong>Signer</strong></td><td>${esc(att.signer.name || att.signer.id || '—')}</td></tr>` : ''}
+      </table>
+    </div>` : ''}
 
-            // Verification results
-            const results = [];
-            let overallValid = true;
+    <h3>Raw JSON</h3>
+    <pre><code>${esc(JSON.stringify(att, null, 2))}</code></pre>
+  `;
+  document.getElementById('status').textContent = 'Verification complete ✓';
+  document.getElementById('manual-input').style.display = 'none';
+}
 
-            // Check version
-            if (attestation.version === '1.0' || attestation.version === '2.0') {
-                results.push('<span class="status-valid">✓ Valid version (' + attestation.version + ')</span>');
-            } else {
-                results.push('<span class="status-invalid">✗ Unknown version: ' + (attestation.version || 'missing') + '</span>');
-                overallValid = false;
-            }
+function esc(s) {
+  const d = document.createElement('div');
+  d.textContent = String(s);
+  return d.innerHTML;
+}
 
-            // Check required fields based on version
-            let requiredFields = [];
-            if (attestation.version === '2.0') {
-                requiredFields = ['id', 'content_name', 'model', 'timestamp'];
-            } else if (attestation.version === '1.0') {
-                requiredFields = ['id', 'content_hash', 'model', 'timestamp'];
-            } else {
-                // Default to v1.0 fields for unknown versions
-                requiredFields = ['id', 'content_hash', 'model', 'timestamp'];
-            }
+function verifyInput() {
+  const raw = document.getElementById('data-input').value.trim();
+  if (!raw) return;
+  const att = decodeAttestation(raw);
+  if (!att) {
+    document.getElementById('status').textContent = 'Error: Could not decode attestation data';
+    return;
+  }
+  renderAttestation(att);
+}
 
-            requiredFields.forEach(field => {
-                if (attestation[field]) {
-                    results.push(`<span class="status-valid">✓ ${field} present</span>`);
-                } else {
-                    results.push(`<span class="status-invalid">✗ ${field} missing</span>`);
-                    overallValid = false;
-                }
-            });
+// Auto-decode from URL params
+const params = new URLSearchParams(window.location.search);
+const dataParam = params.get('data');
+if (dataParam) {
+  const att = decodeAttestation(dataParam);
+  if (att) {
+    renderAttestation(att);
+  } else {
+    document.getElementById('status').textContent = 'Error: Invalid attestation data in URL';
+  }
+}
 
-            // For v2.0, check content_hash as optional
-            if (attestation.version === '2.0') {
-                if (attestation.content_hash) {
-                    results.push('<span class="status-valid">✓ content_hash present (optional for v2.0)</span>');
-                } else {
-                    results.push('<span class="status-pending">ℹ️ content_hash not provided (optional for v2.0)</span>');
-                }
-            }
-
-            // Check timestamp validity
-            if (attestation.timestamp) {
-                const timestamp = new Date(attestation.timestamp);
-                if (!isNaN(timestamp.getTime())) {
-                    results.push('<span class="status-valid">✓ Valid timestamp: ' + timestamp.toLocaleString() + '</span>');
-                } else {
-                    results.push('<span class="status-invalid">✗ Invalid timestamp format</span>');
-                    overallValid = false;
-                }
-            }
-
-            // Check signature if present
-            if (attestation.signature) {
-                verifySignature(attestation, results);
-            } else {
-                results.push('<span class="status-pending">⚠️ No signature present (attestation is unsigned)</span>');
-            }
-
-            // Overall status
-            const statusDiv = document.getElementById('verification-status');
-            if (overallValid) {
-                statusDiv.innerHTML = '<div class="message message-success"><strong>✓ Valid Attestation</strong></div>';
-            } else {
-                statusDiv.innerHTML = '<div class="message message-error"><strong>✗ Invalid Attestation</strong></div>';
-            }
-
-            // Show details
-            document.getElementById('verification-details').innerHTML = results.join('<br>');
-
-            // Show content verification option
-            if (attestation.content_hash) {
-                document.getElementById('content-verification').style.display = 'block';
-            }
-        }
-        
-        // Verify signature
-        function verifySignature(attestation, results) {
-            const sig = attestation.signature;
-            
-            if (sig.type === 'ethereum') {
-                results.push(`<span class="status-info">🔏 Ethereum signature by ${sig.signer}</span>`);
-            } else if (sig.type === 'local') {
-                results.push(`<span class="status-info">🔑 Local signature (password-based)</span>`);
-            } else if (sig.type === 'hmac-sha256') {
-                results.push(`<span class="status-info">🔐 HMAC-SHA256 signature`);
-                if (attestation.signer) {
-                    results.push(`&nbsp;&nbsp;&nbsp;&nbsp;Signer: ${attestation.signer.name}${attestation.signer.id ? ' (ID: ' + attestation.signer.id + ')' : ''}`);
-                }
-                if (sig.value === 'UNSIGNED_HMAC_PLACEHOLDER') {
-                    results.push(`<span class="status-pending">&nbsp;&nbsp;&nbsp;&nbsp;⚠️ Awaiting server-side signing</span>`);
-                } else {
-                    results.push(`&nbsp;&nbsp;&nbsp;&nbsp;Signature: ${sig.value.substring(0, 20)}...`);
-                }
-                results.push('</span>');
-            } else {
-                results.push(`<span class="status-info">🔏 ${sig.type || 'Unknown'} signature</span>`);
-            }
-        }
-        
-        // Verify content hash
-        async function verifyContentHash(content) {
-            // Calculate hash
-            const encoder = new TextEncoder();
-            const data = encoder.encode(content);
-            const hashBuffer = await crypto.subtle.digest('SHA-256', data);
-            const hashArray = Array.from(new Uint8Array(hashBuffer));
-            const calculatedHash = 'sha256:' + hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-
-            const resultDiv = document.getElementById('content-verify-result');
-            if (calculatedHash === currentAttestation.content_hash) {
-                resultDiv.innerHTML = '<span class="status-valid">✓ Content hash matches!</span>';
-            } else {
-                resultDiv.innerHTML = '<span class="status-invalid">✗ Content hash does not match<br>Expected: ' + currentAttestation.content_hash + '<br>Calculated: ' + calculatedHash + '</span>';
-            }
-        }
-        
-        document.getElementById('verify-content-btn').addEventListener('click', async function() {
-            const content = document.getElementById('content-verify-input').value;
-            if (!content) {
-                alert('Please paste the original content or upload a file');
-                return;
-            }
-            await verifyContentHash(content);
-        });
-        
-        // Handle file upload for content verification
-        document.getElementById('content-verify-file').addEventListener('change', async function(e) {
-            const file = e.target.files[0];
-            if (!file) return;
-            
-            const fileLabel = document.getElementById('content-file-label');
-            fileLabel.innerHTML = `
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="margin: 0 auto 8px;">
-                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-                    <polyline points="14 2 14 8 20 8"></polyline>
-                    <line x1="16" y1="13" x2="8" y2="13"></line>
-                    <line x1="16" y1="17" x2="8" y2="17"></line>
-                    <polyline points="10 9 9 9 8 9"></polyline>
-                </svg>
-                <strong>${file.name}</strong><br>
-                <span style="font-size: 0.9em; color: var(--text-secondary);">File loaded - Click "Verify Content Hash" to check</span>
-            `;
-            
-            try {
-                const content = await file.text();
-                document.getElementById('content-verify-input').value = content;
-                
-                // Auto-verify if content is loaded
-                await verifyContentHash(content);
-            } catch (error) {
-                alert('Failed to read file. Please try again.');
-                console.error('File read error:', error);
-            }
-        });
-
-        // Verify another
-        document.getElementById('verify-another').addEventListener('click', function() {
-            document.getElementById('input-section').style.display = 'block';
-            document.getElementById('results-section').style.display = 'none';
-            document.getElementById('attestation-input').value = '';
-            document.getElementById('url-input').value = '';
-            document.getElementById('content-verify-input').value = '';
-            document.getElementById('content-verify-result').innerHTML = '';
-        });
-
-        // Check URL parameter
-        window.addEventListener('DOMContentLoaded', async function() {
-            const urlParams = new URLSearchParams(window.location.search);
-            const attestationId = urlParams.get('id');
-            const attestationData = urlParams.get('data');
-            const attestationUrl = urlParams.get('url');
-            
-            // Also check if the path contains /s/ for short URLs
-            const pathMatch = window.location.pathname.match(/\/s\/([a-z0-9]+)/i);
-            if (pathMatch && !attestationId && !attestationData && !attestationUrl) {
-                // Handle short URL redirect
-                const shortId = pathMatch[1];
-                try {
-                    const response = await fetch(`/api/s/${shortId}`);
-                    if (response.ok) {
-                        const data = await response.json();
-                        if (data.dataUrl) {
-                            // Set the URL input and trigger verification
-                            document.getElementById('url-input').value = data.dataUrl;
-                            document.getElementById('verify-btn').click();
-                            return;
-                        }
-                    }
-                    throw new Error('Short URL not found');
-                } catch (error) {
-                    alert('Short URL not found or expired. Please check the URL and try again.');
-                    document.getElementById('input-section').style.display = 'block';
-                    return;
-                }
-            }
-            
-            if (attestationId) {
-                // Try to load from localStorage first (for demo purposes)
-                console.log(`Looking for attestation with ID: ${attestationId}`);
-                // Debug: Show all attestation keys in localStorage
-                const attestationKeys = Object.keys(localStorage).filter(key => key.startsWith('attestation_'));
-                if (attestationKeys.length > 0) {
-                    console.log('Available attestations in localStorage:', attestationKeys);
-                }
-                const storedAttestation = localStorage.getItem(`attestation_${attestationId}`);
-                if (storedAttestation) {
-                    console.log('Found attestation in localStorage');
-                    try {
-                        const attestation = JSON.parse(storedAttestation);
-                        verifyAttestation(attestation);
-                        return; // Don't try server if found in localStorage
-                    } catch (error) {
-                        console.error('Failed to parse stored attestation:', error);
-                        // Try to load from server
-                        loadAttestationFromServer(attestationId);
-                    }
-                } else {
-                    console.log('Attestation not found in localStorage, trying server...');
-                    // Try to load from server
-                    loadAttestationFromServer(attestationId);
-                }
-            } else if (attestationData) {
-                // Decode base64 attestation data
-                try {
-                    // Validate base64 format first
-                    if (!/^[A-Za-z0-9+/=]+$/.test(attestationData)) {
-                        throw new Error('Invalid base64 format');
-                    }
-                    
-                    // Attempt to decode
-                    const decoded = atob(attestationData);
-                    
-                    // Parse JSON
-                    const attestation = JSON.parse(decoded);
-                    
-                    // Validate required fields
-                    if (!attestation.version || !attestation.model || (!attestation.content_hash && !attestation.content_name)) {
-                        throw new Error('Missing required attestation fields');
-                    }
-                    
-                    verifyAttestation(attestation);
-                } catch (error) {
-                    console.error('Data URL attestation error:', error);
-                    
-                    let errorMessage = 'Failed to load attestation from data URL.\n\n';
-                    
-                    if (error.message === 'Invalid base64 format') {
-                        errorMessage += 'The data URL contains invalid characters.\n';
-                        errorMessage += 'This may be due to URL corruption during sharing.';
-                    } else if (error.message === 'Missing required attestation fields') {
-                        errorMessage += 'The attestation data is incomplete or corrupted.\n';
-                        errorMessage += 'Required fields: version, model, and either content_hash or content_name.';
-                    } else if (error.message.includes('JSON')) {
-                        errorMessage += 'The attestation data is not valid JSON.\n';
-                        errorMessage += 'The data may have been corrupted or truncated.';
-                    } else {
-                        errorMessage += 'Error details: ' + error.message;
-                    }
-                    
-                    errorMessage += '\n\nPlease ask the sender to share the attestation again, or use the original short URL if available.';
-                    
-                    alert(errorMessage);
-                    
-                    // Show the input section so user can try another method
-                    document.getElementById('input-section').style.display = 'block';
-                }
-            } else if (attestationUrl) {
-                document.getElementById('url-input').value = attestationUrl;
-                document.getElementById('verify-btn').click();
-            }
-        });
-        
-        async function loadAttestationById(id) {
-            // First try localStorage
-            const stored = localStorage.getItem(`attestation-${id}`);
-            if (stored) {
-                try {
-                    return JSON.parse(stored);
-                } catch (error) {
-                    console.error('Failed to parse stored attestation');
-                }
-            }
-            
-            // Then try server
-            try {
-                const response = await fetch(`/attestations/${id}.json`, {
-                    method: 'GET',
-                    cache: 'no-cache'
-                });
-                if (response.ok) {
-                    return await response.json();
-                }
-            } catch (error) {
-                console.log('Failed to load from server');
-            }
-            
-            return null;
-        }
-        
-        async function loadAttestationFromServer(id) {
-            // Check if it's a legacy attestation in /1/, /2/, etc.
-            const legacyPaths = ['/1/', '/2/', '/3/', '/4/', '/5/'];
-            for (const path of legacyPaths) {
-                if (window.location.pathname.includes(path)) {
-                    // This is a legacy attestation page
-                    try {
-                        const response = await fetch(`${path}attestation.json`);
-                        if (response.ok) {
-                            const attestation = await response.json();
-                            verifyAttestation(attestation);
-                            return;
-                        }
-                    } catch (error) {
-                        console.error('Failed to load legacy attestation');
-                    }
-                }
-            }
-            
-            // Try to load from attestations directory (suppress 404 errors)
-            try {
-                const response = await fetch(`/attestations/${id}.json`, {
-                    method: 'GET',
-                    cache: 'no-cache'
-                });
-                if (response.ok) {
-                    const attestation = await response.json();
-                    verifyAttestation(attestation);
-                } else if (response.status === 404) {
-                    // Don't log 404 as error - it's expected in demo environment
-                    console.log(`Attestation ${id} not found on server (this is normal for local/demo use)`);
-                    // Show modal with payment information
-                    if (window.AttestModal) {
-                        const modalContent = `
-                            <div style="margin-bottom: 20px;">
-                                <strong>Attestation with ID "${id}" not found.</strong>
-                            </div>
-                            
-                            <div style="background: var(--bg-panel); padding: 15px; border-radius: 8px; margin-bottom: 20px;">
-                                <p style="margin: 0 0 10px 0; font-weight: 600;">This could be because:</p>
-                                <ul style="margin: 0; padding-left: 20px;">
-                                    <li>The attestation was created in a different browser/device (localStorage is per-browser)</li>
-                                    <li>Browser storage was cleared</li>
-                                    <li>The ID is incorrect</li>
-                                    <li>You're using a short URL in a demo/local environment</li>
-                                </ul>
-                            </div>
-                            
-                            <div style="background: #e3f2fd; padding: 15px; border-radius: 8px; margin-bottom: 20px; border: 1px solid #64b5f6;">
-                                <p style="margin: 0 0 10px 0; font-weight: 600; color: #1565c0;">✨ Want permanent short URLs that work everywhere?</p>
-                                <p style="margin: 0 0 10px 0; color: #424242;">Get lifetime access to create unlimited permanent short URLs for just $20.</p>
-                                <ul style="margin: 0 0 15px 0; padding-left: 20px; color: #424242;">
-                                    <li>Short URLs that never expire</li>
-                                    <li>Works across all devices and browsers</li>
-                                    <li>One-time payment, lifetime access</li>
-                                </ul>
-                                <button onclick="window.location.href='/create/'" class="btn btn-primary" style="width: 100%;">
-                                    Get Lifetime Access - $20
-                                </button>
-                            </div>
-                            
-                            <div style="font-size: 14px; color: var(--text-secondary);">
-                                <p style="margin: 0 0 5px 0;"><strong>For sharing attestations across devices:</strong></p>
-                                <ol style="margin: 0; padding-left: 20px;">
-                                    <li>Use the "Embed Badge" option (includes full attestation data)</li>
-                                    <li>Use the full data URL instead of the short URL</li>
-                                    <li>Save and share the attestation JSON file</li>
-                                </ol>
-                            </div>
-                        `;
-                        
-                        window.AttestModal.show('', modalContent, {
-                            headerText: false,
-                            buttons: [{
-                                text: 'OK',
-                                className: 'btn-primary'
-                            }]
-                        });
-                    } else {
-                        alert('Attestation not found. Please check the URL and try again.');
-                    }
-                }
-            } catch (error) {
-                console.error('Failed to load attestation:', error);
-                alert('Failed to load attestation. Please try again or use the full data URL.');
-            }
-        }
-    </script>
-    <script src="/static/modal.js"></script>
-    <script src="/static/theme.js"></script>
-    <script src="/static/mobile-nav.js"></script>
-    <script src="/static/global-footer.js"></script>
+// Clock
+function tick() {
+  const d = new Date();
+  document.getElementById('clock').textContent =
+    d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+}
+tick();
+setInterval(tick, 30000);
+</script>
 </body>
 </html>
