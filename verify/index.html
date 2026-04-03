@@ -42,7 +42,7 @@
 <span class="r2">                ||     ||</span></pre>
   </div>
   <div class="status-bar">
-    MIT license - <a href="https://github.com/97115104/attest">github.com/97115104/attest</a> · <a href="https://attest.97115104.com/s/zo4ycxyk">attested ✓</a>
+    MIT license - <a href="https://github.com/97115104/attest">github.com/97115104/attest</a> · <a href="https://attest.97115104.com/s/ry3yjnt8">attested ✓</a>
   </div>
 </div>
 
@@ -132,10 +132,16 @@ function renderAttestation(att) {
     <div class="fieldset">
       <div class="fieldset-legend">signature</div>
       <table>
+        <tr><td><strong>type</strong></td><td>${esc(att.signature.type || '-')}</td></tr>
         <tr><td><strong>algorithm</strong></td><td>${esc(att.signature.algorithm || att.signature.type || '-')}</td></tr>
         <tr><td><strong>value</strong></td><td><code style="word-break:break-all; font-size:11px;">${esc(att.signature.value || '-')}</code></td></tr>
-        ${att.signer ? `<tr><td><strong>signer</strong></td><td>${esc(att.signer.name || att.signer.id || '-')}</td></tr>` : ''}
+        ${att.signer ? `<tr><td><strong>signer</strong></td><td>${esc(att.signer.name || '-')}${att.signer.id ? ' <code>' + esc(att.signer.id) + '</code>' : ''}</td></tr>` : ''}
       </table>
+      ${att.signature.data_to_sign ? `
+      <details style="margin-top:6px;">
+        <summary style="cursor:pointer; font-size:12px;">signed data</summary>
+        <pre style="margin-top:4px; font-size:11px;"><code>${esc(att.signature.data_to_sign)}</code></pre>
+      </details>` : ''}
     </div>` : ''}
 
     <h3>raw JSON</h3>

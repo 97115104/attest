@@ -173,13 +173,22 @@ function handleCreate(query) {
   const content = query.get('content');
   const contentHash = content ? 'sha256:' + crypto.createHash('sha256').update(content).digest('hex') : null;
 
-  const attestation = buildAttestation({
-    contentName, model, role, author, contentHash,
-    extras: query.get('authorship_type') ? { authorship_type: query.get('authorship_type') } : {},
-  });
+  // Collect additional custom fields (anything beyond the core params)
+  const reserved = new Set(['content_name', 'model', 'role', 'author', 'content', 'authorship_type']);
+  const extras = {};
+  if (query.get('authorship_type')) extras.authorship_type = query.get('authorship_type');
+  for (const [key, value] of query.entries()) {
+    if (!reserved.has(key)) extras[key] = value;
+  }
 
-  const { longUrl } = encodeAndUrl(attestation);
-  return { success: true, attestation, urls: { verify: longUrl } };
+  const attestation = buildAttestation({
+    contentName, model, role, author, contentHash, extras,
+  });
+  signAttestation(attestation);
+
+  const { encoded, longUrl } = encodeAndUrl(attestation);
+  const { shortUrl } = createShortUrl(encoded);
+  return { success: true, attestation, urls: { verify: longUrl, short: shortUrl } };
 }
 
 // ── API: Shorten URL ─────────────────────────────────────────────────
