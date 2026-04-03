@@ -1,7 +1,7 @@
-<!-- ---
+---
 attribution: collab claude opus 4
 attestation: https://attest.97115104.com/s/zo4ycxyk
---- -->
+---
 
 # attest
 
