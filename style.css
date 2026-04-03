@@ -1,19 +1,23 @@
 :root {
-  /* Win95 palette */
-  --win-bg: #008080;
-  --win-surface: #c0c0c0;
-  --win-dark: #808080;
-  --win-darker: #404040;
-  --win-light: #dfdfdf;
-  --win-white: #ffffff;
-  --win-title: #000080;
-  --win-title-text: #ffffff;
-  --win-text: #000000;
-  --win-link: #0000ff;
-  --win-btn-face: #c0c0c0;
+  /* CDE/Motif palette — mid-90s Unix workstation */
+  --motif-bg: #2e5064;
+  --motif-surface: #b0a898;
+  --motif-dark: #847a6e;
+  --motif-darker: #5a524a;
+  --motif-light: #ccc2b4;
+  --motif-white: #ddd4c6;
+  --motif-title: #506888;
+  --motif-title-text: #ffffff;
+  --motif-text: #1a1a1a;
+  --motif-link: #224488;
+  --motif-btn-face: #b0a898;
+  --motif-panel: #908880;
+  --motif-panel-light: #b8b0a4;
+  --motif-terminal-bg: #0a0a0a;
+  --motif-terminal-fg: #33ff33;
 
-  --font-sys: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  --font-mono: 'Courier New', Courier, monospace;
+  --font-sys: Helvetica, 'Liberation Sans', 'DejaVu Sans', Arial, sans-serif;
+  --font-mono: 'Courier 10 Pitch', 'DejaVu Sans Mono', 'Liberation Mono', Courier, monospace;
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -22,8 +26,8 @@ html { font-size: 16px; }
 
 body {
   font-family: var(--font-sys);
-  background: var(--win-bg);
-  color: var(--win-text);
+  background: var(--motif-bg);
+  color: var(--motif-text);
   min-height: 100vh;
   display: flex;
   flex-direction: column;
@@ -31,23 +35,25 @@ body {
   padding: 24px 12px;
 }
 
-/* ── Win95 window chrome ───────────────────────────────── */
+/* ── Motif window chrome ───────────────────────────────── */
 .window {
-  background: var(--win-surface);
-  border-top: 2px solid var(--win-white);
-  border-left: 2px solid var(--win-white);
-  border-right: 2px solid var(--win-darker);
-  border-bottom: 2px solid var(--win-darker);
-  box-shadow: inset 1px 1px 0 var(--win-light),
-              inset -1px -1px 0 var(--win-dark);
+  background: var(--motif-surface);
+  border: 3px solid var(--motif-surface);
+  border-top-color: var(--motif-white);
+  border-left-color: var(--motif-white);
+  border-right-color: var(--motif-darker);
+  border-bottom-color: var(--motif-darker);
+  box-shadow: inset 2px 2px 0 var(--motif-light),
+              inset -2px -2px 0 var(--motif-dark),
+              2px 2px 6px rgba(0,0,0,0.35);
   width: 100%;
   max-width: 780px;
   margin-bottom: 16px;
 }
 
 .title-bar {
-  background: linear-gradient(90deg, var(--win-title), #1084d0);
-  color: var(--win-title-text);
+  background: var(--motif-title);
+  color: var(--motif-title-text);
   padding: 3px 4px;
   display: flex;
   align-items: center;
@@ -55,6 +61,7 @@ body {
   font-weight: bold;
   font-size: 13px;
   user-select: none;
+  border-bottom: 2px solid var(--motif-darker);
 }
 
 .title-bar img {
@@ -69,57 +76,90 @@ body {
   gap: 2px;
 }
 
+/* Motif-style title bar button (small raised square) */
 .title-btn {
-  width: 16px;
+  width: 14px;
   height: 14px;
-  background: var(--win-btn-face);
-  border-top: 1px solid var(--win-white);
-  border-left: 1px solid var(--win-white);
-  border-right: 1px solid var(--win-darker);
-  border-bottom: 1px solid var(--win-darker);
-  font-size: 9px;
-  line-height: 12px;
+  background: var(--motif-surface);
+  border: 2px solid var(--motif-surface);
+  border-top-color: var(--motif-white);
+  border-left-color: var(--motif-white);
+  border-right-color: var(--motif-darker);
+  border-bottom-color: var(--motif-darker);
+  font-size: 8px;
+  line-height: 10px;
   text-align: center;
   cursor: default;
+  color: var(--motif-text);
+}
+
+/* Motif menu button (left side of title bar) */
+.title-menu-btn {
+  width: 14px;
+  height: 14px;
+  background: var(--motif-surface);
+  border: 2px solid var(--motif-surface);
+  border-top-color: var(--motif-white);
+  border-left-color: var(--motif-white);
+  border-right-color: var(--motif-darker);
+  border-bottom-color: var(--motif-darker);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: default;
+}
+
+.title-menu-btn::after {
+  content: '';
+  width: 8px;
+  height: 2px;
+  background: var(--motif-text);
+  box-shadow: 0 3px 0 var(--motif-text), 0 -3px 0 var(--motif-text);
 }
 
 .window-body {
   padding: 12px;
 }
 
-/* ── Inset panel (sunken) ──────────────────────────────── */
+/* ── Inset panel (sunken Motif style) ──────────────────── */
 .inset {
-  border-top: 2px solid var(--win-dark);
-  border-left: 2px solid var(--win-dark);
-  border-right: 2px solid var(--win-white);
-  border-bottom: 2px solid var(--win-white);
-  background: var(--win-white);
+  border: 2px solid var(--motif-surface);
+  border-top-color: var(--motif-darker);
+  border-left-color: var(--motif-darker);
+  border-right-color: var(--motif-white);
+  border-bottom-color: var(--motif-white);
+  background: var(--motif-white);
   padding: 12px;
   margin-bottom: 10px;
 }
 
-/* ── Buttons ───────────────────────────────────────────── */
+/* ── Buttons (Motif raised 3D) ─────────────────────────── */
 .btn {
   display: inline-block;
   padding: 4px 16px;
-  background: var(--win-btn-face);
-  border-top: 2px solid var(--win-white);
-  border-left: 2px solid var(--win-white);
-  border-right: 2px solid var(--win-darker);
-  border-bottom: 2px solid var(--win-darker);
+  background: var(--motif-btn-face);
+  border: 2px solid var(--motif-surface);
+  border-top-color: var(--motif-white);
+  border-left-color: var(--motif-white);
+  border-right-color: var(--motif-darker);
+  border-bottom-color: var(--motif-darker);
+  box-shadow: inset 1px 1px 0 var(--motif-light),
+              inset -1px -1px 0 var(--motif-dark);
   font-family: var(--font-sys);
   font-size: 13px;
-  color: var(--win-text);
+  color: var(--motif-text);
   text-decoration: none;
   cursor: pointer;
   text-align: center;
   user-select: none;
 }
 .btn:active {
-  border-top: 2px solid var(--win-darker);
-  border-left: 2px solid var(--win-darker);
-  border-right: 2px solid var(--win-white);
-  border-bottom: 2px solid var(--win-white);
+  border-top-color: var(--motif-darker);
+  border-left-color: var(--motif-darker);
+  border-right-color: var(--motif-white);
+  border-bottom-color: var(--motif-white);
+  box-shadow: inset 1px 1px 0 var(--motif-dark),
+              inset -1px -1px 0 var(--motif-light);
   padding: 5px 15px 3px 17px;
 }
 
@@ -132,33 +172,39 @@ body {
 
 /* ── Status bar ────────────────────────────────────────── */
 .status-bar {
-  background: var(--win-surface);
-  border-top: 2px solid var(--win-dark);
-  border-left: 2px solid var(--win-dark);
-  border-right: 2px solid var(--win-white);
-  border-bottom: 2px solid var(--win-white);
+  background: var(--motif-surface);
+  border: 2px solid var(--motif-surface);
+  border-top-color: var(--motif-darker);
+  border-left-color: var(--motif-darker);
+  border-right-color: var(--motif-white);
+  border-bottom-color: var(--motif-white);
   padding: 2px 6px;
   font-size: 12px;
   margin-top: 4px;
 }
 
-/* ── Code / pre ────────────────────────────────────────── */
+/* ── Code / pre (xterm style) ──────────────────────────── */
 pre, code {
   font-family: var(--font-mono);
   font-size: 13px;
 }
 
 pre {
-  background: var(--win-text);
-  color: #00ff00;
+  background: var(--motif-terminal-bg);
+  color: var(--motif-terminal-fg);
   padding: 10px;
   overflow-x: auto;
   white-space: pre-wrap;
   word-break: break-all;
+  border: 2px solid var(--motif-surface);
+  border-top-color: var(--motif-darker);
+  border-left-color: var(--motif-darker);
+  border-right-color: var(--motif-white);
+  border-bottom-color: var(--motif-white);
 }
 
 code {
-  background: #e0e0e0;
+  background: #c8c0b2;
   padding: 1px 4px;
 }
 
@@ -168,7 +214,7 @@ pre code {
   color: inherit;
 }
 
-/* ── Tabs ──────────────────────────────────────────────── */
+/* ── Tabs (Motif notebook style) ───────────────────────── */
 .tab-bar {
   display: flex;
   gap: 0;
@@ -179,10 +225,11 @@ pre code {
 
 .tab {
   padding: 4px 14px;
-  background: var(--win-surface);
-  border-top: 2px solid var(--win-white);
-  border-left: 2px solid var(--win-white);
-  border-right: 2px solid var(--win-darker);
+  background: var(--motif-surface);
+  border: 2px solid var(--motif-surface);
+  border-top-color: var(--motif-white);
+  border-left-color: var(--motif-white);
+  border-right-color: var(--motif-darker);
   border-bottom: none;
   font-size: 13px;
   cursor: pointer;
@@ -191,8 +238,8 @@ pre code {
 }
 
 .tab.active {
-  background: var(--win-surface);
-  border-bottom: 2px solid var(--win-surface);
+  background: var(--motif-surface);
+  border-bottom: 2px solid var(--motif-surface);
   top: 0;
   font-weight: bold;
 }
@@ -214,16 +261,16 @@ table {
 th, td {
   text-align: left;
   padding: 4px 8px;
-  border-bottom: 1px solid var(--win-dark);
+  border-bottom: 1px solid var(--motif-dark);
 }
 
 th {
-  background: var(--win-surface);
+  background: var(--motif-surface);
   font-weight: bold;
 }
 
 /* ── Misc ──────────────────────────────────────────────── */
-a { color: var(--win-link); }
+a { color: var(--motif-link); }
 
 h2 { font-size: 14px; margin-bottom: 6px; }
 h3 { font-size: 13px; margin: 10px 0 4px; }
@@ -233,13 +280,17 @@ li { margin-bottom: 3px; }
 
 hr {
   border: none;
-  border-top: 1px solid var(--win-dark);
-  border-bottom: 1px solid var(--win-white);
+  border-top: 1px solid var(--motif-dark);
+  border-bottom: 1px solid var(--motif-white);
   margin: 10px 0;
 }
 
 .fieldset {
-  border: 2px groove var(--win-surface);
+  border: 2px solid var(--motif-dark);
+  border-top-color: var(--motif-darker);
+  border-left-color: var(--motif-darker);
+  border-right-color: var(--motif-light);
+  border-bottom-color: var(--motif-light);
   padding: 8px;
   margin-bottom: 10px;
 }
@@ -250,59 +301,117 @@ hr {
   margin-bottom: 4px;
 }
 
-.highlight { color: #000080; font-weight: bold; }
-.muted { color: var(--win-dark); font-size: 12px; }
+.highlight { color: #224488; font-weight: bold; }
+.muted { color: var(--motif-dark); font-size: 12px; }
 
-/* ── Desktop taskbar ───────────────────────────────────── */
-.taskbar {
+/* ── CDE Front Panel ──────────────────────────────────── */
+.panel {
   position: fixed;
   bottom: 0;
   left: 0;
   right: 0;
-  height: 30px;
-  background: var(--win-surface);
-  border-top: 2px solid var(--win-white);
+  height: 44px;
+  background: var(--motif-panel);
+  border: 3px solid var(--motif-panel);
+  border-top-color: var(--motif-panel-light);
+  border-left-color: var(--motif-panel-light);
+  border-right-color: var(--motif-darker);
+  border-bottom-color: var(--motif-darker);
   display: flex;
   align-items: center;
-  padding: 0 4px;
+  justify-content: center;
+  padding: 0 8px;
   gap: 4px;
   z-index: 100;
 }
 
-.start-btn {
-  padding: 2px 8px;
-  font-weight: bold;
-  font-size: 12px;
+/* CDE workspace switcher */
+.workspace-switcher {
+  display: flex;
+  gap: 2px;
+  margin-right: 8px;
+}
+
+.ws-btn {
+  width: 54px;
+  height: 28px;
+  background: var(--motif-btn-face);
+  border: 2px solid var(--motif-surface);
+  border-top-color: var(--motif-white);
+  border-left-color: var(--motif-white);
+  border-right-color: var(--motif-darker);
+  border-bottom-color: var(--motif-darker);
+  font-family: var(--font-sys);
+  font-size: 11px;
+  color: var(--motif-text);
+  cursor: pointer;
   display: flex;
   align-items: center;
+  justify-content: center;
+  text-decoration: none;
+}
+
+.ws-btn.active {
+  border-top-color: var(--motif-darker);
+  border-left-color: var(--motif-darker);
+  border-right-color: var(--motif-white);
+  border-bottom-color: var(--motif-white);
+  background: var(--motif-dark);
+  color: var(--motif-white);
+}
+
+/* CDE front panel launcher icons */
+.panel-launchers {
+  display: flex;
   gap: 4px;
+  margin-left: 8px;
 }
 
-.start-btn img {
-  width: 16px;
-  height: 16px;
+.panel-icon {
+  width: 36px;
+  height: 28px;
+  background: var(--motif-btn-face);
+  border: 2px solid var(--motif-surface);
+  border-top-color: var(--motif-white);
+  border-left-color: var(--motif-white);
+  border-right-color: var(--motif-darker);
+  border-bottom-color: var(--motif-darker);
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  text-decoration: none;
+  color: var(--motif-text);
 }
 
-.taskbar-clock {
-  margin-left: auto;
-  border-top: 1px solid var(--win-dark);
-  border-left: 1px solid var(--win-dark);
-  border-right: 1px solid var(--win-white);
-  border-bottom: 1px solid var(--win-white);
+.panel-clock {
+  border: 2px solid var(--motif-panel);
+  border-top-color: var(--motif-darker);
+  border-left-color: var(--motif-darker);
+  border-right-color: var(--motif-panel-light);
+  border-bottom-color: var(--motif-panel-light);
   padding: 2px 8px;
-  font-size: 12px;
+  font-size: 11px;
+  font-family: var(--font-mono);
+  color: var(--motif-white);
+  background: var(--motif-darker);
+  margin-left: 8px;
 }
 
 /* ── Responsive ────────────────────────────────────────── */
 @media (max-width: 600px) {
-  body { padding: 8px 4px 40px; }
+  body { padding: 8px 4px 56px; }
   .window { max-width: 100%; }
   .window-body { padding: 8px; }
   pre { font-size: 11px; }
   .btn-row { flex-direction: column; }
   .btn { width: 100%; text-align: center; }
   .tab { padding: 4px 8px; font-size: 12px; }
+  .workspace-switcher { display: none; }
+  .panel-launchers { margin-left: auto; }
+  .panel { justify-content: flex-start; }
 }
 
-/* Give room for taskbar */
-body { padding-bottom: 46px; }
+/* Give room for front panel */
+body { padding-bottom: 60px; }

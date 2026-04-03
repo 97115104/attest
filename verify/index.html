@@ -12,12 +12,11 @@
 
 <div class="window">
   <div class="title-bar">
-    <img src="/assets/logo/circular-2-ai.svg" alt="">
-    <span>verify.exe — Attestation Verification</span>
+    <div class="title-menu-btn"></div>
+    <span>verify — Attestation Verification</span>
     <div class="title-bar-controls">
-      <div class="title-btn">─</div>
+      <div class="title-btn">·</div>
       <div class="title-btn">□</div>
-      <div class="title-btn">×</div>
     </div>
   </div>
   <div class="window-body">
@@ -29,7 +28,7 @@
     <div id="manual-input">
       <h2>▸ Paste attestation data</h2>
       <p class="muted">Enter a base64-encoded attestation or full JSON:</p>
-      <textarea id="data-input" rows="6" style="width:100%; font-family:var(--font-mono); font-size:12px; padding:6px; border:2px inset var(--win-surface);"></textarea>
+      <textarea id="data-input" rows="6" style="width:100%; font-family:var(--font-mono); font-size:12px; padding:6px; border:2px inset var(--motif-surface);"></textarea>
       <div class="btn-row">
         <button class="btn" onclick="verifyInput()">Verify</button>
         <a href="/" class="btn">← Home</a>
@@ -40,15 +39,17 @@
   </div>
 </div>
 
-<!-- ═══ Taskbar ═══ -->
-<div class="taskbar">
-  <a href="/" class="btn start-btn">
-    <img src="/assets/logo/circular-2-ai.svg" alt="">
-    Start
-  </a>
-  <a href="/" class="btn" style="font-size:12px;">attest.exe</a>
-  <a href="/verify/" class="btn" style="font-size:12px;">verify.exe</a>
-  <div class="taskbar-clock" id="clock"></div>
+<!-- ═══ CDE Front Panel ═══ -->
+<div class="panel">
+  <div class="workspace-switcher">
+    <a href="/" class="ws-btn">Home</a>
+    <a href="/developers/" class="ws-btn">Docs</a>
+    <a href="/verify/" class="ws-btn active">Verify</a>
+  </div>
+  <div class="panel-launchers">
+    <a href="https://github.com/97115104/attest" target="_blank" class="panel-icon" title="Source">⌂</a>
+  </div>
+  <div class="panel-clock" id="clock"></div>
 </div>
 
 <script>

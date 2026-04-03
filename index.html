@@ -13,12 +13,11 @@
 <!-- ═══ Main Window ═══ -->
 <div class="window">
   <div class="title-bar">
-    <img src="/assets/logo/circular-2-ai.svg" alt="">
-    <span>attest.exe — AI Content Attestation Protocol</span>
+    <div class="title-menu-btn"></div>
+    <span>attest — AI Content Attestation Protocol</span>
     <div class="title-bar-controls">
-      <div class="title-btn">─</div>
+      <div class="title-btn">·</div>
       <div class="title-btn">□</div>
-      <div class="title-btn">×</div>
     </div>
   </div>
   <div class="window-body">
@@ -87,14 +86,17 @@ attribution: collab claude opus 4
   </div>
 </div>
 
-<!-- ═══ Taskbar ═══ -->
-<div class="taskbar">
-  <a href="/" class="btn start-btn">
-    <img src="/assets/logo/circular-2-ai.svg" alt="">
-    Start
-  </a>
-  <a href="/" class="btn" style="font-size:12px;">attest.exe</a>
-  <div class="taskbar-clock" id="clock"></div>
+<!-- ═══ CDE Front Panel ═══ -->
+<div class="panel">
+  <div class="workspace-switcher">
+    <a href="/" class="ws-btn active">Home</a>
+    <a href="/developers/" class="ws-btn">Docs</a>
+    <a href="/verify/" class="ws-btn">Verify</a>
+  </div>
+  <div class="panel-launchers">
+    <a href="https://github.com/97115104/attest" target="_blank" class="panel-icon" title="Source">⌂</a>
+  </div>
+  <div class="panel-clock" id="clock"></div>
 </div>
 
 <script>
