@@ -98,7 +98,7 @@ function renderAttestation(att) {
   const type = att.authorship_type || (att.role === 'authored' ? 'human' : att.role === 'generated' ? 'ai' : 'collab');
   const el = document.getElementById('result');
   el.innerHTML = `
-    <div class="inset" style="text-align:center; margin-bottom:10px;">
+    <div class="inset verify-badge" style="text-align:center; margin-bottom:10px;">
       <div style="margin-bottom:6px;">
         <svg width="48" height="48" viewBox="0 0 48 48" style="vertical-align:middle;">
           <rect x="2" y="2" width="44" height="44" rx="4" fill="#0a5f0a" stroke="#074a07" stroke-width="2"/>
@@ -106,7 +106,7 @@ function renderAttestation(att) {
           <polyline points="14,24 21,32 34,16" fill="none" stroke="#33ff33" stroke-width="4" stroke-linecap="square" stroke-linejoin="miter"/>
         </svg>
       </div>
-      <h2 style="font-size:16px; margin-bottom:2px; color:#0a5f0a;">attestation verified</h2>
+      <h2 style="font-size:16px; margin-bottom:2px;">attestation verified</h2>
       <p class="muted" style="margin:0;">${typeLabel(type)}</p>
       <div style="margin-top:6px;">${typeIcon(type)}</div>
     </div>
@@ -154,7 +154,7 @@ function renderAttestation(att) {
 function renderError(msg) {
   const el = document.getElementById('result');
   el.innerHTML = `
-    <div class="inset" style="text-align:center; margin-bottom:10px;">
+    <div class="inset verify-badge verify-fail" style="text-align:center; margin-bottom:10px;">
       <div style="margin-bottom:6px;">
         <svg width="48" height="48" viewBox="0 0 48 48" style="vertical-align:middle;">
           <rect x="2" y="2" width="44" height="44" rx="4" fill="#5f0a0a" stroke="#4a0707" stroke-width="2"/>
@@ -163,7 +163,7 @@ function renderError(msg) {
           <line x1="33" y1="15" x2="15" y2="33" stroke="#ff3333" stroke-width="4" stroke-linecap="square"/>
         </svg>
       </div>
-      <h2 style="font-size:16px; margin-bottom:2px; color:#8b0000;">verification failed</h2>
+      <h2 style="font-size:16px; margin-bottom:2px;">verification failed</h2>
       <p class="muted" style="margin:0;">${esc(msg)}</p>
     </div>
   `;
