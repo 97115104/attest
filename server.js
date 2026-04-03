@@ -47,6 +47,7 @@ function serveStatic(res, req, filePath) {
     res.writeHead(200, {
       'Content-Type': mime,
       'Cache-Control': 'no-cache',
+      'CDN-Cache-Control': 'no-store',
       'ETag': etag,
     });
     res.end(data);
