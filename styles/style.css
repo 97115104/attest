@@ -1,6 +1,6 @@
 :root {
   /* CDE/Motif palette — mid-90s Unix workstation */
-  --motif-bg: #2e5064;
+  --motif-bg: #000000;
   --motif-surface: #b0a898;
   --motif-dark: #847a6e;
   --motif-darker: #5a524a;
@@ -383,6 +383,14 @@ hr {
 }
 
 /* ── ASCII art filler ──────────────────────────────── */
+.ascii-hero {
+  background: var(--motif-terminal-bg) !important;
+  border-color: var(--motif-darker) !important;
+}
+.ascii-hero .muted {
+  color: #999;
+}
+
 .ascii-filler {
   text-align: center;
   color: var(--motif-dark);
