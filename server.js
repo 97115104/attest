@@ -54,6 +54,43 @@ function readBody(req) {
   });
 }
 
+function readRawBody(req) {
+  return new Promise((resolve, reject) => {
+    const chunks = [];
+    req.on('data', c => chunks.push(c));
+    req.on('end', () => resolve(Buffer.concat(chunks)));
+    req.on('error', reject);
+  });
+}
+
+// ── Multipart parser (minimal) ───────────────────────────────────────
+function parseMultipart(buf, boundary) {
+  const parts = {};
+  const sep = '--' + boundary;
+  const str = buf.toString('latin1');
+  const segments = str.split(sep).slice(1, -1);
+  for (const seg of segments) {
+    const headerEnd = seg.indexOf('\r\n\r\n');
+    if (headerEnd === -1) continue;
+    const header = seg.slice(0, headerEnd);
+    const body = seg.slice(headerEnd + 4).replace(/\r\n$/, '');
+    const nameMatch = header.match(/name="([^"]+)"/);
+    const fileMatch = header.match(/filename="([^"]*)"/);
+    if (!nameMatch) continue;
+    const name = nameMatch[1];
+    if (fileMatch) {
+      // file field — get binary content via byte offsets
+      const hdrBytes = Buffer.byteLength(seg.slice(0, headerEnd + 4), 'latin1');
+      const fullBytes = Buffer.from(seg, 'latin1');
+      const fileBytes = fullBytes.slice(hdrBytes, fullBytes.length - 2);
+      parts[name] = { filename: fileMatch[1], data: fileBytes };
+    } else {
+      parts[name] = body;
+    }
+  }
+  return parts;
+}
+
 // ── API: Create attestation ──────────────────────────────────────────
 function handleCreate(query) {
   const content_name = query.get('content_name');
@@ -126,6 +163,66 @@ const server = http.createServer(async (req, res) => {
   // API routes
   if (pathname === '/api/create') {
     return json(res, 200, handleCreate(url.searchParams));
+  }
+
+  if (pathname === '/api/create-upload' && req.method === 'POST') {
+    const contentType = req.headers['content-type'] || '';
+    const boundaryMatch = contentType.match(/boundary=(.+)/);
+    if (!boundaryMatch) return json(res, 400, { error: 'Multipart boundary required' });
+
+    const raw = await readRawBody(req);
+    const parts = parseMultipart(raw, boundaryMatch[1]);
+
+    const file = parts.file;
+    if (!file || !file.filename) return json(res, 400, { error: 'File upload required' });
+
+    const contentName = (typeof parts.content_name === 'string' && parts.content_name) || file.filename;
+    const model = (typeof parts.model === 'string' && parts.model) || 'gpt-4';
+    const role = (typeof parts.role === 'string' && parts.role) || 'assisted';
+    const author = (typeof parts.author === 'string' && parts.author) || 'Anonymous';
+    const authorship_type = (typeof parts.authorship_type === 'string' && parts.authorship_type) ||
+      (role === 'authored' ? 'human' : role === 'generated' ? 'ai' : 'collab');
+
+    const id = new Date().toISOString().split('T')[0] + '-' + crypto.randomBytes(3).toString('hex');
+    const contentHash = 'sha256:' + crypto.createHash('sha256').update(file.data).digest('hex');
+
+    const attestation = {
+      version: '2.0',
+      id,
+      content_name: contentName,
+      model: role === 'authored' ? 'Human' : model,
+      role,
+      authorship_type,
+      timestamp: new Date().toISOString(),
+      platform: 'attest.97115104.com',
+      author,
+      content_hash: contentHash,
+      document_type: path.extname(file.filename).replace('.', '') || 'unknown',
+    };
+
+    const dataToSign = JSON.stringify({ content_hash: contentHash, model: attestation.model, timestamp: attestation.timestamp, authorship_type, role });
+    const signingKey = 'attest-97115104-' + id;
+    const sig = crypto.createHmac('sha256', signingKey).update(dataToSign).digest('hex');
+    attestation.signature = { type: 'hmac-sha256', algorithm: 'HMAC-SHA256', value: sig, data_to_sign: dataToSign };
+    attestation.signer = { name: author, id: author.toLowerCase().replace(/\s+/g, '') };
+
+    const encoded = Buffer.from(JSON.stringify(attestation)).toString('base64');
+    const longUrl = `https://attest.97115104.com/verify/?data=${encodeURIComponent(encoded)}`;
+
+    // Auto-create short URL
+    const db = getDb();
+    const { customAlphabet } = await import('nanoid');
+    const nanoid = customAlphabet('0123456789abcdefghijklmnopqrstuvwxyz', 8);
+    let shortId;
+    for (let i = 0; i < 10; i++) {
+      shortId = nanoid();
+      const existing = db.prepare('SELECT id FROM urls WHERE id = ?').get(shortId);
+      if (!existing) break;
+    }
+    db.prepare('INSERT INTO urls (id, data) VALUES (?, ?)').run(shortId, encoded);
+    const shortUrl = `https://attest.97115104.com/s/${shortId}`;
+
+    return json(res, 200, { success: true, attestation, urls: { verify: longUrl, short: shortUrl } });
   }
 
   if (pathname === '/api/shorten' && req.method === 'POST') {

@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>create attestation - attest</title>
+  <meta name="description" content="Create an attestation by uploading any source file">
+  <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+
+<div class="window">
+  <div class="title-bar">
+    <span>create - generate attestation from source</span>
+  </div>
+  <div class="window-body">
+
+    <div id="form-section">
+      <h2>▸ upload source file</h2>
+      <p>Upload any file to generate an attestation with a SHA-256 content hash and HMAC signature.</p>
+
+      <div class="fieldset">
+        <div class="fieldset-legend">source</div>
+        <input type="file" id="file-input" style="font-family:var(--font-sys); font-size:13px; margin-bottom:8px; display:block; width:100%;">
+        <p class="muted" id="file-info" style="margin:0;"></p>
+      </div>
+
+      <div class="fieldset">
+        <div class="fieldset-legend">details</div>
+        <table class="no-collapse">
+          <tr>
+            <td><strong>content name</strong></td>
+            <td><input type="text" id="content-name" placeholder="auto-filled from filename" style="width:100%; font-family:var(--font-mono); font-size:12px; padding:3px 6px; border:2px inset var(--motif-surface);"></td>
+          </tr>
+          <tr>
+            <td><strong>authorship</strong></td>
+            <td>
+              <select id="role" style="font-family:var(--font-sys); font-size:13px; padding:2px 4px; border:2px inset var(--motif-surface);">
+                <option value="authored">human authored</option>
+                <option value="collaborated" selected>human + AI collaboration</option>
+                <option value="generated">AI generated</option>
+              </select>
+            </td>
+          </tr>
+          <tr>
+            <td><strong>model</strong></td>
+            <td><input type="text" id="model" value="claude-opus-4" style="width:100%; font-family:var(--font-mono); font-size:12px; padding:3px 6px; border:2px inset var(--motif-surface);"></td>
+          </tr>
+          <tr>
+            <td><strong>author</strong></td>
+            <td><input type="text" id="author" placeholder="Anonymous" style="width:100%; font-family:var(--font-mono); font-size:12px; padding:3px 6px; border:2px inset var(--motif-surface);"></td>
+          </tr>
+        </table>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn" id="create-btn" onclick="createAttestation()">create attestation</button>
+      </div>
+    </div>
+
+    <div id="result-section" style="display:none;">
+      <div class="inset" style="text-align:center; margin-bottom:10px;">
+        <h2 style="font-size:16px; margin-bottom:2px;" id="result-type"></h2>
+        <p class="muted" style="margin:0;">attestation created</p>
+      </div>
+
+      <div class="fieldset">
+        <div class="fieldset-legend">verify URLs</div>
+        <p style="margin-bottom:4px;"><strong>short URL</strong></p>
+        <pre id="short-url"><code></code></pre>
+        <p style="margin-bottom:4px; margin-top:8px;"><strong>long URL</strong></p>
+        <pre id="long-url" style="font-size:11px;"><code></code></pre>
+      </div>
+
+      <div class="fieldset">
+        <div class="fieldset-legend">attestation JSON</div>
+        <pre id="attestation-json"><code></code></pre>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn" onclick="resetForm()">create another</button>
+      </div>
+    </div>
+
+    <div class="status-bar" id="status">ready</div>
+
+    <pre class="ascii-filler" id="ascii-art">
+         .--------.
+        / .------. \
+       / /        \ \
+       | |  [src] | |
+       \ \        / /
+        \ '------' /
+         '--------'
+           upload
+        .-----------. 
+        | attest.ok |
+        '-----------'</pre>
+  </div>
+  <div class="status-bar">
+    MIT license - <a href="https://github.com/97115104/attest">github.com/97115104/attest</a>
+  </div>
+</div>
+
+<!-- ═══ CDE Front Panel ═══ -->
+<div class="panel">
+  <div class="workspace-switcher">
+    <a href="/" class="ws-btn">home</a>
+    <a href="/create/" class="ws-btn active">create</a>
+    <a href="/developers/" class="ws-btn">docs</a>
+    <a href="/verify/" class="ws-btn">verify</a>
+    <a href="https://github.com/97115104/attest" target="_blank" class="ws-btn">source</a>
+  </div>
+  <div class="panel-launchers">
+    <input type="color" id="bg-picker" class="panel-color" title="Desktop color" />
+  </div>
+  <div class="panel-clock" id="clock"></div>
+</div>
+
+<script>
+const fileInput = document.getElementById('file-input');
+const roleSelect = document.getElementById('role');
+
+fileInput.addEventListener('change', () => {
+  const f = fileInput.files[0];
+  if (f) {
+    document.getElementById('file-info').textContent = f.name + ' (' + (f.size / 1024).toFixed(1) + ' KB)';
+    if (!document.getElementById('content-name').value) {
+      document.getElementById('content-name').value = f.name;
+    }
+  }
+});
+
+roleSelect.addEventListener('change', () => {
+  const modelInput = document.getElementById('model');
+  if (roleSelect.value === 'authored') {
+    modelInput.value = 'Human';
+    modelInput.disabled = true;
+  } else {
+    if (modelInput.value === 'Human') modelInput.value = 'claude-opus-4';
+    modelInput.disabled = false;
+  }
+});
+
+async function createAttestation() {
+  const file = fileInput.files[0];
+  if (!file) {
+    document.getElementById('status').textContent = 'select a file to upload';
+    return;
+  }
+
+  const btn = document.getElementById('create-btn');
+  btn.disabled = true;
+  btn.textContent = 'creating...';
+  document.getElementById('status').textContent = 'uploading and generating attestation...';
+
+  const form = new FormData();
+  form.append('file', file);
+  form.append('content_name', document.getElementById('content-name').value || file.name);
+  form.append('role', roleSelect.value);
+  form.append('model', document.getElementById('model').value || 'claude-opus-4');
+  form.append('author', document.getElementById('author').value || 'Anonymous');
+
+  try {
+    const res = await fetch('/api/create-upload', { method: 'POST', body: form });
+    const data = await res.json();
+
+    if (data.error) {
+      document.getElementById('status').textContent = 'error: ' + data.error;
+      btn.disabled = false;
+      btn.textContent = 'create attestation';
+      return;
+    }
+
+    const type = data.attestation.authorship_type;
+    const labels = { human: 'human authored', collab: 'human + AI collaboration', ai: 'AI generated' };
+    document.getElementById('result-type').textContent = labels[type] || type;
+
+    document.getElementById('short-url').querySelector('code').textContent = data.urls.short;
+    document.getElementById('long-url').querySelector('code').textContent = data.urls.verify;
+    document.getElementById('attestation-json').querySelector('code').textContent = JSON.stringify(data.attestation, null, 2);
+
+    document.getElementById('form-section').style.display = 'none';
+    document.getElementById('ascii-art').style.display = 'none';
+    document.getElementById('result-section').style.display = 'block';
+    document.getElementById('status').textContent = 'attestation created';
+
+    // Add copy buttons to new pre elements
+    document.querySelectorAll('#result-section pre').forEach(pre => {
+      const cb = document.createElement('button');
+      cb.className = 'copy-btn';
+      cb.textContent = 'copy';
+      cb.style.opacity = '1';
+      cb.addEventListener('click', () => {
+        const text = pre.querySelector('code').textContent;
+        navigator.clipboard.writeText(text).then(() => {
+          cb.textContent = 'copied';
+          setTimeout(() => cb.textContent = 'copy', 1500);
+        });
+      });
+      pre.appendChild(cb);
+    });
+
+  } catch (err) {
+    document.getElementById('status').textContent = 'error: ' + err.message;
+  }
+
+  btn.disabled = false;
+  btn.textContent = 'create attestation';
+}
+
+function resetForm() {
+  document.getElementById('form-section').style.display = 'block';
+  document.getElementById('ascii-art').style.display = 'block';
+  document.getElementById('result-section').style.display = 'none';
+  document.getElementById('status').textContent = 'ready';
+  fileInput.value = '';
+  document.getElementById('file-info').textContent = '';
+  document.getElementById('content-name').value = '';
+}
+
+// Clock
+function tick() {
+  const d = new Date();
+  document.getElementById('clock').textContent =
+    d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false });
+}
+tick();
+setInterval(tick, 30000);
+
+const picker = document.getElementById('bg-picker');
+const saved = localStorage.getItem('attest-bg');
+if (saved) document.body.style.background = saved;
+picker.value = saved || getComputedStyle(document.body).backgroundColor.includes('rgb') ?
+  '#' + getComputedStyle(document.body).backgroundColor.match(/\d+/g).map(x=>(+x).toString(16).padStart(2,'0')).join('') :
+  '#2e5064';
+picker.addEventListener('input', e => {
+  document.body.style.background = e.target.value;
+  localStorage.setItem('attest-bg', e.target.value);
+});
+</script>
+</body>
+</html>

@@ -30,6 +30,17 @@
     </div>
 
     <div class="status-bar" id="status">ready</div>
+
+    <pre class="ascii-filler">
+            ___
+           /   \
+          |  ?  |
+           \___/
+             /
+            /</pre>
+  </div>
+  <div class="status-bar">
+    MIT license - <a href="https://github.com/97115104/attest">github.com/97115104/attest</a>
   </div>
 </div>
 
@@ -37,6 +48,7 @@
 <div class="panel">
   <div class="workspace-switcher">
     <a href="/" class="ws-btn">home</a>
+    <a href="/create/" class="ws-btn">create</a>
     <a href="/developers/" class="ws-btn">docs</a>
     <a href="/verify/" class="ws-btn active">verify</a>
     <a href="https://github.com/97115104/attest" target="_blank" class="ws-btn">source</a>
@@ -171,6 +183,18 @@ picker.addEventListener('input', e => {
   document.body.style.background = e.target.value;
   localStorage.setItem('attest-bg', e.target.value);
 });
+
+document.querySelectorAll('pre:not(.ascii-filler)').forEach(pre => {
+  const btn = document.createElement('button');
+  btn.className = 'copy-btn';
+  btn.textContent = 'copy';
+  btn.addEventListener('click', () => {
+    const text = pre.querySelector('code') ? pre.querySelector('code').textContent : pre.textContent;
+    navigator.clipboard.writeText(text).then(() => {
+      btn.textContent = 'copied';
+      setTimeout(() => btn.textContent = 'copy', 1500);
+    });
+  });
+  pre.appendChild(btn);
+});
 </script>
-</body>
-</html>

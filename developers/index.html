@@ -23,6 +23,7 @@
       <div class="tab" data-tab="api">API</div>
       <div class="tab" data-tab="format">format</div>
       <div class="tab" data-tab="cicd">CI/CD</div>
+      <div class="tab" data-tab="agents">agents</div>
     </div>
 
     <!-- ── Quick Start ─────────────────────────────── -->
@@ -48,10 +49,73 @@
       <hr>
 
       <h2>▸ 2. Generate attestations</h2>
-      <p>Use the API or a generation script to process your content:</p>
-      <pre><code>curl "https://attest.97115104.com/api/create?content_name=My+Doc&amp;model=claude-opus-4&amp;role=collaborated"</code></pre>
-      <p class="muted">Returns JSON immediately. No auth needed. Free forever.</p>
 
+      <h3>curl</h3>
+      <pre><code>curl "https://attest.97115104.com/api/create?content_name=My+Doc&amp;model=claude-opus-4&amp;role=collaborated"</code></pre>
+
+      <h3>node.js</h3>
+      <pre><code>const res = await fetch(
+  "https://attest.97115104.com/api/create?" +
+  new URLSearchParams({
+    content_name: "My Doc",
+    model: "claude-opus-4",
+    role: "collaborated",
+    author: "your-name"
+  })
+);
+const { attestation, urls } = await res.json();
+console.log(urls.verify); // shareable verification link</code></pre>
+
+      <h3>python</h3>
+      <pre><code>import requests
+
+r = requests.get("https://attest.97115104.com/api/create", params={
+    "content_name": "My Doc",
+    "model": "claude-opus-4",
+    "role": "collaborated",
+    "author": "your-name"
+})
+data = r.json()
+print(data["urls"]["verify"])  # shareable verification link</code></pre>
+
+      <p class="muted">All three return the same JSON. Open access, free forever.</p>
+
+      <hr>
+
+      <h2>▸ 3. Quick start with an agent</h2>
+      <p>Copy and paste the following prompt into any AI agent (Claude, ChatGPT, Gemini, Copilot, or any other). The agent will walk you through creating an attestation by asking what you need it for and verifying the details before generating it.</p>
+      <pre><code>I need you to help me create a content attestation using the
+attest protocol. Walk me through it step by step:
+
+1. Ask me what content I want to attest (title, filename, or
+   description).
+2. Ask me whether the content was written entirely by a human,
+   co-authored with AI, or fully AI-generated.
+3. If AI was involved, ask me which model was used.
+4. Ask me for an author name (or use "Anonymous").
+5. Confirm the details with me before proceeding.
+6. Once I confirm, make this HTTP request and show me the result:
+
+   GET https://attest.97115104.com/api/create
+     ?content_name={title from step 1}
+     &amp;role={authored | collaborated | generated}
+     &amp;model={model from step 3, or "Human" if fully human}
+     &amp;author={author from step 4}
+
+7. From the JSON response, give me:
+   - the verify URL so I can share it
+   - the attestation JSON so I can store it alongside my content
+   - a suggestion for where to put it (meta tag, frontmatter,
+     or a .json file next to the content)</code></pre>
+      <p class="muted">The agent handles the entire flow. Just paste, answer the questions, and you get a working attestation.</p>
+
+      <pre class="ascii-filler">
+       $ curl /api/create
+       {
+         "ok": true,
+         "verify": "..."
+       }
+       $ _</pre>
     </div>
 
     <!-- ── API Reference ───────────────────────────── -->
@@ -113,7 +177,7 @@
   -d '{"data":"eyJ2ZXJzaW9uIjoiMi4wIi..."}'</code></pre>
         <h3>Response</h3>
         <pre><code>{"shortUrl":"https://attest.97115104.com/s/abc12345","shortId":"abc12345"}</code></pre>
-        <p class="muted">Short URLs redirect to the verify page with the attestation data. Free. No auth.</p>
+        <p class="muted">Short URLs redirect to the verify page with the attestation data. Open access, always free.</p>
       </div>
 
       <hr>
@@ -123,6 +187,14 @@
       <pre><code>https://attest.97115104.com/verify/?data=eyJ2ZXJzaW9uIjoiMi4wIi...</code></pre>
       <p>Short URLs (<code>/s/{id}</code>) redirect to the verify page automatically.</p>
 
+      <pre class="ascii-filler">
+       +----------+
+       | GET /api |-------> { json }
+       +----------+
+            |
+       +----------+
+       | POST /s  |-------> /s/abc123
+       +----------+</pre>
     </div>
 
     <!-- ── Attestation Format ──────────────────────── -->
@@ -158,13 +230,13 @@
       <h2>▸ Authorship types</h2>
       <table>
         <tr><th>authorship_type</th><th>role</th><th>model</th><th>Meaning</th></tr>
-        <tr><td><code>human</code></td><td><code>authored</code></td><td><code>Human</code></td><td>No AI involvement</td></tr>
+        <tr><td><code>human</code></td><td><code>authored</code></td><td><code>Human</code></td><td>Entirely human-written</td></tr>
         <tr><td><code>collab</code></td><td><code>collaborated</code></td><td>e.g. <code>claude-opus-4</code></td><td>Human directed, AI assisted</td></tr>
         <tr><td><code>ai</code></td><td><code>generated</code></td><td>e.g. <code>gpt-5</code></td><td>Fully AI-generated</td></tr>
       </table>
       <details class="table-collapse">
         <summary>Authorship types</summary>
-        <p><code>human</code> / <code>authored</code> - No AI involvement</p>
+        <p><code>human</code> / <code>authored</code> - Entirely human-written</p>
         <p><code>collab</code> / <code>collaborated</code> - Human directed, AI assisted</p>
         <p><code>ai</code> / <code>generated</code> - Fully AI-generated</p>
       </details>
@@ -186,6 +258,13 @@
 
 signature = HMAC-SHA256(signing_key, data_to_sign)</code></pre>
 
+      <pre class="ascii-filler">
+        {
+          "v": "2.0",
+          "type": "collab",
+          "sig": "4b2d...",
+          "hash": "sha256:..."
+        }</pre>
     </div>
 
     <!-- ── CI/CD ───────────────────────────────────── -->
@@ -236,11 +315,167 @@ const crypto = require('crypto');
 
       <h2>▸ Jekyll Plugin</h2>
       <p>If you use Jekyll, install the <code>_plugins/attest_hook.rb</code> plugin to auto-generate attestations during <code>jekyll build</code>. See the <a href="https://github.com/97115104/attest">repo</a> for details.</p>
+
+      <pre class="ascii-filler">
+       push --> build --> attest
+         |                  |
+         +--attestations.json--+
+                  |
+              deploy</pre>
     </div>
 
-    <div class="status-bar">
-      Docs v2.0 - MIT license - <a href="https://github.com/97115104/attest">github.com/97115104/attest</a>
+    <!-- ── Agents ──────────────────────────────────── -->
+    <div class="inset tab-content" id="tab-agents">
+
+      <h2>▸ agent integration</h2>
+      <p>attest is <strong>free forever with open access</strong>. any AI agent, bot, scraper, or crawler can integrate in one HTTP call.</p>
+
+      <hr>
+
+      <h2>▸ create attestations (one call)</h2>
+      <p>one GET request - that's it:</p>
+      <pre><code>GET https://attest.97115104.com/api/create
+  ?content_name={title}
+  &amp;model={your_model}
+  &amp;role={authored|collaborated|generated}
+  &amp;author={agent_name}
+  &amp;content={optional: raw content for SHA-256 hash}</code></pre>
+
+      <h3>curl</h3>
+      <pre><code>curl "https://attest.97115104.com/api/create?content_name=output.md&amp;model=claude-opus-4&amp;role=generated&amp;author=my-agent"</code></pre>
+
+      <h3>fetch</h3>
+      <pre><code>const r = await fetch(
+  `https://attest.97115104.com/api/create?content_name=${
+    encodeURIComponent(title)
+  }&amp;model=${model}&amp;role=generated&amp;author=my-agent`
+);
+const { attestation, urls } = await r.json();
+// urls.verify → shareable verification link</code></pre>
+
+      <h3>python</h3>
+      <pre><code>import requests
+r = requests.get("https://attest.97115104.com/api/create", params={
+    "content_name": title,
+    "model": "gpt-4",
+    "role": "generated",
+    "author": "my-bot"
+})
+attestation = r.json()</code></pre>
+
+      <hr>
+
+      <h2>▸ find attestations (scraping/crawling)</h2>
+      <p>attestations can live in several places. here's where to look:</p>
+
+      <div class="fieldset">
+        <div class="fieldset-legend">HTML meta tags</div>
+        <pre><code>&lt;!-- in &lt;head&gt; --&gt;
+&lt;meta name="attestation" content="base64..."&gt;
+&lt;meta name="attribution" content="collab claude opus 4"&gt;
+&lt;link rel="attestation" href="/attestations/post.json"&gt;</code></pre>
+      </div>
+
+      <div class="fieldset">
+        <div class="fieldset-legend">JSON files</div>
+        <pre><code># common locations:
+/attestations/*.json
+/_data/attestations.json
+/.well-known/attestations.json
+
+# each is a standard attest v2.0 JSON object</code></pre>
+      </div>
+
+      <div class="fieldset">
+        <div class="fieldset-legend">frontmatter</div>
+        <pre><code>---
+title: my post
+attribution: collab claude opus 4
+attestation: https://attest.97115104.com/s/abc12345
+---</code></pre>
+      </div>
+
+      <div class="fieldset">
+        <div class="fieldset-legend">verify URLs</div>
+        <pre><code># full URL (data param is base64 JSON):
+https://attest.97115104.com/verify/?data=eyJ2ZXJz...
+
+# short URL (redirects to verify):
+https://attest.97115104.com/s/{shortId}
+
+# to decode: atob(data) → JSON.parse()</code></pre>
+      </div>
+
+      <hr>
+
+      <h2>▸ pseudo prompt</h2>
+      <p>paste this into any agent's system prompt, <code>.instructions.md</code>, tool config, or rules file:</p>
+      <pre><code>## attestation protocol
+
+when you create or modify content, generate an attestation:
+
+  GET https://attest.97115104.com/api/create
+    ?content_name={filename or title}
+    &amp;model={your model name}
+    &amp;role={authored|collaborated|generated}
+    &amp;author={your agent name}
+    &amp;content={optional: raw content for hash}
+
+append the returned verify URL to your output or
+commit message. open access, free forever, one HTTP call.
+
+example (generated file):
+  curl "https://attest.97115104.com/api/create?\
+    content_name=output.md&amp;model=gpt-4&amp;\
+    role=generated&amp;author=my-agent"
+
+example (human-AI collab):
+  curl "https://attest.97115104.com/api/create?\
+    content_name=readme.md&amp;model=claude-opus-4&amp;\
+    role=collaborated"
+
+store the attestation JSON alongside your output
+or link the verify URL in comments/metadata.</code></pre>
+
+      <hr>
+
+      <h2>▸ where to add the prompt</h2>
+      <table>
+        <tr><th>tool</th><th>file / location</th></tr>
+        <tr><td>github copilot</td><td><code>.github/copilot-instructions.md</code></td></tr>
+        <tr><td>cursor / windsurf</td><td><code>.cursorrules</code> or project settings</td></tr>
+        <tr><td>claude code</td><td><code>CLAUDE.md</code> or <code>AGENTS.md</code></td></tr>
+        <tr><td>openai agents</td><td>system prompt or tool definition</td></tr>
+        <tr><td>custom bots</td><td>system prompt or middleware</td></tr>
+        <tr><td>CI/CD bots</td><td>post-build step (see CI/CD tab)</td></tr>
+        <tr><td>web scrapers</td><td>check meta tags + <code>/.well-known/attestations.json</code></td></tr>
+      </table>
+      <details class="table-collapse">
+        <summary>integration locations</summary>
+        <p><strong>github copilot</strong> - <code>.github/copilot-instructions.md</code></p>
+        <p><strong>cursor / windsurf</strong> - <code>.cursorrules</code> or project settings</p>
+        <p><strong>claude code</strong> - <code>CLAUDE.md</code> or <code>AGENTS.md</code></p>
+        <p><strong>openai agents</strong> - system prompt or tool definition</p>
+        <p><strong>custom bots</strong> - system prompt or middleware</p>
+        <p><strong>CI/CD bots</strong> - post-build step (see CI/CD tab)</p>
+        <p><strong>web scrapers</strong> - check meta tags + <code>/.well-known/attestations.json</code></p>
+      </details>
+
+      <pre class="ascii-filler">
+         +----------+
+         |  []  []  |
+         |   ____   |
+         |  |    |  |
+         +--+----+--+
+              ||
+          +---++---+
+          | agent  |
+          +--------+</pre>
     </div>
+
+  </div>
+  <div class="status-bar">
+    MIT license - <a href="https://github.com/97115104/attest">github.com/97115104/attest</a>
   </div>
 </div>
 
@@ -248,6 +483,7 @@ const crypto = require('crypto');
 <div class="panel">
   <div class="workspace-switcher">
     <a href="/" class="ws-btn">home</a>
+    <a href="/create/" class="ws-btn">create</a>
     <a href="/developers/" class="ws-btn active">docs</a>
     <a href="/verify/" class="ws-btn">verify</a>
     <a href="https://github.com/97115104/attest" target="_blank" class="ws-btn">source</a>
@@ -288,6 +524,18 @@ picker.addEventListener('input', e => {
   document.body.style.background = e.target.value;
   localStorage.setItem('attest-bg', e.target.value);
 });
+
+document.querySelectorAll('pre:not(.ascii-filler)').forEach(pre => {
+  const btn = document.createElement('button');
+  btn.className = 'copy-btn';
+  btn.textContent = 'copy';
+  btn.addEventListener('click', () => {
+    const text = pre.querySelector('code') ? pre.querySelector('code').textContent : pre.textContent;
+    navigator.clipboard.writeText(text).then(() => {
+      btn.textContent = 'copied';
+      setTimeout(() => btn.textContent = 'copy', 1500);
+    });
+  });
+  pre.appendChild(btn);
+});
 </script>
-</body>
-</html>
