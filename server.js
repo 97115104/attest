@@ -34,12 +34,16 @@ function serve404(res) {
   }
 }
 
-function serveStatic(res, filePath) {
+function serveStatic(res, req, filePath) {
   const ext = path.extname(filePath);
   const mime = MIME[ext] || 'application/octet-stream';
   try {
     const data = fs.readFileSync(filePath);
     const etag = '"' + crypto.createHash('md5').update(data).digest('hex') + '"';
+    if (req.headers['if-none-match'] === etag) {
+      res.writeHead(304);
+      return res.end();
+    }
     res.writeHead(200, {
       'Content-Type': mime,
       'Cache-Control': 'no-cache',
@@ -346,7 +350,7 @@ const server = http.createServer(async (req, res) => {
     return res.end('Forbidden');
   }
 
-  serveStatic(res, resolved);
+  serveStatic(res, req, resolved);
 });
 
 // Init DB then start
