@@ -385,12 +385,12 @@ hr {
 /* ── ASCII art filler ──────────────────────────────── */
 .inset.ascii-hero,
 .inset.verify-badge {
-  background: #0a0a0a !important;
-  border: 2px solid #222 !important;
-  border-top-color: #222 !important;
-  border-left-color: #222 !important;
-  border-right-color: #222 !important;
-  border-bottom-color: #222 !important;
+  background: #000000 !important;
+  border: 2px solid #000000 !important;
+  border-top-color: #000000 !important;
+  border-left-color: #000000 !important;
+  border-right-color: #000000 !important;
+  border-bottom-color: #000000 !important;
 }
 .inset.ascii-hero .muted,
 .inset.verify-badge .muted {
