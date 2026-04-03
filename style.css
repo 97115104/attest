@@ -48,6 +48,9 @@ body {
               2px 2px 6px rgba(0,0,0,0.35);
   width: 100%;
   max-width: 780px;
+  height: calc(100vh - 108px);
+  display: flex;
+  flex-direction: column;
   margin-bottom: 16px;
 }
 
@@ -64,61 +67,10 @@ body {
   border-bottom: 2px solid var(--motif-darker);
 }
 
-.title-bar img {
-  width: 16px;
-  height: 16px;
-  image-rendering: pixelated;
-}
-
-.title-bar-controls {
-  margin-left: auto;
-  display: flex;
-  gap: 2px;
-}
-
-/* Motif-style title bar button (small raised square) */
-.title-btn {
-  width: 14px;
-  height: 14px;
-  background: var(--motif-surface);
-  border: 2px solid var(--motif-surface);
-  border-top-color: var(--motif-white);
-  border-left-color: var(--motif-white);
-  border-right-color: var(--motif-darker);
-  border-bottom-color: var(--motif-darker);
-  font-size: 8px;
-  line-height: 10px;
-  text-align: center;
-  cursor: default;
-  color: var(--motif-text);
-}
-
-/* Motif menu button (left side of title bar) */
-.title-menu-btn {
-  width: 14px;
-  height: 14px;
-  background: var(--motif-surface);
-  border: 2px solid var(--motif-surface);
-  border-top-color: var(--motif-white);
-  border-left-color: var(--motif-white);
-  border-right-color: var(--motif-darker);
-  border-bottom-color: var(--motif-darker);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: default;
-}
-
-.title-menu-btn::after {
-  content: '';
-  width: 8px;
-  height: 2px;
-  background: var(--motif-text);
-  box-shadow: 0 3px 0 var(--motif-text), 0 -3px 0 var(--motif-text);
-}
-
 .window-body {
   padding: 12px;
+  overflow-y: auto;
+  flex: 1;
 }
 
 /* ── Inset panel (sunken Motif style) ──────────────────── */
@@ -150,7 +102,7 @@ body {
   color: var(--motif-text);
   text-decoration: none;
   cursor: pointer;
-  text-align: center;
+  text-align: left;
   user-select: none;
 }
 .btn:active {
@@ -360,31 +312,6 @@ hr {
   color: var(--motif-white);
 }
 
-/* CDE front panel launcher icons */
-.panel-launchers {
-  display: flex;
-  gap: 4px;
-  margin-left: 8px;
-}
-
-.panel-icon {
-  width: 36px;
-  height: 28px;
-  background: var(--motif-btn-face);
-  border: 2px solid var(--motif-surface);
-  border-top-color: var(--motif-white);
-  border-left-color: var(--motif-white);
-  border-right-color: var(--motif-darker);
-  border-bottom-color: var(--motif-darker);
-  font-size: 14px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  text-decoration: none;
-  color: var(--motif-text);
-}
-
 .panel-clock {
   border: 2px solid var(--motif-panel);
   border-top-color: var(--motif-darker);
@@ -399,18 +326,61 @@ hr {
   margin-left: 8px;
 }
 
-/* ── Responsive ────────────────────────────────────────── */
+/* ── Color picker ───────────────────────────────────── */
+.panel-color {
+  width: 28px;
+  height: 28px;
+  border: 2px solid var(--motif-panel);
+  border-top-color: var(--motif-darker);
+  border-left-color: var(--motif-darker);
+  border-right-color: var(--motif-panel-light);
+  border-bottom-color: var(--motif-panel-light);
+  padding: 0;
+  cursor: pointer;
+  background: none;
+  -webkit-appearance: none;
+  appearance: none;
+}
+.panel-color::-webkit-color-swatch-wrapper { padding: 2px; }
+.panel-color::-webkit-color-swatch { border: none; }
+
+/* ── Collapsible table (mobile) ───────────────────── */
+.table-collapse {
+  margin-bottom: 10px;
+}
+.table-collapse summary {
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: bold;
+  padding: 4px 0;
+  user-select: none;
+  list-style: none;
+}
+.table-collapse summary::before {
+  content: '▸ ';
+}
+.table-collapse[open] summary::before {
+  content: '▾ ';
+}
+
+/* ── Responsive ────────────────────────────────────── */
 @media (max-width: 600px) {
   body { padding: 8px 4px 56px; }
-  .window { max-width: 100%; }
+  .window { max-width: 100%; height: calc(100vh - 72px); }
   .window-body { padding: 8px; }
   pre { font-size: 11px; }
   .btn-row { flex-direction: column; }
-  .btn { width: 100%; text-align: center; }
+  .btn { width: 100%; }
   .tab { padding: 4px 8px; font-size: 12px; }
-  .workspace-switcher { display: none; }
-  .panel-launchers { margin-left: auto; }
-  .panel { justify-content: flex-start; }
+  .panel { height: auto; min-height: 44px; flex-wrap: wrap; padding: 4px 8px; }
+  .workspace-switcher { flex-wrap: wrap; margin-right: 0; }
+  .ws-btn { flex: 1; min-width: 44px; font-size: 10px; }
+  /* Tables become collapsible on mobile */
+  table:not(.no-collapse) { display: none; }
+  .table-collapse { display: block; }
+}
+@media (min-width: 601px) {
+  .table-collapse { display: none; }
 }
 
 /* Give room for front panel */

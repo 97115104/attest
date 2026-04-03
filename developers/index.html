@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Developer Docs — attest</title>
-  <meta name="description" content="Developer documentation for attest — AI content attestation protocol">
-  <link rel="icon" href="/assets/favicon.ico">
+  <title>developer docs - attest</title>
+  <meta name="description" content="developer documentation for attest - ai content attestation protocol">
+  <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="/style.css">
 </head>
 <body>
@@ -13,20 +13,15 @@
 <!-- ═══ Docs Window ═══ -->
 <div class="window">
   <div class="title-bar">
-    <div class="title-menu-btn"></div>
-    <span>docs — Developer Documentation</span>
-    <div class="title-bar-controls">
-      <div class="title-btn">·</div>
-      <div class="title-btn">□</div>
-    </div>
+    <span>docs - developer documentation</span>
   </div>
   <div class="window-body">
 
     <!-- Tab bar -->
     <div class="tab-bar">
-      <div class="tab active" data-tab="quickstart">Quick Start</div>
+      <div class="tab active" data-tab="quickstart">quick start</div>
       <div class="tab" data-tab="api">API</div>
-      <div class="tab" data-tab="format">Format</div>
+      <div class="tab" data-tab="format">format</div>
       <div class="tab" data-tab="cicd">CI/CD</div>
     </div>
 
@@ -34,13 +29,8 @@
     <div class="inset tab-content active" id="tab-quickstart">
 
       <h2>▸ 1. Add attribution to your content</h2>
-      <p>In any markdown file's frontmatter, add an <code>attribution</code> field:</p>
-      <pre><code>---
-title: My Post
-attribution: collab claude opus 4
----
-
-Your content here...</code></pre>
+      <p>In any content's metadata, add an <code>attribution</code> field:</p>
+      <pre><code>attribution: collab claude opus 4</code></pre>
 
       <table>
         <tr><th>Value</th><th>Meaning</th></tr>
@@ -48,18 +38,18 @@ Your content here...</code></pre>
         <tr><td><code>collab &lt;model&gt;</code></td><td>Human + AI collaboration</td></tr>
         <tr><td><code>ai &lt;model&gt;</code></td><td>Fully AI-generated</td></tr>
       </table>
+      <details class="table-collapse">
+        <summary>Attribution values</summary>
+        <p><code>human</code> - Written entirely by a human</p>
+        <p><code>collab &lt;model&gt;</code> - Human + AI collaboration</p>
+        <p><code>ai &lt;model&gt;</code> - Fully AI-generated</p>
+      </details>
 
       <hr>
 
       <h2>▸ 2. Generate attestations</h2>
-      <p>Use the generation script (Node.js) to process all posts:</p>
-      <pre><code>node generate-attestations.js</code></pre>
-      <p>This reads every <code>_posts/*.md</code>, hashes the content, signs it, and writes attestation data to <code>_data/attestations.json</code>.</p>
-
-      <hr>
-
-      <h2>▸ 3. Or use the API (one line)</h2>
-      <pre><code>curl "https://attest.97115104.com/api/create?content_name=My+Post&amp;model=claude-opus-4&amp;role=collaborated"</code></pre>
+      <p>Use the API or a generation script to process your content:</p>
+      <pre><code>curl "https://attest.97115104.com/api/create?content_name=My+Doc&amp;model=claude-opus-4&amp;role=collaborated"</code></pre>
       <p class="muted">Returns JSON immediately. No auth needed. Free forever.</p>
 
     </div>
@@ -79,6 +69,15 @@ Your content here...</code></pre>
           <tr><td><code>author</code></td><td>No</td><td>Author name (default: Anonymous)</td></tr>
           <tr><td><code>content</code></td><td>No</td><td>Raw content (for SHA-256 hash)</td></tr>
         </table>
+        <details class="table-collapse">
+          <summary>Parameters</summary>
+          <p><code>content_name</code> (required) - Title of the content</p>
+          <p><code>model</code> - AI model used (default: gpt-4)</p>
+          <p><code>role</code> - authored | collaborated | generated</p>
+          <p><code>authorship_type</code> - human | collab | ai (auto-derived)</p>
+          <p><code>author</code> - Author name (default: Anonymous)</p>
+          <p><code>content</code> - Raw content (for SHA-256 hash)</p>
+        </details>
       </div>
 
       <h3>Example request</h3>
@@ -163,6 +162,12 @@ Your content here...</code></pre>
         <tr><td><code>collab</code></td><td><code>collaborated</code></td><td>e.g. <code>claude-opus-4</code></td><td>Human directed, AI assisted</td></tr>
         <tr><td><code>ai</code></td><td><code>generated</code></td><td>e.g. <code>gpt-5</code></td><td>Fully AI-generated</td></tr>
       </table>
+      <details class="table-collapse">
+        <summary>Authorship types</summary>
+        <p><code>human</code> / <code>authored</code> - No AI involvement</p>
+        <p><code>collab</code> / <code>collaborated</code> - Human directed, AI assisted</p>
+        <p><code>ai</code> / <code>generated</code> - Fully AI-generated</p>
+      </details>
 
       <hr>
 
@@ -233,14 +238,8 @@ const crypto = require('crypto');
       <p>If you use Jekyll, install the <code>_plugins/attest_hook.rb</code> plugin to auto-generate attestations during <code>jekyll build</code>. See the <a href="https://github.com/97115104/attest">repo</a> for details.</p>
     </div>
 
-    <div class="btn-row">
-      <a href="/" class="btn">← Home</a>
-      <a href="/verify/" class="btn">🔍 Verify</a>
-      <a href="https://github.com/97115104/attest" target="_blank" class="btn">⌂ GitHub</a>
-    </div>
-
     <div class="status-bar">
-      Docs v2.0 — MIT License — <a href="https://github.com/97115104/attest">github.com/97115104/attest</a>
+      Docs v2.0 - MIT license - <a href="https://github.com/97115104/attest">github.com/97115104/attest</a>
     </div>
   </div>
 </div>
@@ -248,12 +247,13 @@ const crypto = require('crypto');
 <!-- ═══ CDE Front Panel ═══ -->
 <div class="panel">
   <div class="workspace-switcher">
-    <a href="/" class="ws-btn">Home</a>
-    <a href="/developers/" class="ws-btn active">Docs</a>
-    <a href="/verify/" class="ws-btn">Verify</a>
+    <a href="/" class="ws-btn">home</a>
+    <a href="/developers/" class="ws-btn active">docs</a>
+    <a href="/verify/" class="ws-btn">verify</a>
+    <a href="https://github.com/97115104/attest" target="_blank" class="ws-btn">source</a>
   </div>
   <div class="panel-launchers">
-    <a href="https://github.com/97115104/attest" target="_blank" class="panel-icon" title="Source">⌂</a>
+    <input type="color" id="bg-picker" class="panel-color" title="Desktop color" />
   </div>
   <div class="panel-clock" id="clock"></div>
 </div>
@@ -273,10 +273,21 @@ document.querySelectorAll('.tab').forEach(tab => {
 function tick() {
   const d = new Date();
   document.getElementById('clock').textContent =
-    d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false });
 }
 tick();
 setInterval(tick, 30000);
+
+const picker = document.getElementById('bg-picker');
+const saved = localStorage.getItem('attest-bg');
+if (saved) document.body.style.background = saved;
+picker.value = saved || getComputedStyle(document.body).backgroundColor.includes('rgb') ?
+  '#' + getComputedStyle(document.body).backgroundColor.match(/\d+/g).map(x=>(+x).toString(16).padStart(2,'0')).join('') :
+  '#2e5064';
+picker.addEventListener('input', e => {
+  document.body.style.background = e.target.value;
+  localStorage.setItem('attest-bg', e.target.value);
+});
 </script>
 </body>
 </html>
