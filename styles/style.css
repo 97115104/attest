@@ -384,18 +384,22 @@ hr {
 
 /* ── ASCII art filler ──────────────────────────────── */
 .ascii-hero,
-.verify-badge {
+.inset.verify-badge {
   background: var(--motif-terminal-bg) !important;
-  border-color: var(--motif-darker) !important;
+  border: 2px solid #222 !important;
+  border-top-color: #222 !important;
+  border-left-color: #222 !important;
+  border-right-color: #222 !important;
+  border-bottom-color: #222 !important;
 }
 .ascii-hero .muted,
-.verify-badge .muted {
+.inset.verify-badge .muted {
   color: #999;
 }
-.verify-badge h2 {
+.inset.verify-badge h2 {
   color: #33ff33 !important;
 }
-.verify-badge.verify-fail h2 {
+.inset.verify-badge.verify-fail h2 {
   color: #ff3333 !important;
 }
 
