@@ -40,7 +40,7 @@
             /</pre>
   </div>
   <div class="status-bar">
-    MIT license - <a href="https://github.com/97115104/attest">github.com/97115104/attest</a>
+    MIT license - <a href="https://github.com/97115104/attest">github.com/97115104/attest</a> · <a href="https://attest.97115104.com/s/vwznd9t4">attested ✓</a>
   </div>
 </div>
 
@@ -96,9 +96,16 @@ function renderAttestation(att) {
   const el = document.getElementById('result');
   el.innerHTML = `
     <div class="inset" style="text-align:center; margin-bottom:10px;">
-      <div style="margin-bottom:4px;">${typeIcon(type)}</div>
-      <h2 style="font-size:16px; margin-bottom:2px;">${typeLabel(type)}</h2>
-      <p class="muted" style="margin:0;">attestation verified</p>
+      <div style="margin-bottom:6px;">
+        <svg width="48" height="48" viewBox="0 0 48 48" style="vertical-align:middle;">
+          <rect x="2" y="2" width="44" height="44" rx="4" fill="#0a5f0a" stroke="#074a07" stroke-width="2"/>
+          <rect x="4" y="4" width="40" height="40" rx="3" fill="none" stroke="#2bce2b" stroke-width="1" opacity="0.3"/>
+          <polyline points="14,24 21,32 34,16" fill="none" stroke="#33ff33" stroke-width="4" stroke-linecap="square" stroke-linejoin="miter"/>
+        </svg>
+      </div>
+      <h2 style="font-size:16px; margin-bottom:2px; color:#0a5f0a;">&#x2714; attestation verified</h2>
+      <p class="muted" style="margin:0;">${typeLabel(type)}</p>
+      <div style="margin-top:6px;">${typeIcon(type)}</div>
     </div>
 
     <div class="fieldset">
@@ -141,12 +148,31 @@ function esc(s) {
   return d.innerHTML;
 }
 
+function renderError(msg) {
+  const el = document.getElementById('result');
+  el.innerHTML = `
+    <div class="inset" style="text-align:center; margin-bottom:10px;">
+      <div style="margin-bottom:6px;">
+        <svg width="48" height="48" viewBox="0 0 48 48" style="vertical-align:middle;">
+          <rect x="2" y="2" width="44" height="44" rx="4" fill="#5f0a0a" stroke="#4a0707" stroke-width="2"/>
+          <rect x="4" y="4" width="40" height="40" rx="3" fill="none" stroke="#ce2b2b" stroke-width="1" opacity="0.3"/>
+          <line x1="15" y1="15" x2="33" y2="33" stroke="#ff3333" stroke-width="4" stroke-linecap="square"/>
+          <line x1="33" y1="15" x2="15" y2="33" stroke="#ff3333" stroke-width="4" stroke-linecap="square"/>
+        </svg>
+      </div>
+      <h2 style="font-size:16px; margin-bottom:2px; color:#8b0000;">&#x2718; verification failed</h2>
+      <p class="muted" style="margin:0;">${esc(msg)}</p>
+    </div>
+  `;
+  document.getElementById('status').textContent = 'error: verification failed';
+}
+
 function verifyInput() {
   const raw = document.getElementById('data-input').value.trim();
   if (!raw) return;
   const att = decodeAttestation(raw);
   if (!att) {
-    document.getElementById('status').textContent = 'error: could not decode attestation data';
+    renderError('could not decode attestation data');
     return;
   }
   renderAttestation(att);
@@ -160,7 +186,7 @@ if (dataParam) {
   if (att) {
     renderAttestation(att);
   } else {
-    document.getElementById('status').textContent = 'error: invalid attestation data in URL';
+    renderError('invalid attestation data in URL');
   }
 }
 

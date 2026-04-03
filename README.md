@@ -1,3 +1,8 @@
+---
+attribution: collab claude opus 4
+attestation: https://attest.97115104.com/s/vwznd9t4
+---
+
 # attest
 
 Free, open-source protocol for transparent AI content attribution.
