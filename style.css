@@ -396,6 +396,13 @@ hr {
   user-select: none;
   pointer-events: none;
 }
+.ascii-filler .r1 { color: #ff0000; }
+.ascii-filler .r2 { color: #ff7700; }
+.ascii-filler .r3 { color: #ffdd00; }
+.ascii-filler .r4 { color: #00cc44; }
+.ascii-filler .r5 { color: #0088ff; }
+.ascii-filler .r6 { color: #8833ff; }
+.ascii-filler .r7 { color: #ff44cc; }
 
 /* ── Responsive ────────────────────────────────────── */
 @media (max-width: 600px) {

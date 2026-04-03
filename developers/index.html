@@ -109,13 +109,15 @@ attest protocol. Walk me through it step by step:
      or a .json file next to the content)</code></pre>
       <p class="muted">The agent handles the entire flow. Just paste, answer the questions, and you get a working attestation.</p>
 
-      <pre class="ascii-filler">
-       $ curl /api/create
-       {
-         "ok": true,
-         "verify": "..."
-       }
-       $ _</pre>
+      <pre class="ascii-filler"><span class="r1"> ________________________</span>
+<span class="r2">/ one curl. one attested  \</span>
+<span class="r3">\ artifact. that's it.    /</span>
+<span class="r4"> ------------------------</span>
+<span class="r5">        \   ^__^</span>
+<span class="r6">         \  (oo)\_______</span>
+<span class="r7">            (__)\       )\/\</span>
+<span class="r1">                ||----w |</span>
+<span class="r2">                ||     ||</span></pre>
     </div>
 
     <!-- ── API Reference ───────────────────────────── -->
@@ -187,14 +189,15 @@ attest protocol. Walk me through it step by step:
       <pre><code>https://attest.97115104.com/verify/?data=eyJ2ZXJzaW9uIjoiMi4wIi...</code></pre>
       <p>Short URLs (<code>/s/{id}</code>) redirect to the verify page automatically.</p>
 
-      <pre class="ascii-filler">
-       +----------+
-       | GET /api |-------> { json }
-       +----------+
-            |
-       +----------+
-       | POST /s  |-------> /s/abc123
-       +----------+</pre>
+      <pre class="ascii-filler"><span class="r1"> ________________________</span>
+<span class="r2">/ GET, POST, done. the   \</span>
+<span class="r3">\ API does the rest.     /</span>
+<span class="r4"> ------------------------</span>
+<span class="r5">        \   ^__^</span>
+<span class="r6">         \  (oo)\_______</span>
+<span class="r7">            (__)\       )\/\</span>
+<span class="r1">                ||----w |</span>
+<span class="r2">                ||     ||</span></pre>
     </div>
 
     <!-- ── Attestation Format ──────────────────────── -->
@@ -258,13 +261,15 @@ attest protocol. Walk me through it step by step:
 
 signature = HMAC-SHA256(signing_key, data_to_sign)</code></pre>
 
-      <pre class="ascii-filler">
-        {
-          "v": "2.0",
-          "type": "collab",
-          "sig": "4b2d...",
-          "hash": "sha256:..."
-        }</pre>
+      <pre class="ascii-filler"><span class="r1"> ________________________</span>
+<span class="r2">/ v2.0 JSON. signed and  \</span>
+<span class="r3">\ hashed. tamper-proof.   /</span>
+<span class="r4"> ------------------------</span>
+<span class="r5">        \   ^__^</span>
+<span class="r6">         \  (oo)\_______</span>
+<span class="r7">            (__)\       )\/\</span>
+<span class="r1">                ||----w |</span>
+<span class="r2">                ||     ||</span></pre>
     </div>
 
     <!-- ── CI/CD ───────────────────────────────────── -->
@@ -316,12 +321,15 @@ const crypto = require('crypto');
       <h2>▸ Jekyll Plugin</h2>
       <p>If you use Jekyll, install the <code>_plugins/attest_hook.rb</code> plugin to auto-generate attestations during <code>jekyll build</code>. See the <a href="https://github.com/97115104/attest">repo</a> for details.</p>
 
-      <pre class="ascii-filler">
-       push --> build --> attest
-         |                  |
-         +--attestations.json--+
-                  |
-              deploy</pre>
+      <pre class="ascii-filler"><span class="r1"> ________________________</span>
+<span class="r2">/ push, build, attest.   \</span>
+<span class="r3">\ automate everything.   /</span>
+<span class="r4"> ------------------------</span>
+<span class="r5">        \   ^__^</span>
+<span class="r6">         \  (oo)\_______</span>
+<span class="r7">            (__)\       )\/\</span>
+<span class="r1">                ||----w |</span>
+<span class="r2">                ||     ||</span></pre>
     </div>
 
     <!-- ── Agents ──────────────────────────────────── -->
@@ -461,16 +469,15 @@ or link the verify URL in comments/metadata.</code></pre>
         <p><strong>web scrapers</strong> - check meta tags + <code>/.well-known/attestations.json</code></p>
       </details>
 
-      <pre class="ascii-filler">
-         +----------+
-         |  []  []  |
-         |   ____   |
-         |  |    |  |
-         +--+----+--+
-              ||
-          +---++---+
-          | agent  |
-          +--------+</pre>
+      <pre class="ascii-filler"><span class="r1"> ________________________</span>
+<span class="r2">/ any agent can attest    \</span>
+<span class="r3">\ in one HTTP call. moo.  /</span>
+<span class="r4"> ------------------------</span>
+<span class="r5">        \   ^__^</span>
+<span class="r6">         \  (oo)\_______</span>
+<span class="r7">            (__)\       )\/\</span>
+<span class="r1">                ||----w |</span>
+<span class="r2">                ||     ||</span></pre>
     </div>
 
   </div>

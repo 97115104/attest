@@ -20,6 +20,17 @@ const MIME = {
   '.txt': 'text/plain',
 };
 
+function serve404(res) {
+  try {
+    const page = fs.readFileSync(path.join(__dirname, '404.html'));
+    res.writeHead(404, { 'Content-Type': 'text/html' });
+    res.end(page);
+  } catch {
+    res.writeHead(404, { 'Content-Type': 'text/plain' });
+    res.end('Not found');
+  }
+}
+
 function serveStatic(res, filePath) {
   const ext = path.extname(filePath);
   const mime = MIME[ext] || 'application/octet-stream';
@@ -28,8 +39,7 @@ function serveStatic(res, filePath) {
     res.writeHead(200, { 'Content-Type': mime });
     res.end(data);
   } catch {
-    res.writeHead(404, { 'Content-Type': 'text/plain' });
-    res.end('Not found');
+    serve404(res);
   }
 }
 

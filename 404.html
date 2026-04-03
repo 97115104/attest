@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>404 - attest</title>
+  <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/style.css">
+  <style>
+    #tetris-wrap { text-align: center; margin-top: 6px; }
+    #tetris-canvas { border: 2px solid var(--motif-dark); background: #111; image-rendering: pixelated; max-width: 100%; touch-action: none; }
+    #tetris-score { font-family: var(--font-mono); font-size: 13px; margin: 4px 0; }
+    #tetris-controls { margin-top: 6px; display: none; }
+    #tetris-dpad { display: inline-grid; grid-template-columns: 44px 44px 44px; grid-template-rows: 44px 44px; gap: 3px; }
+    #tetris-dpad .btn { width: 44px; height: 44px; font-size: 20px; padding: 0; display: flex; align-items: center; justify-content: center; -webkit-tap-highlight-color: transparent; user-select: none; }
+    .start-btn { font-size: 13px !important; padding: 6px 20px !important; margin-top: 6px !important; }
+    #game-over-msg { color: #cc0000; font-weight: bold; font-size: 14px; margin-top: 4px; display: none; }
+    @media (pointer: coarse), (max-width: 600px) {
+      #tetris-controls { display: block; }
+      #kb-hint { display: none; }
+      .ascii-filler { font-size: 8px !important; line-height: 1.2 !important; margin: 6px auto 2px !important; }
+      #tetris-wrap { margin-top: 2px; }
+      #tetris-score { font-size: 11px; margin: 2px 0; }
+      #go-home-wrap { margin-top: 6px !important; }
+      .window-body { padding: 4px !important; }
+    }
+    @media (min-width: 601px) and (pointer: fine) {
+      #tetris-controls { display: none !important; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="window" style="height: auto;">
+  <div class="title-bar">
+    <span>404 - page not found</span>
+  </div>
+  <div class="window-body">
+
+    <pre class="ascii-filler" style="opacity: 0.7; font-size: 12px; margin-bottom: 0;"><span class="r1"> _________________________________</span>
+<span class="r2">/ you went somewhere that is       \</span>
+<span class="r3">| nowhere. but here's a fun tetris |</span>
+<span class="r4">\ game anyways.                    /</span>
+<span class="r5"> ---------------------------------</span>
+<span class="r6">        \   ^__^</span>
+<span class="r7">         \  (oo)\_______</span>
+<span class="r1">            (__)\       )\/\</span>
+<span class="r2">                ||----w |</span>
+<span class="r3">                ||     ||</span></pre>
+
+    <div id="tetris-wrap">
+      <div id="tetris-score">score: <strong id="score">0</strong> &nbsp; level: <strong id="level">1</strong> &nbsp; lines: <strong id="lines">0</strong></div>
+      <canvas id="tetris-canvas"></canvas>
+      <div id="game-over-msg">game over!</div>
+      <div>
+        <button class="btn start-btn" id="start-btn" onclick="startGame()">start game</button>
+      </div>
+      <div id="tetris-controls">
+        <div id="tetris-dpad">
+          <div></div>
+          <button class="btn" id="btn-rotate">&#8635;</button>
+          <div></div>
+          <button class="btn" id="btn-left">&#9664;</button>
+          <button class="btn" id="btn-drop">&#9660;</button>
+          <button class="btn" id="btn-right">&#9654;</button>
+        </div>
+      </div>
+      <p class="muted" id="kb-hint" style="font-size:11px; margin-top:6px;">arrow keys / WASD to play</p>
+    </div>
+
+    <div id="go-home-wrap" style="text-align:center; margin-top: 10px;">
+      <a href="/" class="btn">go home</a>
+    </div>
+
+    <div class="status-bar" id="status">404 - page not found</div>
+  </div>
+  <div class="status-bar">
+    MIT license - <a href="https://github.com/97115104/attest">github.com/97115104/attest</a> · <a href="https://attest.97115104.com/s/zo4ycxyk">attested ✓</a>
+  </div>
+</div>
+
+<!-- ═══ CDE Front Panel ═══ -->
+<div class="panel">
+  <div class="workspace-switcher">
+    <a href="/" class="ws-btn">home</a>
+    <a href="/create/" class="ws-btn">create</a>
+    <a href="/developers/" class="ws-btn">docs</a>
+    <a href="/verify/" class="ws-btn">verify</a>
+    <a href="https://github.com/97115104/attest" target="_blank" class="ws-btn">source</a>
+  </div>
+  <div class="panel-launchers">
+    <input type="color" id="bg-picker" class="panel-color" title="Desktop color" />
+  </div>
+  <div class="panel-clock" id="clock"></div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════════
+//  TETRIS
+// ═══════════════════════════════════════════════════════
+const canvas = document.getElementById('tetris-canvas');
+const ctx = canvas.getContext('2d');
+const COLS = 10, ROWS = 20;
+let SZ = 20;
+
+// Responsive canvas sizing - fit viewport on mobile
+function resizeCanvas() {
+  const wrap = document.getElementById('tetris-wrap');
+  const isMobile = window.matchMedia('(pointer: coarse), (max-width: 600px)').matches;
+  // On mobile, compute max height available for canvas
+  // Reserve space for: title bar(~28) + cow(~110) + score(~22) + start btn(~36) + dpad(~100) + go-home(~40) + status bars(~48) + panel(~44) + margins(~40)
+  const reservedH = isMobile ? 380 : 200;
+  const maxH = Math.floor((window.innerHeight - reservedH) / ROWS) * ROWS;
+  const fromHeight = Math.floor(maxH / ROWS);
+  const fromWidth = Math.floor(Math.min(wrap.clientWidth - 8, 300) / COLS);
+  const maxW = Math.min(fromWidth, fromHeight) * COLS;
+  SZ = Math.floor(maxW / COLS);
+  canvas.width = COLS * SZ;
+  canvas.height = ROWS * SZ;
+  if (started) draw();
+  else { ctx.fillStyle = '#111'; ctx.fillRect(0, 0, canvas.width, canvas.height); drawGrid(); }
+}
+window.addEventListener('resize', resizeCanvas);
+const COLORS = ['#00ffff','#0000ff','#ff7700','#ffff00','#00ff00','#aa00ff','#ff0000'];
+const SHAPES = [
+  [[1,1,1,1]],                           // I
+  [[1,0,0],[1,1,1]],                     // J
+  [[0,0,1],[1,1,1]],                     // L
+  [[1,1],[1,1]],                         // O
+  [[0,1,1],[1,1,0]],                     // S
+  [[0,1,0],[1,1,1]],                     // T
+  [[1,1,0],[0,1,1]],                     // Z
+];
+
+let board, piece, pieceX, pieceY, pieceIdx, gameOver, score, linesCleared, level, timer, started;
+
+function init() {
+  board = Array.from({length: ROWS}, () => Array(COLS).fill(0));
+  score = 0; linesCleared = 0; level = 1; gameOver = false; started = false;
+  updateScore();
+  ctx.fillStyle = '#111';
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  drawGrid();
+  document.getElementById('game-over-msg').style.display = 'none';
+  document.getElementById('start-btn').textContent = 'start game';
+}
+
+function startGame() {
+  if (timer) clearInterval(timer);
+  init();
+  started = true;
+  spawn();
+  timer = setInterval(tick, getSpeed());
+  document.getElementById('start-btn').textContent = 'restart';
+}
+
+function getSpeed() { return Math.max(100, 800 - (level - 1) * 70); }
+
+function spawn() {
+  pieceIdx = Math.floor(Math.random() * SHAPES.length);
+  piece = SHAPES[pieceIdx].map(r => [...r]);
+  pieceX = Math.floor((COLS - piece[0].length) / 2);
+  pieceY = 0;
+  if (collides(pieceX, pieceY, piece)) {
+    gameOver = true;
+    clearInterval(timer);
+    document.getElementById('game-over-msg').style.display = 'block';
+    document.getElementById('start-btn').textContent = 'play again';
+  }
+}
+
+function collides(px, py, p) {
+  for (let r = 0; r < p.length; r++)
+    for (let c = 0; c < p[r].length; c++)
+      if (p[r][c]) {
+        const nx = px + c, ny = py + r;
+        if (nx < 0 || nx >= COLS || ny >= ROWS) return true;
+        if (ny >= 0 && board[ny][nx]) return true;
+      }
+  return false;
+}
+
+function lock() {
+  for (let r = 0; r < piece.length; r++)
+    for (let c = 0; c < piece[r].length; c++)
+      if (piece[r][c] && pieceY + r >= 0)
+        board[pieceY + r][pieceX + c] = pieceIdx + 1;
+  clearLines();
+  spawn();
+}
+
+function clearLines() {
+  let cleared = 0;
+  for (let r = ROWS - 1; r >= 0; r--) {
+    if (board[r].every(v => v)) {
+      board.splice(r, 1);
+      board.unshift(Array(COLS).fill(0));
+      cleared++;
+      r++;
+    }
+  }
+  if (cleared) {
+    const pts = [0, 100, 300, 500, 800];
+    score += (pts[cleared] || 800) * level;
+    linesCleared += cleared;
+    level = Math.floor(linesCleared / 10) + 1;
+    clearInterval(timer);
+    timer = setInterval(tick, getSpeed());
+    updateScore();
+  }
+}
+
+function updateScore() {
+  document.getElementById('score').textContent = score;
+  document.getElementById('level').textContent = level;
+  document.getElementById('lines').textContent = linesCleared;
+}
+
+function tick() {
+  if (gameOver) return;
+  if (!collides(pieceX, pieceY + 1, piece)) {
+    pieceY++;
+  } else {
+    lock();
+  }
+  draw();
+}
+
+function move(dir) {
+  if (gameOver || !started) return;
+  if (!collides(pieceX + dir, pieceY, piece)) pieceX += dir;
+  draw();
+}
+
+function rotate() {
+  if (gameOver || !started) return;
+  const rotated = piece[0].map((_, c) => piece.map(r => r[c]).reverse());
+  // Wall kick: try 0, -1, +1, -2, +2
+  for (const dx of [0, -1, 1, -2, 2]) {
+    if (!collides(pieceX + dx, pieceY, rotated)) {
+      piece = rotated;
+      pieceX += dx;
+      draw();
+      return;
+    }
+  }
+}
+
+function drop() {
+  if (gameOver || !started) return;
+  while (!collides(pieceX, pieceY + 1, piece)) pieceY++;
+  lock();
+  draw();
+}
+
+function draw() {
+  ctx.fillStyle = '#111';
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  // board
+  for (let r = 0; r < ROWS; r++)
+    for (let c = 0; c < COLS; c++)
+      if (board[r][c]) {
+        ctx.fillStyle = COLORS[board[r][c] - 1];
+        ctx.fillRect(c * SZ, r * SZ, SZ, SZ);
+        ctx.strokeStyle = '#222';
+        ctx.strokeRect(c * SZ, r * SZ, SZ, SZ);
+      }
+  // ghost piece
+  let ghostY = pieceY;
+  while (!collides(pieceX, ghostY + 1, piece)) ghostY++;
+  if (ghostY !== pieceY) {
+    ctx.globalAlpha = 0.2;
+    for (let r = 0; r < piece.length; r++)
+      for (let c = 0; c < piece[r].length; c++)
+        if (piece[r][c]) {
+          ctx.fillStyle = COLORS[pieceIdx];
+          ctx.fillRect((pieceX + c) * SZ, (ghostY + r) * SZ, SZ, SZ);
+        }
+    ctx.globalAlpha = 1;
+  }
+  // current piece
+  for (let r = 0; r < piece.length; r++)
+    for (let c = 0; c < piece[r].length; c++)
+      if (piece[r][c] && pieceY + r >= 0) {
+        ctx.fillStyle = COLORS[pieceIdx];
+        ctx.fillRect((pieceX + c) * SZ, (pieceY + r) * SZ, SZ, SZ);
+        ctx.strokeStyle = '#222';
+        ctx.strokeRect((pieceX + c) * SZ, (pieceY + r) * SZ, SZ, SZ);
+      }
+  drawGrid();
+}
+
+function drawGrid() {
+  ctx.strokeStyle = '#1a1a1a';
+  ctx.lineWidth = 0.5;
+  for (let r = 0; r <= ROWS; r++) {
+    ctx.beginPath(); ctx.moveTo(0, r * SZ); ctx.lineTo(COLS * SZ, r * SZ); ctx.stroke();
+  }
+  for (let c = 0; c <= COLS; c++) {
+    ctx.beginPath(); ctx.moveTo(c * SZ, 0); ctx.lineTo(c * SZ, ROWS * SZ); ctx.stroke();
+  }
+}
+
+// Keyboard
+document.addEventListener('keydown', e => {
+  if (!started || gameOver) {
+    if (e.key === 'Enter' || e.key === ' ') { startGame(); e.preventDefault(); }
+    return;
+  }
+  switch(e.key) {
+    case 'ArrowLeft': case 'a': case 'A': move(-1); e.preventDefault(); break;
+    case 'ArrowRight': case 'd': case 'D': move(1); e.preventDefault(); break;
+    case 'ArrowUp': case 'w': case 'W': rotate(); e.preventDefault(); break;
+    case 'ArrowDown': case 's': case 'S': drop(); e.preventDefault(); break;
+    case ' ': drop(); e.preventDefault(); break;
+  }
+});
+
+resizeCanvas();
+init();
+
+// ═══ Touch controls (d-pad buttons) ═══
+function addTouch(id, fn, repeat) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  let iv = null;
+  const start = e => { e.preventDefault(); fn(); if (repeat) iv = setInterval(fn, 120); };
+  const stop = e => { e.preventDefault(); if (iv) { clearInterval(iv); iv = null; } };
+  el.addEventListener('touchstart', start, {passive: false});
+  el.addEventListener('touchend', stop, {passive: false});
+  el.addEventListener('touchcancel', stop, {passive: false});
+}
+addTouch('btn-left', () => move(-1), true);
+addTouch('btn-right', () => move(1), true);
+addTouch('btn-rotate', () => rotate(), false);
+addTouch('btn-drop', () => drop(), false);
+
+// ═══ Swipe gestures on canvas ═══
+let touchStartX = 0, touchStartY = 0, touchStartTime = 0, swiped = false;
+canvas.addEventListener('touchstart', e => {
+  e.preventDefault();
+  const t = e.touches[0];
+  touchStartX = t.clientX; touchStartY = t.clientY;
+  touchStartTime = Date.now(); swiped = false;
+}, {passive: false});
+canvas.addEventListener('touchmove', e => {
+  e.preventDefault();
+  if (swiped || !started || gameOver) return;
+  const t = e.touches[0];
+  const dx = t.clientX - touchStartX, dy = t.clientY - touchStartY;
+  const threshold = SZ * 1.2;
+  if (Math.abs(dx) > threshold && Math.abs(dx) > Math.abs(dy)) {
+    move(dx > 0 ? 1 : -1);
+    touchStartX = t.clientX; touchStartY = t.clientY;
+  } else if (dy > threshold * 1.5) {
+    drop(); swiped = true;
+  }
+}, {passive: false});
+canvas.addEventListener('touchend', e => {
+  e.preventDefault();
+  if (swiped || !started || gameOver) return;
+  const elapsed = Date.now() - touchStartTime;
+  const t = e.changedTouches[0];
+  const dx = Math.abs(t.clientX - touchStartX), dy = Math.abs(t.clientY - touchStartY);
+  if (elapsed < 250 && dx < 15 && dy < 15) rotate();
+}, {passive: false});
+
+// Prevent page scroll while game is active
+document.addEventListener('touchmove', e => {
+  if (started && !gameOver && e.target.closest('#tetris-wrap')) e.preventDefault();
+}, {passive: false});
+
+// ═══ Clock & BG picker ═══
+function tick2() {
+  const d = new Date();
+  document.getElementById('clock').textContent =
+    d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false });
+}
+tick2();
+setInterval(tick2, 30000);
+
+const picker = document.getElementById('bg-picker');
+const saved = localStorage.getItem('attest-bg');
+if (saved) document.body.style.background = saved;
+picker.value = saved || getComputedStyle(document.body).backgroundColor.includes('rgb') ?
+  '#' + getComputedStyle(document.body).backgroundColor.match(/\d+/g).map(x=>(+x).toString(16).padStart(2,'0')).join('') :
+  '#2e5064';
+picker.addEventListener('input', e => {
+  document.body.style.background = e.target.value;
+  localStorage.setItem('attest-bg', e.target.value);
+});
+</script>
+</body>
+</html>
