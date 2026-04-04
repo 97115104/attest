@@ -1,0 +1,45 @@
+{
+  "name": "attest-client",
+  "version": "2.0.0",
+  "description": "Client SDK for attest, the open protocol for AI content attribution",
+  "type": "module",
+  "main": "index.cjs",
+  "module": "index.js",
+  "exports": {
+    ".": {
+      "import": "./index.js",
+      "require": "./index.cjs"
+    }
+  },
+  "bin": {
+    "attest": "./cli.js"
+  },
+  "files": [
+    "index.js",
+    "index.cjs",
+    "cli.js",
+    "LICENSE"
+  ],
+  "keywords": [
+    "attest",
+    "attestation",
+    "ai",
+    "attribution",
+    "content",
+    "provenance",
+    "transparency",
+    "llm",
+    "agent"
+  ],
+  "author": "97115104",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/97115104/attest.git",
+    "directory": "sdk"
+  },
+  "homepage": "https://attest.97115104.com",
+  "engines": {
+    "node": ">=18"
+  }
+}
