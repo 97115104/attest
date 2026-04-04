@@ -13,6 +13,7 @@ attestation: https://attest.97115104.com/s/y52ru5lq
 [![attested: collab claude opus 4](https://img.shields.io/badge/attested-collab%20claude%20opus%204-blue)](https://attest.97115104.com/s/y52ru5lq)
 [![license: MIT](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 [![version: 2.0.0](https://img.shields.io/badge/version-2.0.0-blue)](package.json)
+[![npm: attest-client](https://img.shields.io/npm/v/attest-client)](https://www.npmjs.com/package/attest-client)
 [![node: >=18](https://img.shields.io/badge/node-%3E%3D18-brightgreen)](https://nodejs.org)
 [![dependencies: 2](https://img.shields.io/badge/dependencies-2-blue)](package.json)
 [![no auth required](https://img.shields.io/badge/auth-none%20required-brightgreen)](https://attest.97115104.com)
@@ -35,7 +36,37 @@ Three authorship types:
 
 ## Quick start
 
-### For agents
+### For agents (SDK)
+
+Install the SDK for deterministic, hallucination-proof attestations. The SDK handles URL construction, response parsing, and returns exact URLs from the server. No prompt engineering required.
+
+```bash
+npm install attest-client
+```
+
+```js
+import { attest } from 'attest-client';
+
+const result = await attest({
+  content_name: 'README.md',
+  model: 'claude-opus-4',
+  role: 'collaborated',
+  author: 'my-agent'
+});
+
+console.log(result.urls.short);  // exact short URL from server
+console.log(result.urls.verify); // exact verify URL from server
+```
+
+Or use the CLI:
+
+```bash
+npx attest --content README.md --model claude-opus-4 --role collaborated --author my-agent
+```
+
+The SDK adds determinism to agent-generated attestations by eliminating URL construction errors, validating inputs before sending, and identifying itself via `User-Agent: attest-client/2.0.0` for tracking.
+
+### For agents (raw HTTP)
 
 One GET request. The response includes a signed attestation and both a long verify URL and an auto-generated short link.
 
@@ -153,8 +184,29 @@ Agents can discover the API at `/.well-known/attest.json` or read `/llms.txt` fo
 
 The [agents page](https://attest.97115104.com/agents/) has full endpoint documentation and examples.
 
+### SDK (recommended)
+
+The [`attest-client`](https://www.npmjs.com/package/attest-client) npm package provides deterministic attestation creation with zero dependencies. It eliminates the most common agent failure mode: URL hallucination. Instead of parsing raw JSON responses and risking URL fabrication, the SDK returns structured objects with exact server-generated URLs.
+
+```js
+import { createClient } from 'attest-client';
+
+const client = createClient({ author: 'my-agent' });
+const result = await client.create({ content_name: 'output.md', model: 'claude-opus-4' });
+// result.urls.short is always the exact URL from the server
+```
+
+CLI for scripts and CI/CD:
+
+```bash
+npx attest --content output.md --model claude-opus-4 --role generated --author my-bot
+npx attest --metrics
+npx attest --discover
+```
+
 ## Features
 
+- **npm SDK** (`attest-client`) for deterministic agent attestations, zero dependencies
 - WebGL noise field background (adapts to light/dark mode)
 - Live dashboard with donut charts for authorship type + agent activity
 - First-visit welcome modal for human visitors

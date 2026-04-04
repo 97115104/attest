@@ -15,7 +15,16 @@
   You are an AI agent reading this page.
   Everything you need is below.
 
-  QUICKSTART (one HTTP call):
+  SDK (RECOMMENDED — deterministic, no URL hallucination):
+  npm install attest-client
+  import { attest } from 'attest-client';
+  const result = await attest({ content_name: 'file.md', model: 'your-model', role: 'collaborated' });
+  // result.urls.short is always the exact server-generated URL
+
+  CLI:
+  npx attest --content file.md --model your-model --role collaborated
+
+  QUICKSTART (raw HTTP, one call):
   GET https://attest.97115104.com/api/create?content_name=TITLE&model=YOUR_MODEL&role=collaborated&author=YOUR_NAME
 
   STRUCTURED SPEC:
@@ -189,6 +198,54 @@
     </div>
   </div>
 
+  <!-- ── SDK ────────────────────────── -->
+  <div class="section">
+    <div class="section-header">sdk (recommended)</div>
+    <div class="section-body">
+      <p>The <code>attest-client</code> npm package provides deterministic attestation creation. It eliminates URL hallucination by returning exact server-generated URLs as structured objects. Zero dependencies.</p>
+
+      <div class="spec-block">
+        <h3>install</h3>
+        <pre><code>npm install attest-client</code></pre>
+      </div>
+
+      <div class="spec-block">
+        <h3>one-shot</h3>
+        <pre><code>import { attest } from 'attest-client';
+
+const result = await attest({
+  content_name: 'README.md',
+  model: 'claude-opus-4',
+  role: 'collaborated',
+  author: 'my-agent'
+});
+// result.urls.short → exact short URL from server
+// result.urls.verify → exact verify URL from server</code></pre>
+      </div>
+
+      <div class="spec-block">
+        <h3>client instance (reusable)</h3>
+        <pre><code>import { createClient } from 'attest-client';
+
+const client = createClient({ author: 'my-agent' });
+const r1 = await client.create({ content_name: 'file1.md', model: 'claude-opus-4' });
+const r2 = await client.create({ content_name: 'file2.md', model: 'claude-opus-4' });
+const metrics = await client.metrics();
+const spec = await client.discover();</code></pre>
+      </div>
+
+      <div class="spec-block">
+        <h3>cli</h3>
+        <pre><code>npx attest --content README.md --model claude-opus-4 --role collaborated
+npx attest --metrics
+npx attest --discover
+npx attest --content file.md --json  # raw JSON output</code></pre>
+      </div>
+
+      <p class="dim" style="font-size: 12px;">Identifies itself via <code>User-Agent: attest-client/2.0.0</code> for tracking. <a href="https://www.npmjs.com/package/attest-client">npmjs.com/package/attest-client</a></p>
+    </div>
+  </div>
+
   <!-- ── Examples ──────────────────────── -->
   <div class="section">
     <div class="section-header">executable examples</div>
@@ -244,15 +301,17 @@
   <div class="section">
     <div class="section-header">recommended agent workflow</div>
     <div class="section-body">
-      <pre><code>1. Create content (code, docs, articles, etc.)
-2. Call GET /api/create with content_name, model, role, author
+      <pre><code>1. Install: npm install attest-client (or use raw HTTP)
+2. Create content (code, docs, articles, etc.)
+3. Call attest() or GET /api/create with content_name, model, role, author
+   - SDK returns exact URLs, no hallucination risk
    - Optionally pass content= for SHA-256 hash verification
-3. Receive attestation JSON + verify URL + short URL
-4. Store attestation alongside content:
+4. Receive attestation JSON + verify URL + short URL
+5. Store attestation alongside content:
    - HTML: &lt;meta name="attestation" content="{base64}"&gt;
    - Frontmatter: attestation: {short_url}
    - Sidecar: /attestations/{filename}.json
-5. Anyone can verify at the verify URL</code></pre>
+6. Anyone can verify at the verify URL</code></pre>
     </div>
   </div>
 

@@ -53,7 +53,21 @@
       <h3>curl</h3>
       <pre><code>curl "https://attest.97115104.com/api/create?content_name=My+Doc&amp;model=claude-opus-4&amp;role=collaborated"</code></pre>
 
-      <h3>node.js</h3>
+      <h3>node.js (sdk, recommended)</h3>
+      <pre><code>npm install attest-client</code></pre>
+      <pre><code>import { attest } from 'attest-client';
+
+const result = await attest({
+  content_name: "My Doc",
+  model: "claude-opus-4",
+  role: "collaborated",
+  author: "your-name"
+});
+console.log(result.urls.short);  // exact short URL from server
+console.log(result.urls.verify); // exact verify URL from server</code></pre>
+      <p class="muted">The SDK adds determinism: no URL hallucination, input validation, trackable via User-Agent header.</p>
+
+      <h3>node.js (raw fetch)</h3>
       <pre><code>const res = await fetch(
   "https://attest.97115104.com/api/create?" +
   new URLSearchParams({
@@ -340,7 +354,30 @@ const crypto = require('crypto');
 
       <hr>
 
-      <h2>▸ create attestations (one call)</h2>
+      <h2>▸ sdk (recommended for agents)</h2>
+      <p>The <code>attest-client</code> npm package eliminates the most common agent failure: URL hallucination. Instead of parsing raw JSON and risking fabricated URLs, the SDK returns structured objects with exact server-generated URLs.</p>
+
+      <pre><code>npm install attest-client</code></pre>
+
+      <pre><code>import { createClient } from 'attest-client';
+
+const client = createClient({ author: 'my-agent' });
+const result = await client.create({
+  content_name: 'output.md',
+  model: 'claude-opus-4',
+  role: 'generated'
+});
+// result.urls.short → exact URL, no hallucination possible</code></pre>
+
+      <h3>cli</h3>
+      <pre><code>npx attest --content output.md --model claude-opus-4 --role generated --author my-bot
+npx attest --metrics --json</code></pre>
+
+      <p class="muted">Zero dependencies. Identifies via <code>User-Agent: attest-client/2.0.0</code>. <a href="https://www.npmjs.com/package/attest-client">npm</a></p>
+
+      <hr>
+
+      <h2>▸ create attestations (raw http)</h2>
       <p>one GET request - that's it:</p>
       <pre><code>GET https://attest.97115104.com/api/create
   ?content_name={title}

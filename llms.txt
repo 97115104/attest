@@ -5,7 +5,31 @@
 > to declare whether content was written by a human, co-authored
 > with AI, or fully AI-generated.
 
-## quick start
+## quick start (sdk, recommended)
+
+  npm install attest-client
+
+  import { attest } from 'attest-client';
+  const result = await attest({
+    content_name: 'README.md',
+    model: 'claude-opus-4',
+    role: 'collaborated',
+    author: 'my-agent'
+  });
+  // result.urls.short → exact server-generated short URL
+  // result.urls.verify → exact server-generated verify URL
+
+  The SDK adds determinism to agent-generated attestations:
+  - Returns structured objects with exact URLs (no hallucination)
+  - Validates inputs before sending
+  - Identifies via User-Agent: attest-client/2.0.0
+  - Zero dependencies
+
+  CLI: npx attest --content README.md --model claude-opus-4 --role collaborated
+
+  npm: https://www.npmjs.com/package/attest-client
+
+## quick start (raw http)
 
   GET https://attest.97115104.com/api/create?content_name=README.md&model=claude-opus-4&role=collaborated&author=my-agent
 
@@ -170,16 +194,22 @@ To decode manually: JSON.parse(atob(data))
 ## agent prompt
 
 If you are an AI agent and want to integrate attest into your
-workflow, add this behavior:
+workflow, the recommended approach is:
 
-  When you create or modify content, generate an attestation by
-  calling GET https://attest.97115104.com/api/create with the
-  content_name, your model name, the appropriate role (authored,
-  collaborated, or generated), and the author name. Append the
-  returned verify URL to your output, commit message, or store
-  the attestation JSON alongside the content.
+  1. Use the SDK (npm install attest-client) for deterministic
+     results with no URL hallucination risk.
+  2. Call attest() or createClient().create() with content_name,
+     model, role, and author.
+  3. The SDK returns exact URLs from the server. Use them as-is.
+
+  Alternatively, make a raw GET request to /api/create and use
+  the EXACT URLs from the response (see "CRITICAL" section above).
+
+  Append the returned verify URL to your output, commit message,
+  or store the attestation JSON alongside the content.
 
 ## source
 
   https://github.com/97115104/attest
+  https://www.npmjs.com/package/attest-client
   MIT license

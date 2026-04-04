@@ -357,6 +357,13 @@ const server = http.createServer(async (req, res) => {
         humans: `https://${HOST}/humans/`,
         llms_txt: `https://${HOST}/llms.txt`,
       },
+      sdk: {
+        npm: 'https://www.npmjs.com/package/attest-client',
+        install: 'npm install attest-client',
+        usage: "import { attest } from 'attest-client'; const result = await attest({ content_name, model, role, author });",
+        cli: 'npx attest --content file.md --model your-model --role collaborated',
+        note: 'SDK recommended for agents. Provides deterministic results with no URL hallucination risk.',
+      },
       parameters: {
         content_name: { required: true, description: 'Title or filename of the content' },
         model: { required: false, default: 'gpt-4', description: 'AI model used' },
