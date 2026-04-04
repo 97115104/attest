@@ -11,6 +11,11 @@ attestation: https://attest.97115104.com/s/y52ru5lq
 ```
 
 [![attested: collab claude opus 4](https://img.shields.io/badge/attested-collab%20claude%20opus%204-blue)](https://attest.97115104.com/s/y52ru5lq)
+[![license: MIT](https://img.shields.io/badge/license-MIT-green)](LICENSE)
+[![version: 2.0.0](https://img.shields.io/badge/version-2.0.0-blue)](package.json)
+[![node: >=18](https://img.shields.io/badge/node-%3E%3D18-brightgreen)](https://nodejs.org)
+[![dependencies: 2](https://img.shields.io/badge/dependencies-2-blue)](package.json)
+[![no auth required](https://img.shields.io/badge/auth-none%20required-brightgreen)](https://attest.97115104.com)
 
 Free, open protocol for transparent AI content attribution. One HTTP call. No API keys, no auth tokens, no cost.
 
