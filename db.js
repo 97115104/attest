@@ -4,7 +4,7 @@ import fs from 'node:fs';
 import { fileURLToPath } from 'node:url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const DB_PATH = path.join(__dirname, 'data', 'attest.db');
+const DB_PATH = process.env.DB_PATH || path.join(__dirname, 'data', 'attest.db');
 
 let db;
 

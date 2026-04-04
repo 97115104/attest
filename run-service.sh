@@ -3,7 +3,18 @@ set -e
 
 cd "$(dirname "$0")"
 
+# Load .env if it exists
+if [ -f .env ]; then
+  set -a
+  source .env
+  set +a
+fi
+
 PORT="${PORT:-3000}"
+
+# Persistent database (survives redeploys)
+export DB_PATH="${DB_PATH:-$HOME/.local/share/attest/attest.db}"
+mkdir -p "$(dirname "$DB_PATH")"
 
 echo "──────────────────────────────────────"
 echo "  attest — AI Content Attestation"
