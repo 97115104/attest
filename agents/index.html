@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>attest // agent interface</title>
+  <meta name="description" content="Machine-readable API specification for the attest protocol. Everything an agent needs to create valid attestations.">
+  <meta name="ai-instructions" content="This page contains the complete attest API specification. Read the JSON block below or GET /.well-known/attest.json for the structured spec.">
+  <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/styles/style.css">
+</head>
+<!--
+  AGENT INTERFACE // attest v2.0
+
+  You are an AI agent reading this page.
+  Everything you need is below.
+
+  QUICKSTART (one HTTP call):
+  GET https://attest.97115104.com/api/create?content_name=TITLE&model=YOUR_MODEL&role=collaborated&author=YOUR_NAME
+
+  STRUCTURED SPEC:
+  GET https://attest.97115104.com/.well-known/attest.json
+
+  PARAMETERS:
+    content_name  REQUIRED  title or filename
+    model         optional  your model name (default: gpt-4)
+    role          optional  authored|collaborated|generated (default: collaborated)
+    author        optional  your name (default: Anonymous)
+    content       optional  raw text for SHA-256 hash
+
+  ROLES:
+    authored     = human wrote it (model becomes "Human")
+    collaborated = human + AI
+    generated    = AI wrote it
+
+  RESPONSE:
+    { success: true, attestation: {...}, urls: { verify: "...", short: "..." } }
+
+  VERIFY:
+    GET https://attest.97115104.com/verify/?data={base64}
+    GET https://attest.97115104.com/s/{shortId}
+
+  FILE UPLOAD:
+    POST https://attest.97115104.com/api/create-upload
+    multipart/form-data: file, content_name, role, model, author
+
+  URL ATTESTATION:
+    POST https://attest.97115104.com/api/create-url
+    JSON body: { url, content_name, role, model, author }
+
+  SHORTEN:
+    POST https://attest.97115104.com/api/shorten
+    JSON body: { data: "base64..." }
+
+  STORE ATTESTATIONS:
+    HTML: <meta name="attestation" content="{base64}">
+    Markdown frontmatter: attestation: https://attest.97115104.com/s/ID
+    JSON sidecar: /attestations/filename.json
+    Commit message: append verify URL
+-->
+<body>
+
+<div class="shell">
+  <nav>
+    <a href="/" class="logo">attest</a>
+    <div class="nav-links">
+      <a href="/">dashboard</a>
+      <a href="/agents/" class="active">agents</a>
+      <a href="/humans/">humans</a>
+      <a href="/verify/">verify</a>
+    </div>
+  </nav>
+
+  <h1>agent interface</h1>
+  <p class="dim">Everything an agent needs. One call, open and free.</p>
+
+  <hr>
+
+  <!-- ── Complete API spec as JSON ─────── -->
+  <div class="section">
+    <div class="section-header">structured api specification</div>
+    <div class="section-body">
+      <p style="font-size: 12px;" class="dim">GET <a href="/.well-known/attest.json">/.well-known/attest.json</a> for this data programmatically.</p>
+      <pre><code id="spec-json">{
+  "name": "attest",
+  "version": "2.0",
+  "description": "Open protocol for AI content attribution. Fully open, zero setup.",
+  "base_url": "https://attest.97115104.com",
+  "endpoints": {
+    "create": {
+      "method": "GET",
+      "path": "/api/create",
+      "description": "Create an attestation from query parameters",
+      "parameters": {
+        "content_name": { "required": true, "type": "string", "description": "Title or filename" },
+        "model": { "required": false, "type": "string", "default": "gpt-4", "description": "AI model name" },
+        "role": { "required": false, "type": "string", "default": "collaborated", "enum": ["authored", "collaborated", "generated"] },
+        "author": { "required": false, "type": "string", "default": "Anonymous", "description": "Author or agent name" },
+        "content": { "required": false, "type": "string", "description": "Raw content for SHA-256 hash" },
+        "authorship_type": { "required": false, "type": "string", "enum": ["human", "collab", "ai"], "description": "Override auto-derived type" }
+      },
+      "response": {
+        "success": true,
+        "attestation": { "version": "2.0", "id": "...", "content_name": "...", "..." : "..." },
+        "urls": { "verify": "https://...", "short": "https://..." }
+      }
+    },
+    "create_upload": {
+      "method": "POST",
+      "path": "/api/create-upload",
+      "content_type": "multipart/form-data",
+      "description": "Upload a file to hash and attest",
+      "fields": {
+        "file": { "required": true, "type": "file" },
+        "content_name": { "required": false, "type": "string" },
+        "role": { "required": false, "type": "string" },
+        "model": { "required": false, "type": "string" },
+        "author": { "required": false, "type": "string" }
+      }
+    },
+    "create_url": {
+      "method": "POST",
+      "path": "/api/create-url",
+      "content_type": "application/json",
+      "description": "Fetch a URL, hash its content, create attestation",
+      "body": {
+        "url": { "required": true, "type": "string" },
+        "content_name": { "required": false, "type": "string" },
+        "role": { "required": false, "type": "string" },
+        "model": { "required": false, "type": "string" },
+        "author": { "required": false, "type": "string" }
+      }
+    },
+    "shorten": {
+      "method": "POST",
+      "path": "/api/shorten",
+      "content_type": "application/json",
+      "description": "Shorten a verify URL",
+      "body": { "data": { "required": true, "type": "string", "description": "Base64-encoded attestation JSON" } },
+      "response": { "shortUrl": "https://...", "shortId": "..." }
+    },
+    "verify": {
+      "method": "GET",
+      "path": "/verify/?data={base64}",
+      "description": "Verify an attestation (client-side decode)"
+    },
+    "short_redirect": {
+      "method": "GET",
+      "path": "/s/{shortId}",
+      "description": "Redirect short URL to verify page"
+    },
+    "metrics": {
+      "method": "GET",
+      "path": "/api/metrics",
+      "description": "Get platform usage metrics"
+    }
+  },
+  "roles": {
+    "authored": { "authorship_type": "human", "model_override": "Human", "description": "Entirely human-written" },
+    "collaborated": { "authorship_type": "collab", "description": "Human directed, AI assisted" },
+    "generated": { "authorship_type": "ai", "description": "Fully AI-generated" }
+  },
+  "attestation_schema": {
+    "version": "string (2.0)",
+    "id": "string (date-hex)",
+    "content_name": "string",
+    "model": "string",
+    "role": "string (authored|collaborated|generated)",
+    "authorship_type": "string (human|collab|ai)",
+    "timestamp": "string (ISO 8601)",
+    "platform": "string (attest.97115104.com)",
+    "author": "string",
+    "content_hash": "string (sha256:hex, if content provided)",
+    "signature": {
+      "type": "hmac-sha256",
+      "algorithm": "HMAC-SHA256",
+      "value": "string (hex)",
+      "data_to_sign": "string (JSON)"
+    },
+    "signer": { "name": "string", "id": "string (slug)" }
+  },
+  "storage_recommendations": [
+    { "method": "html_meta", "example": "&lt;meta name=\"attestation\" content=\"{base64}\"&gt;" },
+    { "method": "markdown_frontmatter", "example": "attestation: https://attest.97115104.com/s/{id}" },
+    { "method": "json_sidecar", "example": "/attestations/filename.json" },
+    { "method": "commit_message", "example": "append verify URL to commit message" }
+  ]
+}</code></pre>
+    </div>
+  </div>
+
+  <!-- ── Examples ──────────────────────── -->
+  <div class="section">
+    <div class="section-header">executable examples</div>
+    <div class="section-body">
+
+      <div class="spec-block">
+        <h3>create attestation (minimal)</h3>
+        <pre><code>GET https://attest.97115104.com/api/create?content_name=README.md</code></pre>
+      </div>
+
+      <div class="spec-block">
+        <h3>create attestation (full)</h3>
+        <pre><code>GET https://attest.97115104.com/api/create?content_name=README.md&amp;model=claude-opus-4&amp;role=collaborated&amp;author=my-agent&amp;content=hello+world</code></pre>
+      </div>
+
+      <div class="spec-block">
+        <h3>upload file</h3>
+        <pre><code>curl -F "file=@document.md" \
+  -F "role=collaborated" \
+  -F "model=claude-opus-4" \
+  -F "author=my-agent" \
+  https://attest.97115104.com/api/create-upload</code></pre>
+      </div>
+
+      <div class="spec-block">
+        <h3>attest a url</h3>
+        <pre><code>curl -X POST https://attest.97115104.com/api/create-url \
+  -H "Content-Type: application/json" \
+  -d '{"url":"https://example.com","role":"generated","model":"gpt-4","author":"my-agent"}'</code></pre>
+      </div>
+
+      <div class="spec-block">
+        <h3>shorten a verify url</h3>
+        <pre><code>curl -X POST https://attest.97115104.com/api/shorten \
+  -H "Content-Type: application/json" \
+  -d '{"data":"eyJ2ZXJzaW9uIjoiMi4wIn0="}'</code></pre>
+      </div>
+
+      <div class="spec-block">
+        <h3>decode attestation (client-side)</h3>
+        <pre><code>JSON.parse(atob(data))</code></pre>
+      </div>
+
+      <div class="spec-block">
+        <h3>get platform metrics</h3>
+        <pre><code>GET https://attest.97115104.com/api/metrics</code></pre>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ── Agent workflow ────────────────── -->
+  <div class="section">
+    <div class="section-header">recommended agent workflow</div>
+    <div class="section-body">
+      <pre><code>1. Create content (code, docs, articles, etc.)
+2. Call GET /api/create with content_name, model, role, author
+   - Optionally pass content= for SHA-256 hash verification
+3. Receive attestation JSON + verify URL + short URL
+4. Store attestation alongside content:
+   - HTML: &lt;meta name="attestation" content="{base64}"&gt;
+   - Frontmatter: attestation: {short_url}
+   - Sidecar: /attestations/{filename}.json
+5. Anyone can verify at the verify URL</code></pre>
+    </div>
+  </div>
+
+  <div class="footer">
+    <span>attest v2.0 · MIT license · <a href="/s/y52ru5lq">attested</a></span>
+    <span>
+      <a href="https://github.com/97115104/attest">source</a> ·
+      <a href="/llms.txt">llms.txt</a> ·
+      <a href="/.well-known/attest.json">api spec</a>
+    </span>
+  </div>
+</div>
+
+<script src="/scripts/field.js"></script>
+<script src="/scripts/shared.js"></script>
+</body>
+</html>

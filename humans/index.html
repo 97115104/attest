@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>attest // for humans</title>
+  <meta name="description" content="Create attestations for your content. Declare whether it was human-written, AI-assisted, or AI-generated.">
+  <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/styles/style.css">
+</head>
+<body>
+
+<div class="shell">
+  <nav>
+    <a href="/" class="logo">attest</a>
+    <div class="nav-links">
+      <a href="/">dashboard</a>
+      <a href="/agents/">agents</a>
+      <a href="/humans/" class="active">humans</a>
+      <a href="/verify/">verify</a>
+    </div>
+  </nav>
+
+  <h1>for humans</h1>
+  <p class="dim">You made something. Here's how you tell people how it was made.</p>
+
+  <hr>
+
+  <!-- ── What is attest ────────────────── -->
+  <div class="section">
+    <div class="section-header">what is this</div>
+    <div class="section-body">
+      <p>When you make something, whether that's an article, some code, a design, or a document, people
+        increasingly wonder: did a person make this, or did AI? Honestly, it's getting harder to tell
+        just by looking. <strong>attest</strong> lets you be upfront about it.</p>
+      <p>You attach a small signed record to your work that says how it was made: by you alone,
+        with AI help, or entirely by AI. Someone can verify that record later because it's cryptographically
+        signed, so it can't be faked after the fact.</p>
+      <p>There's nothing to sign up for, it's just an open API you can hit whenever you want. Completely free.</p>
+
+      <h3 style="margin-top: 16px;">the three types</h3>
+      <table>
+        <tr><th>type</th><th>what it means</th><th>when you'd pick it</th></tr>
+        <tr>
+          <td><span class="badge badge-human">human</span></td>
+          <td>a person wrote this, start to finish</td>
+          <td>no AI touched it at all</td>
+        </tr>
+        <tr>
+          <td><span class="badge badge-collab">collab</span></td>
+          <td>a person and AI worked on it together</td>
+          <td>you directed, AI helped, or the reverse</td>
+        </tr>
+        <tr>
+          <td><span class="badge badge-ai">ai</span></td>
+          <td>AI generated this</td>
+          <td>a model produced the content with minimal human input</td>
+        </tr>
+      </table>
+    </div>
+  </div>
+
+  <!-- ── Offline agent prompt ─────────── -->
+  <div class="section">
+    <div class="section-header">agent doesn't have internet?</div>
+    <div class="section-body">
+      <p>If your AI agent can't browse the web, copy this prompt and paste it into your conversation. It contains everything the agent needs to know about attest and will walk you through creating an attestation together.</p>
+      <div class="btn-row" style="margin-top: 0; margin-bottom: 0;">
+        <button class="btn" id="copy-prompt-btn" onclick="copyOfflinePrompt()">copy prompt to clipboard</button>
+      </div>
+      <p class="dim" style="font-size: 12px; margin-top: 10px; margin-bottom: 0;" id="copy-prompt-status"></p>
+    </div>
+  </div>
+
+  <!-- ── Create form ──────────────────── -->
+  <div class="section" id="create-section">
+    <div class="section-header">create attestation</div>
+    <div class="section-body">
+
+      <div id="form-view">
+        <!-- Source type toggle -->
+        <div style="margin-bottom: 16px; display: flex; gap: 16px; font-size: 13px;">
+          <label style="cursor: pointer; display: flex; align-items: center; gap: 4px;">
+            <input type="radio" name="source-type" value="file" checked onchange="toggleSource()"> file upload
+          </label>
+          <label style="cursor: pointer; display: flex; align-items: center; gap: 4px;">
+            <input type="radio" name="source-type" value="url" onchange="toggleSource()"> webpage URL
+          </label>
+        </div>
+
+        <!-- File upload -->
+        <div id="source-file" class="field">
+          <label>file</label>
+          <input type="file" id="file-input" multiple>
+          <p class="dim" id="file-info" style="font-size: 12px; margin-top: 4px;"></p>
+        </div>
+
+        <!-- URL input -->
+        <div id="source-url" style="display: none;">
+          <div class="field">
+            <label>url</label>
+            <div id="url-list">
+              <input type="url" class="url-input" placeholder="https://example.com/page" style="margin-bottom: 4px;">
+            </div>
+            <button class="btn" onclick="addUrlRow()" style="font-size: 11px; padding: 4px 12px; margin-top: 4px;">+ add url</button>
+          </div>
+        </div>
+
+        <div class="field">
+          <label>content name</label>
+          <input type="text" id="content-name" placeholder="auto-filled from filename">
+        </div>
+
+        <div class="field">
+          <label>authorship</label>
+          <select id="role">
+            <option value="authored">human: I wrote this entirely</option>
+            <option value="collaborated" selected>collab: human + AI together</option>
+            <option value="generated">ai: fully AI generated</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label>model</label>
+          <input type="text" id="model" value="claude-opus-4" placeholder="AI model used">
+        </div>
+
+        <div class="field">
+          <label>author</label>
+          <input type="text" id="author" placeholder="Anonymous">
+        </div>
+
+        <div class="btn-row">
+          <button class="btn" id="create-btn" onclick="createAttestation()">create attestation</button>
+        </div>
+
+        <p class="status" id="status"></p>
+      </div>
+
+      <!-- Results -->
+      <div id="result-view" style="display: none;">
+        <div class="verify-result" id="result-badge">
+          <div class="verdict pass" id="result-type"></div>
+          <p class="dim" id="result-count"></p>
+        </div>
+
+        <div id="results-container"></div>
+
+        <div class="btn-row">
+          <button class="btn" onclick="resetForm()">create another</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── How it works ─────────────────── -->
+  <div class="section">
+    <div class="section-header">how it works</div>
+    <div class="section-body">
+      <p>The short version: you give us something (a file, a URL, or just a name) and tell us who made it. We hash it, sign it, and give you back a little JSON receipt you can stick wherever you want.</p>
+      <p>Start by picking a file to upload or pasting a URL. If you just want to register a name without content, that works too. Then choose whether it was human, collab, or AI. We'll SHA-256 hash whatever content you gave us and sign the whole thing with HMAC. You get back a signed attestation along with a shareable link that anyone can use to verify it. From there, put it wherever makes sense: an HTML meta tag, a commit message, markdown frontmatter, or a JSON sidecar file.</p>
+      <p class="dim" style="font-size: 13px;">Verification happens entirely client-side. Nobody has to trust us, the math checks out on its own.</p>
+    </div>
+  </div>
+
+  <!-- ── Where to store ───────────────── -->
+  <div class="section">
+    <div class="section-header">where to put it</div>
+    <div class="section-body">
+      <p class="dim" style="font-size: 13px; margin-bottom: 12px;">Wherever works for you. Here are some ideas:</p>
+      <table>
+        <tr><th>method</th><th>example</th></tr>
+        <tr>
+          <td>HTML meta tag</td>
+          <td><code>&lt;meta name="attestation" content="{base64}"&gt;</code></td>
+        </tr>
+        <tr>
+          <td>Markdown frontmatter</td>
+          <td><code>attestation: https://attest.97115104.com/s/ID</code></td>
+        </tr>
+        <tr>
+          <td>JSON sidecar</td>
+          <td><code>/attestations/filename.json</code></td>
+        </tr>
+        <tr>
+          <td>Commit message</td>
+          <td>just append the verify URL</td>
+        </tr>
+      </table>
+    </div>
+  </div>
+
+  <div class="footer">
+    <span>attest v2.0 · MIT license · <a href="/s/y52ru5lq">attested</a></span>
+    <span>
+      <a href="https://github.com/97115104/attest">source</a> ·
+      <a href="/llms.txt">llms.txt</a> ·
+      <a href="/.well-known/attest.json">api spec</a>
+    </span>
+  </div>
+</div>
+
+<script src="/scripts/field.js"></script>
+<script src="/scripts/shared.js"></script>
+<script>
+const fileInput = document.getElementById('file-input');
+const roleSelect = document.getElementById('role');
+
+function toggleSource() {
+  const mode = document.querySelector('input[name="source-type"]:checked').value;
+  document.getElementById('source-file').style.display = mode === 'file' ? 'block' : 'none';
+  document.getElementById('source-url').style.display = mode === 'url' ? 'block' : 'none';
+}
+
+function addUrlRow() {
+  const list = document.getElementById('url-list');
+  const row = document.createElement('div');
+  row.style.cssText = 'display:flex; gap:4px; margin-bottom:4px;';
+  row.innerHTML = '<input type="url" class="url-input" placeholder="https://example.com/page" style="flex:1;">'
+    + '<button class="btn" onclick="this.parentElement.remove()" style="font-size:11px; padding:4px 8px;">x</button>';
+  list.appendChild(row);
+}
+
+fileInput.addEventListener('change', () => {
+  const files = fileInput.files;
+  if (files.length === 1) {
+    document.getElementById('file-info').textContent = files[0].name + ' (' + (files[0].size / 1024).toFixed(1) + ' KB)';
+    if (!document.getElementById('content-name').value) {
+      document.getElementById('content-name').value = files[0].name;
+    }
+  } else if (files.length > 1) {
+    document.getElementById('file-info').textContent = files.length + ' files selected';
+  }
+});
+
+roleSelect.addEventListener('change', () => {
+  const modelInput = document.getElementById('model');
+  if (roleSelect.value === 'authored') {
+    modelInput.value = 'Human';
+    modelInput.disabled = true;
+  } else {
+    if (modelInput.value === 'Human') modelInput.value = 'claude-opus-4';
+    modelInput.disabled = false;
+  }
+});
+
+async function createAttestation() {
+  const mode = document.querySelector('input[name="source-type"]:checked').value;
+  const btn = document.getElementById('create-btn');
+  const role = roleSelect.value;
+  const model = document.getElementById('model').value || 'claude-opus-4';
+  const author = document.getElementById('author').value || 'Anonymous';
+  const contentName = document.getElementById('content-name').value;
+
+  btn.disabled = true;
+  btn.textContent = 'creating...';
+
+  const results = [];
+
+  try {
+    if (mode === 'file') {
+      const files = Array.from(fileInput.files);
+      if (files.length === 0) {
+        setStatus('select a file to upload');
+        btn.disabled = false;
+        btn.textContent = 'create attestation';
+        return;
+      }
+
+      for (let i = 0; i < files.length; i++) {
+        setStatus('processing ' + (i + 1) + '/' + files.length + ': ' + files[i].name);
+        const form = new FormData();
+        form.append('file', files[i]);
+        if (contentName && files.length === 1) form.append('content_name', contentName);
+        form.append('role', role);
+        form.append('model', model);
+        form.append('author', author);
+
+        const res = await fetch('/api/create-upload', { method: 'POST', body: form });
+        const data = await res.json();
+        if (data.success) results.push(data);
+      }
+    } else {
+      const urls = Array.from(document.querySelectorAll('.url-input'))
+        .map(el => el.value.trim()).filter(Boolean);
+      if (urls.length === 0) {
+        setStatus('enter a URL');
+        btn.disabled = false;
+        btn.textContent = 'create attestation';
+        return;
+      }
+
+      for (let i = 0; i < urls.length; i++) {
+        setStatus('fetching ' + (i + 1) + '/' + urls.length);
+        const res = await fetch('/api/create-url', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ url: urls[i], role, model, author, content_name: contentName || undefined }),
+        });
+        const data = await res.json();
+        if (data.success) results.push(data);
+        else setStatus('error: ' + (data.error || 'unknown'));
+      }
+    }
+
+    if (results.length > 0) showResults(results);
+  } catch (err) {
+    setStatus('error: ' + err.message);
+  }
+
+  btn.disabled = false;
+  btn.textContent = 'create attestation';
+}
+
+function showResults(results) {
+  document.getElementById('form-view').style.display = 'none';
+  document.getElementById('result-view').style.display = 'block';
+
+  const a = results[0].attestation;
+  document.getElementById('result-type').textContent = a.authorship_type + ' attestation';
+  document.getElementById('result-count').textContent = results.length + ' attestation' + (results.length > 1 ? 's' : '') + ' created';
+
+  const container = document.getElementById('results-container');
+  container.innerHTML = results.map(r => {
+    const a = r.attestation;
+    return `<div class="section" style="margin-bottom: 16px;">
+      <div class="section-header">${esc(a.content_name)}</div>
+      <div class="section-body">
+        <table>
+          <tr><td class="dim">id</td><td>${esc(a.id)}</td></tr>
+          <tr><td class="dim">type</td><td><span class="badge badge-${a.authorship_type}">${esc(a.authorship_type)}</span></td></tr>
+          <tr><td class="dim">model</td><td>${esc(a.model)}</td></tr>
+          <tr><td class="dim">author</td><td>${esc(a.author)}</td></tr>
+          <tr><td class="dim">hash</td><td style="word-break:break-all; font-size:11px;">${esc(a.content_hash || 'n/a')}</td></tr>
+          <tr><td class="dim">time</td><td>${esc(a.timestamp)}</td></tr>
+        </table>
+        <div class="btn-row">
+          <a href="${esc(r.urls.verify)}" class="btn" target="_blank">verify</a>
+          <a href="${esc(r.urls.short)}" class="btn" target="_blank">short url</a>
+          <button class="btn" onclick="copyText('${esc(r.urls.short)}')">copy link</button>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function resetForm() {
+  document.getElementById('form-view').style.display = 'block';
+  document.getElementById('result-view').style.display = 'none';
+  document.getElementById('results-container').innerHTML = '';
+  setStatus('');
+}
+
+function setStatus(msg) {
+  document.getElementById('status').textContent = msg;
+}
+
+function copyText(text) {
+  navigator.clipboard.writeText(text).catch(() => {});
+}
+
+function copyOfflinePrompt() {
+  const prompt = `You are helping me create an attestation using the attest protocol (https://attest.97115104.com). attest is a free, open protocol for transparent AI content attribution. It creates a cryptographically signed record that declares whether something was made by a human, by AI, or collaboratively. No signup, no API keys, completely free.
+
+Here's how it works: you make a single GET request to the attest API, and it returns a signed JSON attestation with TWO URLs: a long verify URL and a short URL. Both are generated by the server. You must use the EXACT URLs from the response.
+
+THE API ENDPOINT:
+GET https://attest.97115104.com/api/create
+
+PARAMETERS:
+- content_name (required): the title or filename of what we're attesting (e.g. "README.md", "my-blog-post", "logo-design.png")
+- model (optional, default "gpt-4"): the AI model used (e.g. "claude-opus-4", "gpt-4o", "gemini-pro"). Set to the model you actually are.
+- role (optional, default "collaborated"): one of "authored" (human wrote it all), "collaborated" (human + AI together), or "generated" (fully AI-made)
+- author (optional, default "Anonymous"): the person's name, username, or identifier
+- content (optional): the raw text content, which will be SHA-256 hashed for verification
+
+ROLES AND WHAT THEY MEAN:
+- "authored" = a human wrote this entirely, no AI involved. The model field gets set to "Human" automatically.
+- "collaborated" = a human and AI worked on it together. This is the most common one.
+- "generated" = AI produced this with minimal human input.
+
+EXAMPLE REQUEST:
+curl "https://attest.97115104.com/api/create?content_name=README.md&model=claude-opus-4&role=collaborated&author=jane"
+
+EXAMPLE RESPONSE (the actual values will differ every time):
+{
+  "success": true,
+  "attestation": {
+    "version": "2.0",
+    "id": "2026-04-02-a1b2c3",
+    "content_name": "README.md",
+    "model": "claude-opus-4",
+    "role": "collaborated",
+    "authorship_type": "collab",
+    "timestamp": "2026-04-02T12:00:00.000Z",
+    "platform": "attest.97115104.com",
+    "author": "jane"
+  },
+  "urls": {
+    "verify": "https://attest.97115104.com/verify/?data=eyJ2ZXJz...(long base64)...",
+    "short": "https://attest.97115104.com/s/k7xm9pq2"
+  }
+}
+
+CRITICAL RULES FOR PRESENTING RESULTS:
+1. The SHORT URL is in response.urls.short. Copy it EXACTLY from the API response. It is an 8-character random string like "k7xm9pq2".
+2. The VERIFY URL is in response.urls.verify. Copy it EXACTLY from the API response.
+3. DO NOT construct, guess, or infer URLs. The attestation ID field (like "2026-04-02-a1b2c3") is NOT a short URL and cannot be used to build one.
+4. DO NOT modify, truncate, or reformat any URL from the response.
+5. If you cannot make the HTTP request, tell the user to run the curl command themselves and paste the response back to you.
+6. Always present BOTH the short URL and the verify URL from the actual response.
+
+WHERE TO PUT THE ATTESTATION:
+- HTML: <meta name="attestation-verify" content="EXACT_SHORT_URL_FROM_RESPONSE">
+- Markdown frontmatter: attestation: EXACT_SHORT_URL_FROM_RESPONSE
+- Commit message: just append the short URL from response.urls.short
+- JSON sidecar file: save the full attestation JSON next to the content
+
+Now please ask me the following questions so we can create an attestation together:
+1. What did you make? (filename, project name, or description)
+2. How was it made? (you wrote it yourself, you and AI collaborated, or AI generated it)
+3. What AI model did you use, if any?
+4. What name or username should be listed as the author?
+5. Would you like to include the actual content text for hash verification?
+
+Once I answer, construct the API URL with the right parameters and make the GET request. After getting the response, show me:
+- The attestation details from the response
+- The EXACT short URL from response.urls.short (do not construct this yourself)
+- The EXACT verify URL from response.urls.verify (do not construct this yourself)
+Remember: only show URLs that came directly from the API response. Never fabricate or guess a URL.`;
+
+  navigator.clipboard.writeText(prompt).then(() => {
+    const status = document.getElementById('copy-prompt-status');
+    status.textContent = 'copied to clipboard';
+    setTimeout(() => { status.textContent = ''; }, 3000);
+  }).catch(() => {
+    const status = document.getElementById('copy-prompt-status');
+    status.textContent = 'failed to copy, try selecting manually';
+  });
+}
+</script>
+</body>
+</html>

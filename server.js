@@ -4,7 +4,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import crypto from 'node:crypto';
 import { customAlphabet } from 'nanoid';
-import { getDb } from './db.js';
+import { getDb, trackAgentVisit, trackAttestation, trackVerification, getMetrics, detectAgent } from './db.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const PORT = process.env.PORT || 3000;
@@ -197,7 +197,8 @@ function handleCreate(query) {
   signAttestation(attestation);
 
   const { encoded, longUrl } = encodeAndUrl(attestation);
-  const { shortUrl } = createShortUrl(encoded);
+  const { shortUrl, shortId } = createShortUrl(encoded);
+  trackAttestation(attestation, shortId);
   return { success: true, attestation, urls: { verify: longUrl, short: shortUrl } };
 }
 
@@ -254,7 +255,8 @@ const server = http.createServer(async (req, res) => {
     signAttestation(attestation);
 
     const { encoded, longUrl } = encodeAndUrl(attestation);
-    const { shortUrl } = createShortUrl(encoded);
+    const { shortUrl, shortId } = createShortUrl(encoded);
+    trackAttestation(attestation, shortId);
 
     return json(res, 200, { success: true, attestation, urls: { verify: longUrl, short: shortUrl } });
   }
@@ -306,7 +308,8 @@ const server = http.createServer(async (req, res) => {
     signAttestation(attestation);
 
     const { encoded, longUrl } = encodeAndUrl(attestation);
-    const { shortUrl } = createShortUrl(encoded);
+    const { shortUrl, shortId } = createShortUrl(encoded);
+    trackAttestation(attestation, shortId);
 
     return json(res, 200, { success: true, attestation, urls: { verify: longUrl, short: shortUrl } });
   }
@@ -315,6 +318,58 @@ const server = http.createServer(async (req, res) => {
     const body = await readBody(req);
     const result = handleShorten(body);
     return json(res, result.error ? 400 : 200, result);
+  }
+
+  // Metrics API
+  if (pathname === '/api/metrics') {
+    return json(res, 200, getMetrics());
+  }
+
+  // Verification tracking API
+  if (pathname === '/api/track-verify' && req.method === 'POST') {
+    const body = await readBody(req);
+    trackVerification(body?.attestation_id, req.headers['user-agent']);
+    return json(res, 200, { ok: true });
+  }
+
+  // Track agent visits on key pages
+  const agentPaths = ['/llms.txt', '/agents/', '/api/create', '/api/create-upload', '/api/create-url', '/.well-known/attest.json'];
+  if (agentPaths.some(p => pathname === p || pathname.startsWith(p + '?'))) {
+    trackAgentVisit(pathname, req.headers['user-agent']);
+  }
+
+  // Well-known agent discovery
+  if (pathname === '/.well-known/attest.json') {
+    return json(res, 200, {
+      name: 'attest',
+      version: '2.0',
+      description: 'Open protocol for AI content attribution. No auth required.',
+      endpoints: {
+        create: `https://${HOST}/api/create`,
+        create_upload: `https://${HOST}/api/create-upload`,
+        create_url: `https://${HOST}/api/create-url`,
+        shorten: `https://${HOST}/api/shorten`,
+        metrics: `https://${HOST}/api/metrics`,
+        verify: `https://${HOST}/verify/`,
+      },
+      docs: {
+        agents: `https://${HOST}/agents/`,
+        humans: `https://${HOST}/humans/`,
+        llms_txt: `https://${HOST}/llms.txt`,
+      },
+      parameters: {
+        content_name: { required: true, description: 'Title or filename of the content' },
+        model: { required: false, default: 'gpt-4', description: 'AI model used' },
+        role: { required: false, default: 'collaborated', enum: ['authored', 'collaborated', 'generated'] },
+        author: { required: false, default: 'Anonymous', description: 'Author or agent name' },
+        content: { required: false, description: 'Raw content for SHA-256 hash' },
+      },
+      roles: {
+        authored: 'Entirely human-written',
+        collaborated: 'Human directed, AI assisted',
+        generated: 'Fully AI-generated',
+      },
+    });
   }
 
   // Short URL redirect

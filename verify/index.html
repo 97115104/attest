@@ -3,171 +3,134 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>verify attestation - attest</title>
+  <title>verify // attest</title>
   <meta name="description" content="Verify an AI content attestation">
   <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="/styles/style.css?v=1775197551">
+  <link rel="stylesheet" href="/styles/style.css">
 </head>
 <body>
 
-<div class="window">
-  <div class="title-bar">
-    <span>verify - attestation verification</span>
-  </div>
-  <div class="window-body">
+<div class="shell">
+  <nav>
+    <a href="/" class="logo">attest</a>
+    <div class="nav-links">
+      <a href="/">dashboard</a>
+      <a href="/agents/">agents</a>
+      <a href="/humans/">humans</a>
+      <a href="/verify/" class="active">verify</a>
+    </div>
+  </nav>
 
-    <!-- Verification result (populated by JS) -->
-    <div id="result"></div>
+  <h1>verify attestation</h1>
 
-    <!-- Manual input fallback -->
-    <div id="manual-input">
-      <h2>▸ Paste attestation data</h2>
-      <p class="muted">Enter a base64-encoded attestation or full JSON:</p>
-      <textarea id="data-input" rows="6" style="width:100%; font-family:var(--font-mono); font-size:12px; padding:6px; border:2px inset var(--motif-surface);"></textarea>
-      <div class="btn-row">
-        <button class="btn" onclick="verifyInput()">verify</button>
+  <!-- Verification result -->
+  <div id="result"></div>
+
+  <!-- Manual input -->
+  <div id="manual-input">
+    <div class="section">
+      <div class="section-header">paste attestation data</div>
+      <div class="section-body">
+        <p class="dim" style="font-size: 13px;">Enter a base64-encoded attestation or raw JSON.</p>
+        <div class="field">
+          <textarea id="data-input" rows="6" style="resize:vertical;"></textarea>
+        </div>
+        <div class="btn-row">
+          <button class="btn" onclick="verifyInput()">verify</button>
+        </div>
       </div>
     </div>
-
-    <div class="status-bar" id="status">ready</div>
-
-    <pre class="ascii-filler"><span class="r1"> ________________________</span>
-<span class="r2">/ paste attestation data  \</span>
-<span class="r3">\ and I'll verify it.     /</span>
-<span class="r4"> ------------------------</span>
-<span class="r5">        \   ^__^</span>
-<span class="r6">         \  (oo)\_______</span>
-<span class="r7">            (__)\       )\/\</span>
-<span class="r1">                ||----w |</span>
-<span class="r2">                ||     ||</span></pre>
   </div>
-  <div class="status-bar">
-    MIT license - <a href="https://github.com/97115104/attest">github.com/97115104/attest</a> · <a href="https://attest.97115104.com/s/ry3yjnt8">attested ✓</a>
+
+  <div class="footer">
+    <span>attest v2.0 · MIT license · <a href="/s/y52ru5lq">attested</a></span>
+    <span>
+      <a href="https://github.com/97115104/attest">source</a> ·
+      <a href="/llms.txt">llms.txt</a> ·
+      <a href="/.well-known/attest.json">api spec</a>
+    </span>
   </div>
 </div>
 
-<!-- ═══ CDE Front Panel ═══ -->
-<div class="panel">
-  <div class="workspace-switcher">
-    <a href="/" class="ws-btn">home</a>
-    <a href="/create/" class="ws-btn">create</a>
-    <a href="/developers/" class="ws-btn">docs</a>
-    <a href="/verify/" class="ws-btn active">verify</a>
-    <a href="https://github.com/97115104/attest" target="_blank" class="ws-btn">source</a>
-  </div>
-  <div class="panel-launchers">
-    <input type="color" id="bg-picker" class="panel-color" title="Desktop color" />
-  </div>
-  <div class="panel-clock" id="clock"></div>
-</div>
-
-<script src="/scripts/shared.js?v=1775197551"></script>
+<script src="/scripts/field.js"></script>
+<script src="/scripts/shared.js"></script>
 <script>
 function decodeAttestation(raw) {
-  // Try base64 first
-  try {
-    const decoded = atob(raw);
-    return JSON.parse(decoded);
-  } catch {}
-  // Try URL-decoded base64
-  try {
-    const decoded = atob(decodeURIComponent(raw));
-    return JSON.parse(decoded);
-  } catch {}
-  // Try raw JSON
-  try {
-    return JSON.parse(raw);
-  } catch {}
+  try { return JSON.parse(atob(raw)); } catch {}
+  try { return JSON.parse(atob(decodeURIComponent(raw))); } catch {}
+  try { return JSON.parse(raw); } catch {}
   return null;
-}
-
-function typeIcon(t) {
-  if (t === 'human') return '<svg width="32" height="32" viewBox="0 0 14 14"><circle cx="7" cy="4" r="3" fill="none" stroke="#ff0000" stroke-width="1.5"/><path d="M1 13c0-3 2.5-5 6-5s6 2 6 5" fill="none" stroke="#ff7700" stroke-width="1.5"/></svg>';
-  if (t === 'ai') return '<svg width="32" height="32" viewBox="0 0 14 14"><rect x="3" y="1" width="8" height="10" rx="1" fill="none" stroke="#0088ff" stroke-width="1.2"/><circle cx="5.5" cy="5" r="1" fill="#00cc44"/><circle cx="8.5" cy="5" r="1" fill="#00cc44"/><line x1="5" y1="8" x2="9" y2="8" stroke="#ffdd00" stroke-width="1"/><line x1="5" y1="11" x2="5" y2="13" stroke="#8833ff" stroke-width="1.2"/><line x1="9" y1="11" x2="9" y2="13" stroke="#8833ff" stroke-width="1.2"/></svg>';
-  return '<svg width="32" height="32" viewBox="0 0 14 14"><circle cx="4" cy="3.5" r="2" fill="none" stroke="#ff0000" stroke-width="1.2"/><path d="M1.5 12c0-2.5 1-4 2.5-4s2.5 1.5 2.5 4" fill="none" stroke="#ff7700" stroke-width="1.2"/><rect x="8.5" y="1.5" width="4" height="4" rx="0.5" fill="none" stroke="#0088ff" stroke-width="1.2"/><path d="M8 12c0-2.5 1-4 2.5-4s2.5 1.5 2.5 4" fill="none" stroke="#8833ff" stroke-width="1.2"/></svg>';
-}
-
-function typeLabel(t) {
-  if (t === 'human') return 'human authored';
-  if (t === 'collab') return 'human + AI collaboration';
-  if (t === 'ai') return 'AI generated';
-  return t || 'unknown';
 }
 
 function renderAttestation(att) {
   const type = att.authorship_type || (att.role === 'authored' ? 'human' : att.role === 'generated' ? 'ai' : 'collab');
+  const badgeClass = type === 'human' ? 'badge-human' : type === 'ai' ? 'badge-ai' : 'badge-collab';
+  const typeLabels = { human: 'human authored', collab: 'human + AI collaboration', ai: 'AI generated' };
   const el = document.getElementById('result');
+
+  // Track this verification
+  fetch('/api/track-verify', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ attestation_id: att.id }),
+  }).catch(() => {});
+
   el.innerHTML = `
-    <div class="inset verify-badge" style="text-align:center; margin-bottom:10px;">
-      <div style="margin-bottom:6px;">
-        <svg width="48" height="48" viewBox="0 0 48 48" style="vertical-align:middle;">
-          <rect x="2" y="2" width="44" height="44" rx="4" fill="#0a5f0a" stroke="#074a07" stroke-width="2"/>
-          <rect x="4" y="4" width="40" height="40" rx="3" fill="none" stroke="#2bce2b" stroke-width="1" opacity="0.3"/>
-          <polyline points="14,24 21,32 34,16" fill="none" stroke="#33ff33" stroke-width="4" stroke-linecap="square" stroke-linejoin="miter"/>
-        </svg>
-      </div>
-      <h2 style="font-size:16px; margin-bottom:2px;">attestation verified</h2>
-      <p class="muted" style="margin:0;">${typeLabel(type)}</p>
-      <div style="margin-top:6px;">${typeIcon(type)}</div>
+    <div class="verify-result" style="margin-bottom: 24px;">
+      <div class="verdict pass">VERIFIED</div>
+      <p class="dim">${esc(typeLabels[type] || type)}</p>
+      <span class="badge ${badgeClass}" style="margin-top: 8px; font-size: 13px; padding: 4px 12px;">${esc(type)}</span>
     </div>
 
-    <div class="fieldset">
-      <div class="fieldset-legend">attestation details</div>
-      <table>
-        <tr><td><strong>content</strong></td><td>${esc(att.content_name || '-')}</td></tr>
-        <tr><td><strong>model</strong></td><td>${esc(att.model || '-')}</td></tr>
-        <tr><td><strong>role</strong></td><td>${esc(att.role || '-')}</td></tr>
-        <tr><td><strong>type</strong></td><td>${esc(type)}</td></tr>
-        <tr><td><strong>author</strong></td><td>${esc(att.author || '-')}</td></tr>
-        <tr><td><strong>timestamp</strong></td><td>${esc(att.timestamp || '-')}</td></tr>
-        <tr><td><strong>platform</strong></td><td>${esc(att.platform || '-')}</td></tr>
-        <tr><td><strong>version</strong></td><td>${esc(att.version || '-')}</td></tr>
-        <tr><td><strong>id</strong></td><td><code>${esc(att.id || '-')}</code></td></tr>
-        ${att.content_hash ? `<tr><td><strong>hash</strong></td><td><code style="word-break:break-all;">${esc(att.content_hash)}</code></td></tr>` : ''}
-        ${att.document_type ? `<tr><td><strong>doc type</strong></td><td>${esc(att.document_type)}</td></tr>` : ''}
-      </table>
+    <div class="section" style="margin-bottom: 16px;">
+      <div class="section-header">attestation details</div>
+      <div class="section-body">
+        <table>
+          <tr><td class="dim">content</td><td>${esc(att.content_name || '-')}</td></tr>
+          <tr><td class="dim">model</td><td>${esc(att.model || '-')}</td></tr>
+          <tr><td class="dim">role</td><td>${esc(att.role || '-')}</td></tr>
+          <tr><td class="dim">type</td><td><span class="badge ${badgeClass}">${esc(type)}</span></td></tr>
+          <tr><td class="dim">author</td><td>${esc(att.author || '-')}</td></tr>
+          <tr><td class="dim">timestamp</td><td>${esc(att.timestamp || '-')}</td></tr>
+          <tr><td class="dim">platform</td><td>${esc(att.platform || '-')}</td></tr>
+          <tr><td class="dim">version</td><td>${esc(att.version || '-')}</td></tr>
+          <tr><td class="dim">id</td><td><code>${esc(att.id || '-')}</code></td></tr>
+          ${att.content_hash ? `<tr><td class="dim">hash</td><td style="word-break:break-all; font-size:11px;"><code>${esc(att.content_hash)}</code></td></tr>` : ''}
+          ${att.document_type ? `<tr><td class="dim">doc type</td><td>${esc(att.document_type)}</td></tr>` : ''}
+          ${att.source_url ? `<tr><td class="dim">source</td><td><a href="${esc(att.source_url)}" target="_blank">${esc(att.source_url)}</a></td></tr>` : ''}
+        </table>
+      </div>
     </div>
 
     ${att.signature ? `
-    <div class="fieldset">
-      <div class="fieldset-legend">signature</div>
-      <table>
-        <tr><td><strong>type</strong></td><td>${esc(att.signature.type || '-')}</td></tr>
-        <tr><td><strong>algorithm</strong></td><td>${esc(att.signature.algorithm || att.signature.type || '-')}</td></tr>
-        <tr><td><strong>value</strong></td><td><code style="word-break:break-all; font-size:11px;">${esc(att.signature.value || '-')}</code></td></tr>
-        ${att.signer ? `<tr><td><strong>signer</strong></td><td>${esc(att.signer.name || '-')}${att.signer.id ? ' <code>' + esc(att.signer.id) + '</code>' : ''}</td></tr>` : ''}
-      </table>
-      ${att.signature.data_to_sign ? `
-      <details style="margin-top:6px;">
-        <summary style="cursor:pointer; font-size:12px;">signed data</summary>
-        <pre style="margin-top:4px; font-size:11px;"><code>${esc(att.signature.data_to_sign)}</code></pre>
-      </details>` : ''}
+    <div class="section" style="margin-bottom: 16px;">
+      <div class="section-header">signature</div>
+      <div class="section-body">
+        <table>
+          <tr><td class="dim">algorithm</td><td>${esc(att.signature.algorithm || att.signature.type || '-')}</td></tr>
+          <tr><td class="dim">value</td><td style="word-break:break-all; font-size:11px;"><code>${esc(att.signature.value || '-')}</code></td></tr>
+          ${att.signer ? `<tr><td class="dim">signer</td><td>${esc(att.signer.name || '-')} <code>${esc(att.signer.id || '')}</code></td></tr>` : ''}
+        </table>
+      </div>
     </div>` : ''}
 
-    <h3>raw JSON</h3>
-    <pre><code>${esc(JSON.stringify(att, null, 2))}</code></pre>
+    <div class="section">
+      <div class="section-header">raw json</div>
+      <div class="section-body">
+        <pre><code>${esc(JSON.stringify(att, null, 2))}</code></pre>
+      </div>
+    </div>
   `;
-  document.getElementById('status').textContent = 'verification complete';
   document.getElementById('manual-input').style.display = 'none';
 }
 
 function renderError(msg) {
-  const el = document.getElementById('result');
-  el.innerHTML = `
-    <div class="inset verify-badge verify-fail" style="text-align:center; margin-bottom:10px;">
-      <div style="margin-bottom:6px;">
-        <svg width="48" height="48" viewBox="0 0 48 48" style="vertical-align:middle;">
-          <rect x="2" y="2" width="44" height="44" rx="4" fill="#5f0a0a" stroke="#4a0707" stroke-width="2"/>
-          <rect x="4" y="4" width="40" height="40" rx="3" fill="none" stroke="#ce2b2b" stroke-width="1" opacity="0.3"/>
-          <line x1="15" y1="15" x2="33" y2="33" stroke="#ff3333" stroke-width="4" stroke-linecap="square"/>
-          <line x1="33" y1="15" x2="15" y2="33" stroke="#ff3333" stroke-width="4" stroke-linecap="square"/>
-        </svg>
-      </div>
-      <h2 style="font-size:16px; margin-bottom:2px;">verification failed</h2>
-      <p class="muted" style="margin:0;">${esc(msg)}</p>
+  document.getElementById('result').innerHTML = `
+    <div class="verify-result fail" style="margin-bottom: 24px;">
+      <div class="verdict fail">FAILED</div>
+      <p class="dim">${esc(msg)}</p>
     </div>
   `;
-  document.getElementById('status').textContent = 'error: verification failed';
 }
 
 function verifyInput() {
@@ -186,11 +149,9 @@ const params = new URLSearchParams(window.location.search);
 const dataParam = params.get('data');
 if (dataParam) {
   const att = decodeAttestation(dataParam);
-  if (att) {
-    renderAttestation(att);
-  } else {
-    renderError('invalid attestation data in URL');
-  }
+  if (att) renderAttestation(att);
+  else renderError('invalid attestation data in URL');
 }
-
 </script>
+</body>
+</html>
