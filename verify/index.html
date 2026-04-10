@@ -88,11 +88,10 @@ function renderAttestation(att) {
         <table>
           <tr><td class="dim">content</td><td>${esc(att.content_name || '-')}</td></tr>
           <tr><td class="dim">model</td><td>${esc(att.model || '-')}</td></tr>
-          <tr><td class="dim">role</td><td>${esc(att.role || '-')}</td></tr>
+          ${type !== 'human' ? `<tr><td class="dim">platform</td><td>${esc(att.platform || '-')}</td></tr>` : ''}
           <tr><td class="dim">type</td><td><span class="badge ${badgeClass}">${esc(type)}</span></td></tr>
           <tr><td class="dim">author</td><td>${esc(att.author || '-')}</td></tr>
           <tr><td class="dim">timestamp</td><td>${esc(att.timestamp || '-')}</td></tr>
-          <tr><td class="dim">platform</td><td>${esc(att.platform || '-')}</td></tr>
           <tr><td class="dim">version</td><td>${esc(att.version || '-')}</td></tr>
           <tr><td class="dim">id</td><td><code>${esc(att.id || '-')}</code></td></tr>
           ${att.content_hash ? `<tr><td class="dim">hash</td><td style="word-break:break-all; font-size:11px;"><code>${esc(att.content_hash)}</code></td></tr>` : ''}

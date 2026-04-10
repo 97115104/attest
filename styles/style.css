@@ -698,6 +698,88 @@ hr {
 }
 
 /* ── Intro blurb ────────────────────────────── */
+
+/* ── Info button ────────────────────────────── */
+.info-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border: 1px solid var(--border-strong);
+  background: var(--surface);
+  color: var(--text-dim);
+  font-family: var(--display);
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.15s;
+  flex-shrink: 0;
+  border-radius: 50%;
+}
+
+.info-btn:hover {
+  color: var(--accent);
+  border-color: var(--accent);
+  background: var(--surface-hover);
+}
+
+.info-btn-desktop {
+  display: flex;
+  margin: auto 0;
+  margin-left: auto;
+}
+
+.info-btn-mobile {
+  display: none;
+}
+
+.nav-sep {
+  display: flex;
+  align-items: center;
+  color: var(--border-strong);
+  font-size: 18px;
+  padding: 0 2px;
+  user-select: none;
+}
+
+/* ── Info panel ─────────────────────────────── */
+.info-panel {
+  margin-bottom: 24px;
+  animation: modal-slide-up 0.2s ease-out;
+}
+
+/* ── Example tabs ───────────────────────────── */
+.example-tabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 20px;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 12px;
+}
+
+.example-tab {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 6px 14px;
+  border-bottom: 2px solid transparent;
+  transition: border-color 0.15s;
+  opacity: 0.5;
+}
+
+.example-tab:hover { opacity: 0.8; }
+
+.example-tab.active {
+  opacity: 1;
+  border-bottom-color: var(--accent);
+}
+
+.example-panel .verify-result {
+  margin-bottom: 16px;
+}
+
+/* ── Intro blurb ────────────────────────────── -->
 .intro {
   margin-bottom: 32px;
   padding: 0 2px;
@@ -795,9 +877,17 @@ hr {
     clip-path: none;
   }
   nav .logo {
-    width: 100%;
+    width: auto;
+    flex: 1;
     border-bottom: 1px solid var(--border);
     padding: 10px 16px;
+  }
+  .info-btn-desktop { display: none; }
+  .nav-sep { display: none; }
+  .info-btn-mobile {
+    display: flex;
+    border-bottom: 1px solid var(--border);
+    margin: auto 12px;
   }
   nav .nav-links {
     display: flex;

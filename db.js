@@ -36,6 +36,7 @@ export function getDb() {
       author TEXT,
       content_hash TEXT,
       short_id TEXT,
+      platform TEXT,
       created_at TEXT DEFAULT (datetime('now'))
     )
   `);
@@ -60,6 +61,12 @@ export function getDb() {
       created_at TEXT DEFAULT (datetime('now'))
     )
   `);
+
+  // Migration: add platform column if missing
+  const cols = db.prepare("PRAGMA table_info(attestations)").all();
+  if (!cols.find(c => c.name === 'platform')) {
+    db.exec("ALTER TABLE attestations ADD COLUMN platform TEXT");
+  }
 
   return db;
 }
@@ -100,11 +107,11 @@ export function trackAgentVisit(path, userAgent) {
 
 export function trackAttestation(attestation, shortId) {
   const d = getDb();
-  d.prepare(`INSERT OR IGNORE INTO attestations (id, content_name, authorship_type, model, role, author, content_hash, short_id)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?)`).run(
+  d.prepare(`INSERT OR IGNORE INTO attestations (id, content_name, authorship_type, model, role, author, content_hash, short_id, platform)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`).run(
     attestation.id, attestation.content_name, attestation.authorship_type,
     attestation.model, attestation.role, attestation.author,
-    attestation.content_hash || null, shortId || null
+    attestation.content_hash || null, shortId || null, attestation.platform || null
   );
 }
 
@@ -142,6 +149,18 @@ export function getMetrics() {
   const dailyRate = d.prepare(`SELECT COUNT(*) as count FROM attestations
     WHERE created_at >= datetime('now', '-24 hours')`).get().count;
 
+  // Platform breakdown: which platforms are most used
+  const platformBreakdown = d.prepare(`SELECT platform, COUNT(*) as count FROM attestations
+    WHERE platform IS NOT NULL AND platform != '' GROUP BY platform ORDER BY count DESC LIMIT 10`).all();
+
+  // Platform by type: what each platform is used for
+  const platformByType = d.prepare(`SELECT platform, authorship_type, COUNT(*) as count FROM attestations
+    WHERE platform IS NOT NULL AND platform != '' GROUP BY platform, authorship_type ORDER BY count DESC LIMIT 20`).all();
+
+  // Top platform
+  const topPlatform = d.prepare(`SELECT platform, COUNT(*) as count FROM attestations
+    WHERE platform IS NOT NULL AND platform != '' GROUP BY platform ORDER BY count DESC LIMIT 1`).get();
+
   return {
     total_attestations: totalAttestations,
     total_verifications: totalVerifications,
@@ -150,8 +169,11 @@ export function getMetrics() {
     top_model: topModel || { model: 'none', count: 0 },
     top_type: topType || { authorship_type: 'none', count: 0 },
     top_author: topAuthor || { author: 'none', count: 0 },
+    top_platform: topPlatform || { platform: 'none', count: 0 },
     agent_breakdown: agentBreakdown,
     type_breakdown: typeBreakdown,
+    platform_breakdown: platformBreakdown,
+    platform_by_type: platformByType,
     recent_attestations: recentAttestations,
     attestations_24h: dailyRate,
   };

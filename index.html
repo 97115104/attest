@@ -28,7 +28,10 @@
 <div class="shell">
   <nav>
     <a href="/" class="logo">attest</a>
+    <button class="info-btn info-btn-mobile" id="info-btn-mobile" onclick="toggleInfoPanel()" title="What is attest?">?</button>
     <div class="nav-links">
+      <button class="info-btn info-btn-desktop" id="info-btn-desktop" onclick="toggleInfoPanel()" title="What is attest?">?</button>
+      <span class="nav-sep">|</span>
       <a href="/" class="active">dashboard</a>
       <a href="/agents/">agents</a>
       <a href="/humans/">humans</a>
@@ -36,10 +39,87 @@
     </div>
   </nav>
 
+  <!-- ── Info panel (replaces modal) ──────────── -->
+  <div class="info-panel" id="info-panel" style="display:none;">
+    <div class="section">
+      <div class="section-header">about attest</div>
+      <div class="section-body">
+        <p>This site is built for AI agents. It's an open protocol that lets anyone create a signed, verifiable record of how something was made: by a human, by AI, or together.</p>
+        <p>If you're working with an AI agent, all you have to do is give it this URL and ask it to create an attestation for your work:</p>
+        <div style="background: var(--pre-bg); border: 1px solid var(--border); padding: 12px 16px; font-family: var(--mono); font-size: 13px; color: var(--accent); margin-bottom: 16px; user-select: all;">https://attest.97115104.com</div>
+        <p>Your agent will read the spec, call the API, and hand you back a signed attestation you can attach to whatever you made. No account needed, nothing to install.</p>
+        <p class="dim" style="font-size: 13px;">You can also <a href="/humans/">create attestations yourself</a> if you prefer.</p>
+        <button class="btn" onclick="toggleInfoPanel()">close</button>
+      </div>
+    </div>
+  </div>
+
   <!-- ── Intro ─────────────────────────────── -->
   <div class="intro">
     <p><strong class="accent">attest</strong> is an open protocol for transparent AI content attribution. When you create something with AI, attest generates a cryptographically signed record of who made it, what model was used, and how much was human vs. machine. One API call, no signup, free forever.</p>
     <p class="dim" style="font-size: 13px;">If you're a person, head to <a href="/humans/">humans</a> or just give this URL to your AI agent and ask it to create an attestation for your work. If you're an agent, read the <a href="/agents/">agent spec</a> or hit <code>/api/create</code> directly.</p>
+  </div>
+
+  <!-- ── Attestation examples (tabbed) ─────── -->
+  <div class="section">
+    <div class="section-header">what an attestation looks like</div>
+    <div class="section-body">
+      <div class="example-tabs">
+        <button class="example-tab active" data-tab="human" onclick="switchExampleTab('human')"><span class="badge badge-human">human</span></button>
+        <button class="example-tab" data-tab="collab" onclick="switchExampleTab('collab')"><span class="badge badge-collab">collab</span></button>
+        <button class="example-tab" data-tab="ai" onclick="switchExampleTab('ai')"><span class="badge badge-ai">ai</span></button>
+      </div>
+
+      <div class="example-panel" id="example-human">
+        <div class="verify-result" style="margin-bottom: 16px; padding: 20px;">
+          <div class="verdict pass" style="font-size: 22px;">VERIFIED</div>
+          <p class="dim">human authored</p>
+          <span class="badge badge-human" style="margin-top: 6px; font-size: 12px; padding: 3px 10px;">human</span>
+        </div>
+        <table>
+          <tr><td class="dim">content</td><td>quarterly-report.pdf</td></tr>
+          <tr><td class="dim">model</td><td>Human</td></tr>
+          <tr><td class="dim">type</td><td><span class="badge badge-human">human</span></td></tr>
+          <tr><td class="dim">author</td><td>jane doe</td></tr>
+          <tr><td class="dim">timestamp</td><td>2026-04-10T14:30:00.000Z</td></tr>
+          <tr><td class="dim">version</td><td>2.0</td></tr>
+        </table>
+      </div>
+
+      <div class="example-panel" id="example-collab" style="display:none;">
+        <div class="verify-result" style="margin-bottom: 16px; padding: 20px;">
+          <div class="verdict pass" style="font-size: 22px;">VERIFIED</div>
+          <p class="dim">human + AI collaboration</p>
+          <span class="badge badge-collab" style="margin-top: 6px; font-size: 12px; padding: 3px 10px;">collab</span>
+        </div>
+        <table>
+          <tr><td class="dim">content</td><td>README.md</td></tr>
+          <tr><td class="dim">model</td><td>claude-opus-4</td></tr>
+          <tr><td class="dim">platform</td><td>attest.97115104.com</td></tr>
+          <tr><td class="dim">type</td><td><span class="badge badge-collab">collab</span></td></tr>
+          <tr><td class="dim">author</td><td>97115104</td></tr>
+          <tr><td class="dim">timestamp</td><td>2026-04-10T12:00:00.000Z</td></tr>
+          <tr><td class="dim">version</td><td>2.0</td></tr>
+        </table>
+      </div>
+
+      <div class="example-panel" id="example-ai" style="display:none;">
+        <div class="verify-result" style="margin-bottom: 16px; padding: 20px;">
+          <div class="verdict pass" style="font-size: 22px;">VERIFIED</div>
+          <p class="dim">AI generated</p>
+          <span class="badge badge-ai" style="margin-top: 6px; font-size: 12px; padding: 3px 10px;">ai</span>
+        </div>
+        <table>
+          <tr><td class="dim">content</td><td>generated-summary.txt</td></tr>
+          <tr><td class="dim">model</td><td>gpt-4</td></tr>
+          <tr><td class="dim">platform</td><td>attest.97115104.com</td></tr>
+          <tr><td class="dim">type</td><td><span class="badge badge-ai">ai</span></td></tr>
+          <tr><td class="dim">author</td><td>my-agent</td></tr>
+          <tr><td class="dim">timestamp</td><td>2026-04-10T09:15:00.000Z</td></tr>
+          <tr><td class="dim">version</td><td>2.0</td></tr>
+        </table>
+      </div>
+    </div>
   </div>
 
   <!-- ── Live metrics ──────────────────────── -->
@@ -63,7 +143,7 @@
   </div>
 
   <!-- ── Top model + type ──────────────────── -->
-  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: var(--border); border: 1px solid var(--border); margin-bottom: 24px;">
+  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1px; background: var(--border); border: 1px solid var(--border); margin-bottom: 24px;">
     <div style="background: var(--surface-solid); padding: 24px;">
       <div class="metric-label" style="margin-bottom: 8px;">most attested model</div>
       <div id="m-top-model" style="font-family: var(--display); font-size: 20px; color: var(--accent); font-weight: 700;">···</div>
@@ -73,6 +153,11 @@
       <div class="metric-label" style="margin-bottom: 8px;">dominant type</div>
       <div id="m-top-type" style="font-family: var(--display); font-size: 20px; font-weight: 700;">···</div>
       <div id="m-top-type-count" class="dim" style="font-size: 12px;"></div>
+    </div>
+    <div style="background: var(--surface-solid); padding: 24px;">
+      <div class="metric-label" style="margin-bottom: 8px;">top platform</div>
+      <div id="m-top-platform" style="font-family: var(--display); font-size: 20px; color: var(--accent); font-weight: 700;">···</div>
+      <div id="m-top-platform-count" class="dim" style="font-size: 12px;"></div>
     </div>
   </div>
 
@@ -90,6 +175,27 @@
         <div class="chart-col">
           <div class="metric-label" style="margin-bottom: 12px;"><span class="pulse"></span> agent activity</div>
           <div class="donut-chart" id="agent-chart">
+            <p class="dim" style="font-size: 12px;">loading...</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Platform breakdown ────────────────── -->
+  <div class="section">
+    <div class="section-header">platform usage</div>
+    <div class="section-body">
+      <div class="charts-row">
+        <div class="chart-col">
+          <div class="metric-label" style="margin-bottom: 12px;">platforms</div>
+          <div class="donut-chart" id="platform-chart">
+            <p class="dim" style="font-size: 12px;">loading...</p>
+          </div>
+        </div>
+        <div class="chart-col">
+          <div class="metric-label" style="margin-bottom: 12px;">platforms by type</div>
+          <div id="platform-by-type">
             <p class="dim" style="font-size: 12px;">loading...</p>
           </div>
         </div>
@@ -186,6 +292,11 @@ console.log(result.urls.short); // exact URL from server</code></pre>
     topType.style.fontWeight = '700';
     document.getElementById('m-top-type-count').textContent = m.top_type.count ? m.top_type.count + ' attestations' : '';
 
+    // Top platform
+    const topPlatform = document.getElementById('m-top-platform');
+    topPlatform.textContent = m.top_platform.platform || 'none yet';
+    document.getElementById('m-top-platform-count').textContent = m.top_platform.count ? m.top_platform.count + ' attestations' : '';
+
     // Type donut
     const typeChart = document.getElementById('type-chart');
     if (m.type_breakdown.length === 0) {
@@ -209,6 +320,30 @@ console.log(result.urls.short); // exact URL from server</code></pre>
         count: a.count,
         color: agentColors[i % agentColors.length]
       })));
+    }
+
+    // Platform donut
+    const platformChart = document.getElementById('platform-chart');
+    if (!m.platform_breakdown || m.platform_breakdown.length === 0) {
+      platformChart.innerHTML = '<p class="dim" style="font-size:12px;">no platform data yet</p>';
+    } else {
+      const platformColors = ['var(--accent)', 'var(--human)', 'var(--collab)', 'var(--ai)', 'var(--text-dim)', 'var(--accent-dim)'];
+      platformChart.innerHTML = renderDonut(m.platform_breakdown.map((p, i) => ({
+        label: p.platform,
+        count: p.count,
+        color: platformColors[i % platformColors.length]
+      })));
+    }
+
+    // Platform by type breakdown
+    const platformByType = document.getElementById('platform-by-type');
+    if (!m.platform_by_type || m.platform_by_type.length === 0) {
+      platformByType.innerHTML = '<p class="dim" style="font-size:12px;">no platform data yet</p>';
+    } else {
+      platformByType.innerHTML = '<table>' + m.platform_by_type.map(pt => {
+        const badgeClass = pt.authorship_type === 'human' ? 'badge-human' : pt.authorship_type === 'ai' ? 'badge-ai' : 'badge-collab';
+        return `<tr><td>${esc(pt.platform)}</td><td><span class="badge ${badgeClass}">${esc(pt.authorship_type)}</span></td><td class="dim">${pt.count}</td></tr>`;
+      }).join('') + '</table>';
     }
 
     // Recent attestations
@@ -376,34 +511,18 @@ Remember: only show URLs that came directly from the API response. Never fabrica
 }
 </script>
 
-<!-- ── First-visit modal ───────────────────── -->
-<div class="modal-overlay" id="welcome-modal" style="display:none;">
-  <div class="modal">
-    <h2>welcome to attest</h2>
-    <p>This site is built for AI agents. It's an open protocol that lets anyone create a signed, verifiable record of how something was made: by a human, by AI, or together.</p>
-    <p>If you're working with an AI agent, all you have to do is give it this URL and ask it to create an attestation for your work:</p>
-    <div class="modal-url">https://attest.97115104.com</div>
-    <p>Your agent will read the spec, call the API, and hand you back a signed attestation you can attach to whatever you made. No account needed, nothing to install.</p>
-    <p class="dim" style="font-size: 13px;">You can also <a href="/humans/">create attestations yourself</a> if you prefer.</p>
-    <button class="btn" onclick="dismissWelcome()">got it</button>
-  </div>
-</div>
-
 <script>
-function dismissWelcome() {
-  document.getElementById('welcome-modal').style.display = 'none';
-  try { localStorage.setItem('attest_welcomed', '1'); } catch {}
+function toggleInfoPanel() {
+  var panel = document.getElementById('info-panel');
+  panel.style.display = panel.style.display === 'none' ? '' : 'none';
 }
 
-(function showWelcomeOnce() {
-  try {
-    if (localStorage.getItem('attest_welcomed')) return;
-  } catch { return; }
-  // Don't show to agents
-  var ua = navigator.userAgent.toLowerCase();
-  if (/bot|crawl|spider|gpt|claude|anthropic|openai|fetch|curl|wget|python|node-fetch|axios/i.test(ua)) return;
-  document.getElementById('welcome-modal').style.display = '';
-})();
+function switchExampleTab(tab) {
+  document.querySelectorAll('.example-tab').forEach(function(t) { t.classList.remove('active'); });
+  document.querySelector('.example-tab[data-tab="' + tab + '"]').classList.add('active');
+  document.querySelectorAll('.example-panel').forEach(function(p) { p.style.display = 'none'; });
+  document.getElementById('example-' + tab).style.display = '';
+}
 </script>
 </body>
 </html>
