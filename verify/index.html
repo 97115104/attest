@@ -87,7 +87,7 @@ function renderAttestation(att) {
       <div class="section-body">
         <table>
           <tr><td class="dim">content</td><td>${esc(att.content_name || '-')}</td></tr>
-          <tr><td class="dim">model</td><td>${esc(att.model || '-')}</td></tr>
+          ${type !== 'human' ? `<tr><td class="dim">model</td><td>${esc(att.model || '-')}</td></tr>` : ''}
           ${type !== 'human' ? `<tr><td class="dim">platform</td><td>${esc(att.platform || '-')}</td></tr>` : ''}
           <tr><td class="dim">type</td><td><span class="badge ${badgeClass}">${esc(type)}</span></td></tr>
           <tr><td class="dim">author</td><td>${esc(att.author || '-')}</td></tr>

@@ -134,9 +134,7 @@ nav a.active::after {
 .metrics {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-  gap: 1px;
-  background: var(--border);
-  border: 1px solid var(--border);
+  gap: 16px;
   margin-bottom: 32px;
 }
 
@@ -144,6 +142,7 @@ nav a.active::after {
   background: var(--surface);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--border);
   padding: 24px;
 }
 
@@ -702,42 +701,6 @@ hr {
 }
 
 /* ── Intro blurb ────────────────────────────── */
-
-/* ── Info button ────────────────────────────── */
-.info-bar {
-  display: flex;
-  margin-bottom: 16px;
-}
-
-.info-btn {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 28px;
-  height: 28px;
-  border: 1px solid var(--border-strong);
-  background: var(--surface);
-  color: var(--text-dim);
-  font-family: var(--display);
-  font-size: 13px;
-  font-weight: 700;
-  cursor: pointer;
-  transition: all 0.15s;
-  flex-shrink: 0;
-  border-radius: 50%;
-}
-
-.info-btn:hover {
-  color: var(--accent);
-  border-color: var(--accent);
-  background: var(--surface-hover);
-}
-
-/* ── Info panel ─────────────────────────────── */
-.info-panel {
-  margin-bottom: 24px;
-  animation: modal-slide-up 0.2s ease-out;
-}
 
 /* ── Example tabs ───────────────────────────── */
 .example-tabs {

@@ -36,30 +36,13 @@
     </div>
   </nav>
 
-  <!-- ── Info button (below nav) ──────────── -->
-  <div class="info-bar">
-    <button class="info-btn" id="info-btn" onclick="toggleInfoPanel()" title="What is attest?">?</button>
-  </div>
-
-  <!-- ── Info panel (replaces modal) ──────────── -->
-  <div class="info-panel" id="info-panel" style="display:none;">
-    <div class="section">
-      <div class="section-header">about attest</div>
-      <div class="section-body">
-        <p>This site is built for AI agents. It's an open protocol that lets anyone create a signed, verifiable record of how something was made: by a human, by AI, or together.</p>
-        <p>If you're working with an AI agent, all you have to do is give it this URL and ask it to create an attestation for your work:</p>
-        <div style="background: var(--pre-bg); border: 1px solid var(--border); padding: 12px 16px; font-family: var(--mono); font-size: 13px; color: var(--accent); margin-bottom: 16px; user-select: all;">https://attest.97115104.com</div>
-        <p>Your agent will read the spec, call the API, and hand you back a signed attestation you can attach to whatever you made. No account needed, nothing to install.</p>
-        <p class="dim" style="font-size: 13px;">You can also <a href="/humans/">create attestations yourself</a> if you prefer.</p>
-        <button class="btn" onclick="toggleInfoPanel()">close</button>
-      </div>
-    </div>
-  </div>
-
   <!-- ── Intro ─────────────────────────────── -->
   <div class="intro">
     <p><strong class="accent">attest</strong> is an open protocol for transparent AI content attribution. When you create something with AI, attest generates a cryptographically signed record of who made it, what model was used, and how much was human vs. machine. One API call, no signup, free forever.</p>
-    <p class="dim" style="font-size: 13px;">If you're a person, head to <a href="/humans/">humans</a> or just give this URL to your AI agent and ask it to create an attestation for your work. If you're an agent, read the <a href="/agents/">agent spec</a> or hit <code>/api/create</code> directly.</p>
+    <p>If you're working with an AI agent, all you have to do is give it this URL and ask it to create an attestation for your work:</p>
+    <div style="background: var(--pre-bg); border: 1px solid var(--border); padding: 12px 16px; font-family: var(--mono); font-size: 13px; color: var(--accent); margin: 12px 0 16px; user-select: all;">https://attest.97115104.com</div>
+    <p>Your agent will read the spec, call the API, and hand you back a signed attestation you can attach to whatever you made. No account needed, nothing to install.</p>
+    <p class="dim" style="font-size: 13px;">You can also <a href="/humans/">create attestations yourself</a>, read the <a href="/agents/">agent spec</a>, or hit <code>/api/create</code> directly.</p>
   </div>
 
   <!-- ── Attestation examples (tabbed) ─────── -->
@@ -80,7 +63,6 @@
         </div>
         <table>
           <tr><td class="dim">content</td><td>quarterly-report.pdf</td></tr>
-          <tr><td class="dim">model</td><td>Human</td></tr>
           <tr><td class="dim">type</td><td><span class="badge badge-human">human</span></td></tr>
           <tr><td class="dim">author</td><td>jane doe</td></tr>
           <tr><td class="dim">timestamp</td><td>2026-04-10T14:30:00.000Z</td></tr>
@@ -145,18 +127,18 @@
   </div>
 
   <!-- ── Top model + type ──────────────────── -->
-  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1px; background: var(--border); border: 1px solid var(--border); margin-bottom: 24px;">
-    <div style="background: var(--surface); padding: 24px;">
+  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 24px;">
+    <div style="background: var(--surface); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid var(--border); padding: 24px;">
       <div class="metric-label" style="margin-bottom: 8px;">most attested model</div>
       <div id="m-top-model" style="font-family: var(--display); font-size: 20px; color: var(--accent); font-weight: 700;">···</div>
       <div id="m-top-model-count" class="dim" style="font-size: 12px;"></div>
     </div>
-    <div style="background: var(--surface); padding: 24px;">
+    <div style="background: var(--surface); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid var(--border); padding: 24px;">
       <div class="metric-label" style="margin-bottom: 8px;">dominant type</div>
       <div id="m-top-type" style="font-family: var(--display); font-size: 20px; font-weight: 700;">···</div>
       <div id="m-top-type-count" class="dim" style="font-size: 12px;"></div>
     </div>
-    <div style="background: var(--surface); padding: 24px;">
+    <div style="background: var(--surface); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid var(--border); padding: 24px;">
       <div class="metric-label" style="margin-bottom: 8px;">top platform</div>
       <div id="m-top-platform" style="font-family: var(--display); font-size: 20px; color: var(--accent); font-weight: 700;">···</div>
       <div id="m-top-platform-count" class="dim" style="font-size: 12px;"></div>
@@ -519,11 +501,6 @@ Remember: only show URLs that came directly from the API response. Never fabrica
 </script>
 
 <script>
-function toggleInfoPanel() {
-  var panel = document.getElementById('info-panel');
-  panel.style.display = panel.style.display === 'none' ? '' : 'none';
-}
-
 function switchExampleTab(tab) {
   document.querySelectorAll('.example-tab').forEach(function(t) { t.classList.remove('active'); });
   document.querySelector('.example-tab[data-tab="' + tab + '"]').classList.add('active');

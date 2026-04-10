@@ -18,7 +18,8 @@
     "index.js",
     "index.cjs",
     "cli.js",
-    "LICENSE"
+    "LICENSE",
+    "README.md"
   ],
   "keywords": [
     "attest",
