@@ -129,18 +129,25 @@ function deriveType(role) {
 function buildAttestation({ contentName, model, role, author, contentHash, extras }) {
   const authorship_type = extras?.authorship_type || deriveType(role);
   const id = generateId();
+  const platform = extras?.platform || undefined;
+  const prompt = extras?.prompt || undefined;
+  const prompt_type = extras?.prompt_type || undefined;
+  // Remove these from extras so they don't duplicate
+  const { platform: _p, prompt: _pr, prompt_type: _pt, ...restExtras } = extras || {};
   const attestation = {
-    version: '2.0',
+    version: '3.0',
     id,
     content_name: contentName,
     model: role === 'authored' ? 'Human' : model,
     role,
     authorship_type,
     timestamp: new Date().toISOString(),
-    platform: HOST,
     author,
-    ...extras,
+    ...restExtras,
   };
+  if (platform) attestation.platform = platform;
+  if (prompt) attestation.prompt = prompt;
+  if (prompt_type) attestation.prompt_type = prompt_type;
   if (contentHash) attestation.content_hash = contentHash;
   return attestation;
 }
@@ -184,9 +191,12 @@ function handleCreate(query) {
   const contentHash = content ? 'sha256:' + crypto.createHash('sha256').update(content).digest('hex') : null;
 
   // Collect additional custom fields (anything beyond the core params)
-  const reserved = new Set(['content_name', 'model', 'role', 'author', 'content', 'authorship_type']);
+  const reserved = new Set(['content_name', 'model', 'role', 'author', 'content', 'authorship_type', 'platform', 'prompt', 'prompt_type']);
   const extras = {};
   if (query.get('authorship_type')) extras.authorship_type = query.get('authorship_type');
+  if (query.get('platform')) extras.platform = query.get('platform');
+  if (query.get('prompt')) extras.prompt = query.get('prompt');
+  if (query.get('prompt_type')) extras.prompt_type = query.get('prompt_type');
   for (const [key, value] of query.entries()) {
     if (!reserved.has(key)) extras[key] = value;
   }
@@ -249,6 +259,9 @@ const server = http.createServer(async (req, res) => {
       contentName, model, role, author, contentHash,
       extras: {
         ...(typeof parts.authorship_type === 'string' && parts.authorship_type ? { authorship_type: parts.authorship_type } : {}),
+        ...(typeof parts.platform === 'string' && parts.platform ? { platform: parts.platform } : {}),
+        ...(typeof parts.prompt === 'string' && parts.prompt ? { prompt: parts.prompt } : {}),
+        ...(typeof parts.prompt_type === 'string' && parts.prompt_type ? { prompt_type: parts.prompt_type } : {}),
         document_type: path.extname(file.filename).replace('.', '') || 'unknown',
       },
     });
@@ -281,7 +294,7 @@ const server = http.createServer(async (req, res) => {
       const timeout = setTimeout(() => controller.abort(), 15000);
       const fetchRes = await fetch(pageUrl.href, {
         signal: controller.signal,
-        headers: { 'User-Agent': `attest/2.0 (+https://${HOST})` },
+        headers: { 'User-Agent': `attest/3.0 (+https://${HOST})` },
         redirect: 'follow',
       });
       clearTimeout(timeout);
@@ -301,6 +314,9 @@ const server = http.createServer(async (req, res) => {
       contentName, model, role, author, contentHash,
       extras: {
         ...(body.authorship_type ? { authorship_type: body.authorship_type } : {}),
+        ...(body.platform ? { platform: body.platform } : {}),
+        ...(body.prompt ? { prompt: body.prompt } : {}),
+        ...(body.prompt_type ? { prompt_type: body.prompt_type } : {}),
         source_url: pageUrl.href,
         document_type: 'webpage',
       },
@@ -342,7 +358,7 @@ const server = http.createServer(async (req, res) => {
   if (pathname === '/.well-known/attest.json') {
     return json(res, 200, {
       name: 'attest',
-      version: '2.0',
+      version: '3.0',
       description: 'Open protocol for AI content attribution. No auth required.',
       endpoints: {
         create: `https://${HOST}/api/create`,
@@ -360,8 +376,8 @@ const server = http.createServer(async (req, res) => {
       sdk: {
         npm: 'https://www.npmjs.com/package/attest-client',
         install: 'npm install attest-client',
-        usage: "import { attest } from 'attest-client'; const result = await attest({ content_name, model, role, author });",
-        cli: 'npx attest --content file.md --model your-model --role collaborated',
+        usage: "import { attest } from 'attest-client'; const result = await attest({ content_name, model, role, author, platform });",
+        cli: 'npx attest --content file.md --model your-model --role collaborated --platform your-platform',
         note: 'SDK recommended for agents. Provides deterministic results with no URL hallucination risk.',
       },
       parameters: {
@@ -370,6 +386,9 @@ const server = http.createServer(async (req, res) => {
         role: { required: false, default: 'collaborated', enum: ['authored', 'collaborated', 'generated'] },
         author: { required: false, default: 'Anonymous', description: 'Author or agent name' },
         content: { required: false, description: 'Raw content for SHA-256 hash' },
+        platform: { required: false, description: 'The tool or interface the model was used through, e.g. "GitHub Copilot VS Code", "Claude Code", "ChatGPT", "Cursor", "Windsurf"' },
+        prompt: { required: false, description: 'The prompt used to create the content (optional, for transparency)' },
+        prompt_type: { required: false, default: 'single', enum: ['single', 'multi-prompt'], description: 'Whether a single prompt or multiple prompts were used' },
       },
       roles: {
         authored: 'Entirely human-written',

@@ -6,9 +6,9 @@ const DEFAULT_HOST = 'https://attest.97115104.com';
 function createClient(options = {}) {
   const host = (options.host || DEFAULT_HOST).replace(/\/+$/, '');
   const author = options.author || 'Anonymous';
-  const headers = { 'User-Agent': 'attest-client/2.0.0' };
+  const headers = { 'User-Agent': 'attest-client/3.0.0' };
 
-  async function create({ content_name, model, role, author: overrideAuthor, content, authorship_type }) {
+  async function create({ content_name, model, role, author: overrideAuthor, content, authorship_type, platform, prompt, prompt_type }) {
     if (!content_name) throw new Error('attest-client: content_name is required');
 
     const params = new URLSearchParams();
@@ -18,6 +18,9 @@ function createClient(options = {}) {
     params.set('author', overrideAuthor || author);
     if (content) params.set('content', content);
     if (authorship_type) params.set('authorship_type', authorship_type);
+    if (platform) params.set('platform', platform);
+    if (prompt) params.set('prompt', prompt);
+    if (prompt_type) params.set('prompt_type', prompt_type);
 
     const res = await fetch(`${host}/api/create?${params}`, { headers });
     if (!res.ok) throw new Error(`attest-client: HTTP ${res.status} ${res.statusText}`);
@@ -27,10 +30,10 @@ function createClient(options = {}) {
     return data;
   }
 
-  async function createFromUrl({ url, model, role, author: overrideAuthor }) {
+  async function createFromUrl({ url, model, role, author: overrideAuthor, platform, prompt, prompt_type }) {
     if (!url) throw new Error('attest-client: url is required');
 
-    const body = { url, model, role, author: overrideAuthor || author };
+    const body = { url, model, role, author: overrideAuthor || author, platform, prompt, prompt_type };
     const res = await fetch(`${host}/api/create-url`, {
       method: 'POST',
       headers: { ...headers, 'Content-Type': 'application/json' },

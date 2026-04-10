@@ -14,7 +14,8 @@
     content_name: 'README.md',
     model: 'claude-opus-4',
     role: 'collaborated',
-    author: 'my-agent'
+    author: 'my-agent',
+    platform: 'GitHub Copilot VS Code'
   });
   // result.urls.short → exact server-generated short URL
   // result.urls.verify → exact server-generated verify URL
@@ -22,7 +23,7 @@
   The SDK adds determinism to agent-generated attestations:
   - Returns structured objects with exact URLs (no hallucination)
   - Validates inputs before sending
-  - Identifies via User-Agent: attest-client/2.0.0
+  - Identifies via User-Agent: attest-client/3.0.0
   - Zero dependencies
 
   CLI: npx attest --content README.md --model claude-opus-4 --role collaborated
@@ -58,7 +59,10 @@ Make a single GET request:
     &model={your model name}
     &role={authored|collaborated|generated}
     &author={author or agent name}
+    &platform={tool/interface used, e.g. GitHub Copilot VS Code, Claude Code, ChatGPT}
     &content={optional: raw text for SHA-256 hash}
+    &prompt={optional: the prompt used}
+    &prompt_type={optional: single or multi-prompt}
 
 ### parameters
 
@@ -68,6 +72,12 @@ Make a single GET request:
   author        (optional)  author or agent name (default: Anonymous)
   content       (optional)  raw content string, used to generate a SHA-256 hash
   authorship_type (optional) human | collab | ai (auto-derived from role)
+  platform      (optional)  the tool/interface the model was used through.
+                            Examples: "GitHub Copilot VS Code", "Claude Code", "ChatGPT",
+                            "Cursor", "Windsurf", "Aider". This is NOT the attestation
+                            service — it's what environment the AI model was accessed from.
+  prompt        (optional)  the prompt used to create the content (for transparency)
+  prompt_type   (optional)  "single" or "multi-prompt" — whether one or multiple prompts were used
 
 ### roles
 
@@ -84,14 +94,14 @@ Make a single GET request:
   {
     "success": true,
     "attestation": {
-      "version": "2.0",
+      "version": "3.0",
       "id": "2026-04-02-a1b2c3",
       "content_name": "README.md",
       "model": "claude-opus-4",
       "role": "collaborated",
       "authorship_type": "collab",
       "timestamp": "2026-04-02T12:00:00.000Z",
-      "platform": "attest.97115104.com",
+      "platform": "GitHub Copilot VS Code",
       "author": "my-agent"
     },
     "urls": {

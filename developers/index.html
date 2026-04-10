@@ -61,7 +61,8 @@ const result = await attest({
   content_name: "My Doc",
   model: "claude-opus-4",
   role: "collaborated",
-  author: "your-name"
+  author: "your-name",
+  platform: "GitHub Copilot VS Code"
 });
 console.log(result.urls.short);  // exact short URL from server
 console.log(result.urls.verify); // exact verify URL from server</code></pre>
@@ -74,7 +75,8 @@ console.log(result.urls.verify); // exact verify URL from server</code></pre>
     content_name: "My Doc",
     model: "claude-opus-4",
     role: "collaborated",
-    author: "your-name"
+    author: "your-name",
+    platform: "GitHub Copilot VS Code"
   })
 );
 const { attestation, urls } = await res.json();
@@ -87,7 +89,8 @@ r = requests.get("https://attest.97115104.com/api/create", params={
     "content_name": "My Doc",
     "model": "claude-opus-4",
     "role": "collaborated",
-    "author": "your-name"
+    "author": "your-name",
+    "platform": "ChatGPT"
 })
 data = r.json()
 print(data["urls"]["verify"])  # shareable verification link</code></pre>
@@ -107,16 +110,19 @@ attest protocol. Walk me through it step by step:
    co-authored with AI, or fully AI-generated.
 3. If AI was involved, ask me which model was used.
 4. Ask me for an author name (or use "Anonymous").
-5. Confirm the details with me before proceeding.
-6. Once I confirm, make this HTTP request and show me the result:
+5. Ask me what tool or interface I used (e.g. "GitHub Copilot
+   VS Code", "Claude Code", "ChatGPT", "Cursor").
+6. Confirm the details with me before proceeding.
+7. Once I confirm, make this HTTP request and show me the result:
 
    GET https://attest.97115104.com/api/create
      ?content_name={title from step 1}
      &amp;role={authored | collaborated | generated}
      &amp;model={model from step 3, or "Human" if fully human}
      &amp;author={author from step 4}
+     &amp;platform={tool/interface from step 5}
 
-7. From the JSON response, give me:
+8. From the JSON response, give me:
    - the verify URL so I can share it
    - the attestation JSON so I can store it alongside my content
    - a suggestion for where to put it (meta tag, frontmatter,
@@ -148,6 +154,9 @@ attest protocol. Walk me through it step by step:
           <tr><td><code>authorship_type</code></td><td>No</td><td><code>human</code> | <code>collab</code> | <code>ai</code> (auto-derived from role)</td></tr>
           <tr><td><code>author</code></td><td>No</td><td>Author name (default: Anonymous)</td></tr>
           <tr><td><code>content</code></td><td>No</td><td>Raw content (for SHA-256 hash)</td></tr>
+          <tr><td><code>platform</code></td><td>No</td><td>Tool/interface the model was used through (e.g. "GitHub Copilot VS Code", "Claude Code", "ChatGPT")</td></tr>
+          <tr><td><code>prompt</code></td><td>No</td><td>The prompt used to generate the content</td></tr>
+          <tr><td><code>prompt_type</code></td><td>No</td><td><code>single</code> | <code>multi-prompt</code> (default: single)</td></tr>
         </table>
         <details class="table-collapse">
           <summary>Parameters</summary>
@@ -157,6 +166,9 @@ attest protocol. Walk me through it step by step:
           <p><code>authorship_type</code> - human | collab | ai (auto-derived)</p>
           <p><code>author</code> - Author name (default: Anonymous)</p>
           <p><code>content</code> - Raw content (for SHA-256 hash)</p>
+          <p><code>platform</code> - Tool/interface the model was used through (e.g. "GitHub Copilot VS Code", "Claude Code", "ChatGPT")</p>
+          <p><code>prompt</code> - The prompt used to generate the content</p>
+          <p><code>prompt_type</code> - single | multi-prompt (default: single)</p>
         </details>
       </div>
 
@@ -167,14 +179,14 @@ attest protocol. Walk me through it step by step:
       <pre><code>{
   "success": true,
   "attestation": {
-    "version": "2.0",
+    "version": "3.0",
     "id": "2026-04-02-a1b2c3",
     "content_name": "README",
     "model": "claude-opus-4",
     "role": "collaborated",
     "authorship_type": "collab",
     "timestamp": "2026-04-02T12:00:00.000Z",
-    "platform": "attest.97115104.com",
+    "platform": "GitHub Copilot VS Code",
     "author": "Anonymous"
   },
   "urls": {
@@ -217,19 +229,21 @@ attest protocol. Walk me through it step by step:
     <!-- ── Attestation Format ──────────────────────── -->
     <div class="inset tab-content" id="tab-format">
 
-      <h2>▸ Attestation v2.0 Schema</h2>
+      <h2>▸ Attestation v3.0 Schema</h2>
       <pre><code>{
-  "version": "2.0",
+  "version": "3.0",
   "id": "2026-04-02-a1b2c3",
   "content_name": "My Blog Post",
   "timestamp": "2026-04-02T12:00:00.000Z",
-  "platform": "attest.97115104.com",
+  "platform": "GitHub Copilot VS Code",
   "authorship_type": "collab",        // human | collab | ai
   "model": "claude-opus-4",           // or "Human"
   "role": "collaborated",             // authored | collaborated | generated
   "content_hash": "sha256:abcdef...", // SHA-256 of full content
   "document_type": "markdown",
   "author": "97 115 104",
+  "prompt": "Write a blog post about...",
+  "prompt_type": "single",
   "signature": {
     "type": "hmac-sha256",
     "value": "4b2d5967...",
@@ -276,7 +290,7 @@ attest protocol. Walk me through it step by step:
 signature = HMAC-SHA256(signing_key, data_to_sign)</code></pre>
 
       <pre class="ascii-filler"><span class="r1"> ________________________</span>
-<span class="r2">/ v2.0 JSON. signed and  \</span>
+<span class="r2">/ v3.0 JSON. signed and  \</span>
 <span class="r3">\ hashed. tamper-proof.   /</span>
 <span class="r4"> ------------------------</span>
 <span class="r5">        \   ^__^</span>
@@ -365,7 +379,8 @@ const client = createClient({ author: 'my-agent' });
 const result = await client.create({
   content_name: 'output.md',
   model: 'claude-opus-4',
-  role: 'generated'
+  role: 'generated',
+  platform: 'Claude Code'
 });
 // result.urls.short → exact URL, no hallucination possible</code></pre>
 
@@ -373,7 +388,7 @@ const result = await client.create({
       <pre><code>npx attest --content output.md --model claude-opus-4 --role generated --author my-bot
 npx attest --metrics --json</code></pre>
 
-      <p class="muted">Zero dependencies. Identifies via <code>User-Agent: attest-client/2.0.0</code>. <a href="https://www.npmjs.com/package/attest-client">npm</a></p>
+      <p class="muted">Zero dependencies. Identifies via <code>User-Agent: attest-client/3.0.0</code>. <a href="https://www.npmjs.com/package/attest-client">npm</a></p>
 
       <hr>
 
@@ -384,7 +399,10 @@ npx attest --metrics --json</code></pre>
   &amp;model={your_model}
   &amp;role={authored|collaborated|generated}
   &amp;author={agent_name}
-  &amp;content={optional: raw content for SHA-256 hash}</code></pre>
+  &amp;platform={your tool/interface, e.g. "GitHub Copilot VS Code", "Claude Code", "ChatGPT"}
+  &amp;content={optional: raw content for SHA-256 hash}
+  &amp;prompt={optional: the prompt used}
+  &amp;prompt_type={optional: single or multi-prompt}</code></pre>
 
       <h3>curl</h3>
       <pre><code>curl "https://attest.97115104.com/api/create?content_name=output.md&amp;model=claude-opus-4&amp;role=generated&amp;author=my-agent"</code></pre>
@@ -404,7 +422,8 @@ r = requests.get("https://attest.97115104.com/api/create", params={
     "content_name": title,
     "model": "gpt-4",
     "role": "generated",
-    "author": "my-bot"
+    "author": "my-bot",
+    "platform": "ChatGPT"
 })
 attestation = r.json()</code></pre>
 
@@ -428,7 +447,7 @@ attestation = r.json()</code></pre>
 /_data/attestations.json
 /.well-known/attestations.json
 
-# each is a standard attest v2.0 JSON object</code></pre>
+# each is a standard attest v3.0 JSON object</code></pre>
       </div>
 
       <div class="fieldset">
@@ -464,7 +483,9 @@ when you create or modify content, generate an attestation:
     &amp;model={your model name}
     &amp;role={authored|collaborated|generated}
     &amp;author={your agent name}
+    &amp;platform={your tool/interface}
     &amp;content={optional: raw content for hash}
+    &amp;prompt={optional: the prompt used}
 
 append the returned verify URL to your output or
 commit message. open access, free forever, one HTTP call.

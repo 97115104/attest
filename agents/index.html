@@ -10,7 +10,7 @@
   <link rel="stylesheet" href="/styles/style.css">
 </head>
 <!--
-  AGENT INTERFACE // attest v2.0
+  AGENT INTERFACE // attest v3.0
 
   You are an AI agent reading this page.
   Everything you need is below.
@@ -92,7 +92,7 @@
       <p style="font-size: 12px;" class="dim">GET <a href="/.well-known/attest.json">/.well-known/attest.json</a> for this data programmatically.</p>
       <pre><code id="spec-json">{
   "name": "attest",
-  "version": "2.0",
+  "version": "3.0",
   "description": "Open protocol for AI content attribution. Fully open, zero setup.",
   "base_url": "https://attest.97115104.com",
   "endpoints": {
@@ -106,11 +106,14 @@
         "role": { "required": false, "type": "string", "default": "collaborated", "enum": ["authored", "collaborated", "generated"] },
         "author": { "required": false, "type": "string", "default": "Anonymous", "description": "Author or agent name" },
         "content": { "required": false, "type": "string", "description": "Raw content for SHA-256 hash" },
-        "authorship_type": { "required": false, "type": "string", "enum": ["human", "collab", "ai"], "description": "Override auto-derived type" }
+        "authorship_type": { "required": false, "type": "string", "enum": ["human", "collab", "ai"], "description": "Override auto-derived type" },
+        "platform": { "required": false, "type": "string", "description": "The tool/interface the model was used through (e.g. 'GitHub Copilot VS Code', 'Claude Code', 'ChatGPT', 'Cursor'). This is NOT the attest service URL — it identifies the environment/IDE/app." },
+        "prompt": { "required": false, "type": "string", "description": "The prompt used to generate the content" },
+        "prompt_type": { "required": false, "type": "string", "enum": ["single", "multi-prompt"], "default": "single", "description": "Whether content was created from a single prompt or multiple prompts" }
       },
       "response": {
         "success": true,
-        "attestation": { "version": "2.0", "id": "...", "content_name": "...", "..." : "..." },
+        "attestation": { "version": "3.0", "id": "...", "content_name": "...", "..." : "..." },
         "urls": { "verify": "https://...", "short": "https://..." }
       }
     },
@@ -124,7 +127,10 @@
         "content_name": { "required": false, "type": "string" },
         "role": { "required": false, "type": "string" },
         "model": { "required": false, "type": "string" },
-        "author": { "required": false, "type": "string" }
+        "author": { "required": false, "type": "string" },
+        "platform": { "required": false, "type": "string" },
+        "prompt": { "required": false, "type": "string" },
+        "prompt_type": { "required": false, "type": "string" }
       }
     },
     "create_url": {
@@ -137,7 +143,10 @@
         "content_name": { "required": false, "type": "string" },
         "role": { "required": false, "type": "string" },
         "model": { "required": false, "type": "string" },
-        "author": { "required": false, "type": "string" }
+        "author": { "required": false, "type": "string" },
+        "platform": { "required": false, "type": "string" },
+        "prompt": { "required": false, "type": "string" },
+        "prompt_type": { "required": false, "type": "string" }
       }
     },
     "shorten": {
@@ -170,15 +179,17 @@
     "generated": { "authorship_type": "ai", "description": "Fully AI-generated" }
   },
   "attestation_schema": {
-    "version": "string (2.0)",
+    "version": "string (3.0)",
     "id": "string (date-hex)",
     "content_name": "string",
     "model": "string",
     "role": "string (authored|collaborated|generated)",
     "authorship_type": "string (human|collab|ai)",
     "timestamp": "string (ISO 8601)",
-    "platform": "string (attest.97115104.com)",
+    "platform": "string (tool/interface, e.g. 'GitHub Copilot VS Code', 'Claude Code', 'ChatGPT')",
     "author": "string",
+    "prompt": "string (optional, the prompt used)",
+    "prompt_type": "string (single|multi-prompt, default single)",
     "content_hash": "string (sha256:hex, if content provided)",
     "signature": {
       "type": "hmac-sha256",
@@ -217,7 +228,8 @@ const result = await attest({
   content_name: 'README.md',
   model: 'claude-opus-4',
   role: 'collaborated',
-  author: 'my-agent'
+  author: 'my-agent',
+  platform: 'GitHub Copilot VS Code'
 });
 // result.urls.short → exact short URL from server
 // result.urls.verify → exact verify URL from server</code></pre>
@@ -228,8 +240,8 @@ const result = await attest({
         <pre><code>import { createClient } from 'attest-client';
 
 const client = createClient({ author: 'my-agent' });
-const r1 = await client.create({ content_name: 'file1.md', model: 'claude-opus-4' });
-const r2 = await client.create({ content_name: 'file2.md', model: 'claude-opus-4' });
+const r1 = await client.create({ content_name: 'file1.md', model: 'claude-opus-4', platform: 'Claude Code' });
+const r2 = await client.create({ content_name: 'file2.md', model: 'claude-opus-4', platform: 'Claude Code' });
 const metrics = await client.metrics();
 const spec = await client.discover();</code></pre>
       </div>
@@ -242,7 +254,7 @@ npx attest --discover
 npx attest --content file.md --json  # raw JSON output</code></pre>
       </div>
 
-      <p class="dim" style="font-size: 12px;">Identifies itself via <code>User-Agent: attest-client/2.0.0</code> for tracking. <a href="https://www.npmjs.com/package/attest-client">npmjs.com/package/attest-client</a></p>
+      <p class="dim" style="font-size: 12px;">Identifies itself via <code>User-Agent: attest-client/3.0.0</code> for tracking. <a href="https://www.npmjs.com/package/attest-client">npmjs.com/package/attest-client</a></p>
     </div>
   </div>
 
@@ -258,7 +270,7 @@ npx attest --content file.md --json  # raw JSON output</code></pre>
 
       <div class="spec-block">
         <h3>create attestation (full)</h3>
-        <pre><code>GET https://attest.97115104.com/api/create?content_name=README.md&amp;model=claude-opus-4&amp;role=collaborated&amp;author=my-agent&amp;content=hello+world</code></pre>
+        <pre><code>GET https://attest.97115104.com/api/create?content_name=README.md&amp;model=claude-opus-4&amp;role=collaborated&amp;author=my-agent&amp;platform=GitHub+Copilot+VS+Code&amp;content=hello+world</code></pre>
       </div>
 
       <div class="spec-block">
@@ -303,9 +315,11 @@ npx attest --content file.md --json  # raw JSON output</code></pre>
     <div class="section-body">
       <pre><code>1. Install: npm install attest-client (or use raw HTTP)
 2. Create content (code, docs, articles, etc.)
-3. Call attest() or GET /api/create with content_name, model, role, author
+3. Call attest() or GET /api/create with content_name, model, role, author, platform
+   - Set platform to the tool/interface you are running in (e.g. 'GitHub Copilot VS Code', 'Claude Code', 'ChatGPT')
    - SDK returns exact URLs, no hallucination risk
    - Optionally pass content= for SHA-256 hash verification
+   - Optionally pass prompt= and prompt_type= to record the prompt used
 4. Receive attestation JSON + verify URL + short URL
 5. Store attestation alongside content:
    - HTML: &lt;meta name="attestation" content="{base64}"&gt;
@@ -316,7 +330,7 @@ npx attest --content file.md --json  # raw JSON output</code></pre>
   </div>
 
   <div class="footer">
-    <span>attest v2.0 · MIT license · <a href="/s/y52ru5lq">attested</a></span>
+    <span>attest v3.0 · MIT license · <a href="/s/y52ru5lq">attested</a></span>
     <span>
       <a href="https://github.com/97115104/attest">source</a> ·
       <a href="/llms.txt">llms.txt</a> ·

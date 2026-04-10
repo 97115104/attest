@@ -141,7 +141,7 @@ nav a.active::after {
 }
 
 .metric {
-  background: var(--surface-solid);
+  background: var(--surface);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   padding: 24px;
@@ -228,6 +228,10 @@ th {
 }
 
 tr:last-child td { border-bottom: none; }
+
+.clickable-row:hover td {
+  background: var(--surface-hover);
+}
 
 /* ── Code / pre ─────────────────────────────── */
 pre, code {
@@ -700,6 +704,11 @@ hr {
 /* ── Intro blurb ────────────────────────────── */
 
 /* ── Info button ────────────────────────────── */
+.info-bar {
+  display: flex;
+  margin-bottom: 16px;
+}
+
 .info-btn {
   display: flex;
   align-items: center;
@@ -722,25 +731,6 @@ hr {
   color: var(--accent);
   border-color: var(--accent);
   background: var(--surface-hover);
-}
-
-.info-btn-desktop {
-  display: flex;
-  margin: auto 0;
-  margin-left: auto;
-}
-
-.info-btn-mobile {
-  display: none;
-}
-
-.nav-sep {
-  display: flex;
-  align-items: center;
-  color: var(--border-strong);
-  font-size: 18px;
-  padding: 0 2px;
-  user-select: none;
 }
 
 /* ── Info panel ─────────────────────────────── */
@@ -881,13 +871,6 @@ hr {
     flex: 1;
     border-bottom: 1px solid var(--border);
     padding: 10px 16px;
-  }
-  .info-btn-desktop { display: none; }
-  .nav-sep { display: none; }
-  .info-btn-mobile {
-    display: flex;
-    border-bottom: 1px solid var(--border);
-    margin: auto 12px;
   }
   nav .nav-links {
     display: flex;

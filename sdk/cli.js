@@ -26,6 +26,9 @@ Options:
   --role <role>       authored | collaborated | generated (default: collaborated)
   --author <name>     Author or agent name (default: Anonymous)
   --type <type>       human | collab | ai (overrides role)
+  --platform <name>   Tool/interface (e.g. "GitHub Copilot VS Code", "Claude Code", "ChatGPT")
+  --prompt <text>     The prompt used to generate the content
+  --prompt-type <t>   single | multi-prompt (default: single)
   --host <url>        API host (default: https://attest.97115104.com)
   --discover          Show API discovery info
   --metrics           Show platform metrics
@@ -35,7 +38,7 @@ Options:
 }
 
 const host = flag('host') || 'https://attest.97115104.com';
-const headers = { 'User-Agent': 'attest-client/2.0.0 cli' };
+const headers = { 'User-Agent': 'attest-client/3.0.0 cli' };
 
 async function run() {
   if (args.includes('--discover')) {
@@ -76,6 +79,12 @@ async function run() {
   if (author) params.set('author', author);
   const type = flag('type');
   if (type) params.set('authorship_type', type);
+  const platform = flag('platform');
+  if (platform) params.set('platform', platform);
+  const prompt = flag('prompt');
+  if (prompt) params.set('prompt', prompt);
+  const promptType = flag('prompt-type');
+  if (promptType) params.set('prompt_type', promptType);
 
   const res = await fetch(`${host}/api/create?${params}`, { headers });
   const data = await res.json();

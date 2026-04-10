@@ -28,16 +28,18 @@
 <div class="shell">
   <nav>
     <a href="/" class="logo">attest</a>
-    <button class="info-btn info-btn-mobile" id="info-btn-mobile" onclick="toggleInfoPanel()" title="What is attest?">?</button>
     <div class="nav-links">
-      <button class="info-btn info-btn-desktop" id="info-btn-desktop" onclick="toggleInfoPanel()" title="What is attest?">?</button>
-      <span class="nav-sep">|</span>
       <a href="/" class="active">dashboard</a>
       <a href="/agents/">agents</a>
       <a href="/humans/">humans</a>
       <a href="/verify/">verify</a>
     </div>
   </nav>
+
+  <!-- ── Info button (below nav) ──────────── -->
+  <div class="info-bar">
+    <button class="info-btn" id="info-btn" onclick="toggleInfoPanel()" title="What is attest?">?</button>
+  </div>
 
   <!-- ── Info panel (replaces modal) ──────────── -->
   <div class="info-panel" id="info-panel" style="display:none;">
@@ -82,7 +84,7 @@
           <tr><td class="dim">type</td><td><span class="badge badge-human">human</span></td></tr>
           <tr><td class="dim">author</td><td>jane doe</td></tr>
           <tr><td class="dim">timestamp</td><td>2026-04-10T14:30:00.000Z</td></tr>
-          <tr><td class="dim">version</td><td>2.0</td></tr>
+          <tr><td class="dim">version</td><td>3.0</td></tr>
         </table>
       </div>
 
@@ -95,11 +97,11 @@
         <table>
           <tr><td class="dim">content</td><td>README.md</td></tr>
           <tr><td class="dim">model</td><td>claude-opus-4</td></tr>
-          <tr><td class="dim">platform</td><td>attest.97115104.com</td></tr>
+          <tr><td class="dim">platform</td><td>GitHub Copilot VS Code</td></tr>
           <tr><td class="dim">type</td><td><span class="badge badge-collab">collab</span></td></tr>
           <tr><td class="dim">author</td><td>97115104</td></tr>
           <tr><td class="dim">timestamp</td><td>2026-04-10T12:00:00.000Z</td></tr>
-          <tr><td class="dim">version</td><td>2.0</td></tr>
+          <tr><td class="dim">version</td><td>3.0</td></tr>
         </table>
       </div>
 
@@ -112,11 +114,11 @@
         <table>
           <tr><td class="dim">content</td><td>generated-summary.txt</td></tr>
           <tr><td class="dim">model</td><td>gpt-4</td></tr>
-          <tr><td class="dim">platform</td><td>attest.97115104.com</td></tr>
+          <tr><td class="dim">platform</td><td>ChatGPT</td></tr>
           <tr><td class="dim">type</td><td><span class="badge badge-ai">ai</span></td></tr>
           <tr><td class="dim">author</td><td>my-agent</td></tr>
           <tr><td class="dim">timestamp</td><td>2026-04-10T09:15:00.000Z</td></tr>
-          <tr><td class="dim">version</td><td>2.0</td></tr>
+          <tr><td class="dim">version</td><td>3.0</td></tr>
         </table>
       </div>
     </div>
@@ -144,17 +146,17 @@
 
   <!-- ── Top model + type ──────────────────── -->
   <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1px; background: var(--border); border: 1px solid var(--border); margin-bottom: 24px;">
-    <div style="background: var(--surface-solid); padding: 24px;">
+    <div style="background: var(--surface); padding: 24px;">
       <div class="metric-label" style="margin-bottom: 8px;">most attested model</div>
       <div id="m-top-model" style="font-family: var(--display); font-size: 20px; color: var(--accent); font-weight: 700;">···</div>
       <div id="m-top-model-count" class="dim" style="font-size: 12px;"></div>
     </div>
-    <div style="background: var(--surface-solid); padding: 24px;">
+    <div style="background: var(--surface); padding: 24px;">
       <div class="metric-label" style="margin-bottom: 8px;">dominant type</div>
       <div id="m-top-type" style="font-family: var(--display); font-size: 20px; font-weight: 700;">···</div>
       <div id="m-top-type-count" class="dim" style="font-size: 12px;"></div>
     </div>
-    <div style="background: var(--surface-solid); padding: 24px;">
+    <div style="background: var(--surface); padding: 24px;">
       <div class="metric-label" style="margin-bottom: 8px;">top platform</div>
       <div id="m-top-platform" style="font-family: var(--display); font-size: 20px; color: var(--accent); font-weight: 700;">···</div>
       <div id="m-top-platform-count" class="dim" style="font-size: 12px;"></div>
@@ -256,7 +258,7 @@ console.log(result.urls.short); // exact URL from server</code></pre>
   </div>
 
   <div class="footer">
-    <span>attest v2.0 · MIT license · <a href="/s/y52ru5lq">attested</a></span>
+    <span>attest v3.0 · MIT license · <a href="/s/y52ru5lq">attested</a></span>
     <span>
       <a href="https://github.com/97115104/attest">source</a> ·
       <a href="/llms.txt">llms.txt</a> ·
@@ -356,7 +358,8 @@ console.log(result.urls.short); // exact URL from server</code></pre>
       tbody.innerHTML = m.recent_attestations.map(a => {
         const badgeClass = a.authorship_type === 'human' ? 'badge-human' : a.authorship_type === 'ai' ? 'badge-ai' : 'badge-collab';
         const ago = timeAgo(a.created_at);
-        return `<tr>
+        const href = a.short_id ? '/s/' + esc(a.short_id) : '#';
+        return `<tr class="clickable-row" onclick="window.location='${href}'" style="cursor:pointer;">
           <td>${esc(a.content_name)}</td>
           <td><span class="badge ${badgeClass}">${esc(a.authorship_type)}</span></td>
           <td>${esc(a.model)}</td>
@@ -368,7 +371,8 @@ console.log(result.urls.short); // exact URL from server</code></pre>
       cards.innerHTML = m.recent_attestations.map(a => {
         const badgeClass = a.authorship_type === 'human' ? 'badge-human' : a.authorship_type === 'ai' ? 'badge-ai' : 'badge-collab';
         const ago = timeAgo(a.created_at);
-        return `<div class="recent-card">
+        const href = a.short_id ? '/s/' + esc(a.short_id) : '#';
+        return `<a href="${href}" class="recent-card" style="text-decoration:none; display:block; color:inherit;">
           <div class="recent-card-top">
             <span class="recent-card-name">${esc(a.content_name)}</span>
             <span class="badge ${badgeClass}">${esc(a.authorship_type)}</span>
@@ -378,7 +382,7 @@ console.log(result.urls.short); // exact URL from server</code></pre>
             <span>${esc(a.author)}</span>
             <span class="dim">${ago}</span>
           </div>
-        </div>`;
+        </a>`;
       }).join('');
     }
   } catch {
@@ -428,7 +432,7 @@ BEST APPROACH (if you can install packages):
 Use the attest-client SDK for deterministic, hallucination-proof attestations:
   npm install attest-client
   import { attest } from 'attest-client';
-  const result = await attest({ content_name: 'file.md', model: 'your-model', role: 'collaborated', author: 'name' });
+  const result = await attest({ content_name: 'file.md', model: 'your-model', role: 'collaborated', author: 'name', platform: 'GitHub Copilot VS Code' });
   // result.urls.short and result.urls.verify are exact server-generated URLs
 The SDK eliminates URL construction errors and validates inputs before sending.
 
@@ -444,6 +448,9 @@ PARAMETERS:
 - role (optional, default "collaborated"): one of "authored" (human wrote it all), "collaborated" (human + AI together), or "generated" (fully AI-made)
 - author (optional, default "Anonymous"): the person's name, username, or identifier
 - content (optional): the raw text content, which will be SHA-256 hashed for verification
+- platform (optional): the tool/interface the model was used through (e.g. "GitHub Copilot VS Code", "Claude Code", "ChatGPT", "Cursor"). This is NOT the attest service URL — it identifies what environment/IDE/app the AI was accessed from.
+- prompt (optional): the prompt used to generate the content
+- prompt_type (optional, default "single"): "single" or "multi-prompt" — whether the content was created from one prompt or multiple
 
 ROLES AND WHAT THEY MEAN:
 - "authored" = a human wrote this entirely, no AI involved. The model field gets set to "Human" automatically.
@@ -451,20 +458,20 @@ ROLES AND WHAT THEY MEAN:
 - "generated" = AI produced this with minimal human input.
 
 EXAMPLE REQUEST:
-curl "https://attest.97115104.com/api/create?content_name=README.md&model=claude-opus-4&role=collaborated&author=jane"
+curl "https://attest.97115104.com/api/create?content_name=README.md&model=claude-opus-4&role=collaborated&author=jane&platform=GitHub+Copilot+VS+Code"
 
 EXAMPLE RESPONSE (the actual values will differ every time):
 {
   "success": true,
   "attestation": {
-    "version": "2.0",
+    "version": "3.0",
     "id": "2026-04-02-a1b2c3",
     "content_name": "README.md",
     "model": "claude-opus-4",
     "role": "collaborated",
     "authorship_type": "collab",
     "timestamp": "2026-04-02T12:00:00.000Z",
-    "platform": "attest.97115104.com",
+    "platform": "GitHub Copilot VS Code",
     "author": "jane"
   },
   "urls": {

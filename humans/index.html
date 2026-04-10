@@ -127,8 +127,28 @@
         </div>
 
         <div class="field">
+          <label>platform</label>
+          <input type="text" id="platform" placeholder="e.g. GitHub Copilot VS Code, Claude Code, ChatGPT">
+          <p class="dim" style="font-size: 11px; margin-top: 4px;">The tool/interface the model was used through</p>
+        </div>
+
+        <div class="field">
           <label>author</label>
           <input type="text" id="author" placeholder="Anonymous">
+        </div>
+
+        <div class="field">
+          <label>prompt <span class="dim" style="text-transform: none; font-weight: 400;">(optional)</span></label>
+          <textarea id="prompt" rows="3" placeholder="The prompt used to create this content" style="resize:vertical;"></textarea>
+        </div>
+
+        <div class="field">
+          <label>prompt type</label>
+          <select id="prompt-type">
+            <option value="">none</option>
+            <option value="single">single prompt</option>
+            <option value="multi-prompt">multi-prompt</option>
+          </select>
         </div>
 
         <div class="btn-row">
@@ -192,7 +212,7 @@
   </div>
 
   <div class="footer">
-    <span>attest v2.0 · MIT license · <a href="/s/y52ru5lq">attested</a></span>
+    <span>attest v3.0 · MIT license · <a href="/s/y52ru5lq">attested</a></span>
     <span>
       <a href="https://github.com/97115104/attest">source</a> ·
       <a href="/llms.txt">llms.txt</a> ·
@@ -252,6 +272,9 @@ async function createAttestation() {
   const model = document.getElementById('model').value || 'claude-opus-4';
   const author = document.getElementById('author').value || 'Anonymous';
   const contentName = document.getElementById('content-name').value;
+  const platform = document.getElementById('platform').value || '';
+  const prompt = document.getElementById('prompt').value || '';
+  const promptType = document.getElementById('prompt-type').value || '';
 
   btn.disabled = true;
   btn.textContent = 'creating...';
@@ -276,6 +299,9 @@ async function createAttestation() {
         form.append('role', role);
         form.append('model', model);
         form.append('author', author);
+        if (platform) form.append('platform', platform);
+        if (prompt) form.append('prompt', prompt);
+        if (promptType) form.append('prompt_type', promptType);
 
         const res = await fetch('/api/create-upload', { method: 'POST', body: form });
         const data = await res.json();
@@ -296,7 +322,7 @@ async function createAttestation() {
         const res = await fetch('/api/create-url', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ url: urls[i], role, model, author, content_name: contentName || undefined }),
+          body: JSON.stringify({ url: urls[i], role, model, author, platform: platform || undefined, prompt: prompt || undefined, prompt_type: promptType || undefined, content_name: contentName || undefined }),
         });
         const data = await res.json();
         if (data.success) results.push(data);
@@ -367,7 +393,7 @@ BEST APPROACH (if you can install packages):
 Use the attest-client SDK for deterministic, hallucination-proof attestations:
   npm install attest-client
   import { attest } from 'attest-client';
-  const result = await attest({ content_name: 'file.md', model: 'your-model', role: 'collaborated', author: 'name' });
+  const result = await attest({ content_name: 'file.md', model: 'your-model', role: 'collaborated', author: 'name', platform: 'GitHub Copilot VS Code' });
   // result.urls.short and result.urls.verify are exact server-generated URLs
 The SDK eliminates URL construction errors and validates inputs before sending.
 
@@ -383,6 +409,9 @@ PARAMETERS:
 - role (optional, default "collaborated"): one of "authored" (human wrote it all), "collaborated" (human + AI together), or "generated" (fully AI-made)
 - author (optional, default "Anonymous"): the person's name, username, or identifier
 - content (optional): the raw text content, which will be SHA-256 hashed for verification
+- platform (optional): the tool/interface the model was used through (e.g. "GitHub Copilot VS Code", "Claude Code", "ChatGPT", "Cursor"). This is NOT the attest service URL — it identifies what environment/IDE/app the AI was accessed from.
+- prompt (optional): the prompt used to generate the content
+- prompt_type (optional, default "single"): "single" or "multi-prompt" — whether the content was created from one prompt or multiple
 
 ROLES AND WHAT THEY MEAN:
 - "authored" = a human wrote this entirely, no AI involved. The model field gets set to "Human" automatically.
@@ -390,20 +419,20 @@ ROLES AND WHAT THEY MEAN:
 - "generated" = AI produced this with minimal human input.
 
 EXAMPLE REQUEST:
-curl "https://attest.97115104.com/api/create?content_name=README.md&model=claude-opus-4&role=collaborated&author=jane"
+curl "https://attest.97115104.com/api/create?content_name=README.md&model=claude-opus-4&role=collaborated&author=jane&platform=GitHub+Copilot+VS+Code"
 
 EXAMPLE RESPONSE (the actual values will differ every time):
 {
   "success": true,
   "attestation": {
-    "version": "2.0",
+    "version": "3.0",
     "id": "2026-04-02-a1b2c3",
     "content_name": "README.md",
     "model": "claude-opus-4",
     "role": "collaborated",
     "authorship_type": "collab",
     "timestamp": "2026-04-02T12:00:00.000Z",
-    "platform": "attest.97115104.com",
+    "platform": "GitHub Copilot VS Code",
     "author": "jane"
   },
   "urls": {

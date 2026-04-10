@@ -12,7 +12,7 @@ attestation: https://attest.97115104.com/s/y52ru5lq
 
 [![attested: collab claude opus 4](https://img.shields.io/badge/attested-collab%20claude%20opus%204-blue)](https://attest.97115104.com/s/y52ru5lq)
 [![license: MIT](https://img.shields.io/badge/license-MIT-green)](LICENSE)
-[![version: 2.0.0](https://img.shields.io/badge/version-2.0.0-blue)](package.json)
+[![version: 2.0.0](https://img.shields.io/badge/version-3.0.0-blue)](package.json)
 [![npm: attest-client](https://img.shields.io/npm/v/attest-client)](https://www.npmjs.com/package/attest-client)
 [![node: >=18](https://img.shields.io/badge/node-%3E%3D18-brightgreen)](https://nodejs.org)
 [![dependencies: 2](https://img.shields.io/badge/dependencies-2-blue)](package.json)
@@ -51,7 +51,8 @@ const result = await attest({
   content_name: 'README.md',
   model: 'claude-opus-4',
   role: 'collaborated',
-  author: 'my-agent'
+  author: 'my-agent',
+  platform: 'GitHub Copilot VS Code'
 });
 
 console.log(result.urls.short);  // exact short URL from server
@@ -64,7 +65,7 @@ Or use the CLI:
 npx attest --content README.md --model claude-opus-4 --role collaborated --author my-agent
 ```
 
-The SDK adds determinism to agent-generated attestations by eliminating URL construction errors, validating inputs before sending, and identifying itself via `User-Agent: attest-client/2.0.0` for tracking.
+The SDK adds determinism to agent-generated attestations by eliminating URL construction errors, validating inputs before sending, and identifying itself via `User-Agent: attest-client/3.0.0` for tracking.
 
 ### For agents (raw HTTP)
 
@@ -96,6 +97,9 @@ Creates an attestation. Returns the signed attestation, a verify URL, and an aut
 | `author` | no | `Anonymous` | Author or agent name |
 | `content` | no | | Raw content for SHA-256 hash |
 | `authorship_type` | no | auto | `human` · `collab` · `ai` (overrides role) |
+| `platform` | no | | The tool/interface the model was used through (e.g. `GitHub Copilot VS Code`, `Claude Code`, `ChatGPT`, `Cursor`, `Windsurf`) |
+| `prompt` | no | | The prompt used to create the content (optional, for transparency) |
+| `prompt_type` | no | | `single` or `multi-prompt` — whether one or multiple prompts were used |
 
 ### `POST /api/create-upload`
 
@@ -136,14 +140,14 @@ Every create endpoint returns the same structure:
 {
   "success": true,
   "attestation": {
-    "version": "2.0",
+    "version": "3.0",
     "id": "2026-04-03-a1b2c3",
     "content_name": "README.md",
     "model": "claude-opus-4",
     "role": "collaborated",
     "authorship_type": "collab",
     "timestamp": "2026-04-03T12:00:00.000Z",
-    "platform": "attest.97115104.com",
+    "platform": "GitHub Copilot VS Code",
     "author": "my-agent",
     "signature": { "type": "hmac-sha256", "..." : "..." }
   },
@@ -207,6 +211,8 @@ npx attest --discover
 ## Features
 
 - **npm SDK** (`attest-client`) for deterministic agent attestations, zero dependencies
+- **Platform tracking**: records which tool/interface was used (GitHub Copilot, Claude Code, ChatGPT, etc.)
+- **Optional prompt capture**: attach the prompt(s) used, with single or multi-prompt support
 - WebGL noise field background (adapts to light/dark mode)
 - Live dashboard with donut charts for authorship type + agent activity
 - First-visit welcome modal for human visitors

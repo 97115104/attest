@@ -143,7 +143,7 @@ export function getMetrics() {
   const typeBreakdown = d.prepare(`SELECT authorship_type, COUNT(*) as count FROM attestations
     GROUP BY authorship_type ORDER BY count DESC`).all();
 
-  const recentAttestations = d.prepare(`SELECT id, content_name, authorship_type, model, author, created_at
+  const recentAttestations = d.prepare(`SELECT id, content_name, authorship_type, model, author, short_id, created_at
     FROM attestations ORDER BY created_at DESC LIMIT 10`).all();
 
   const dailyRate = d.prepare(`SELECT COUNT(*) as count FROM attestations
